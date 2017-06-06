@@ -1,0 +1,178 @@
+{
+  "name": "elixir-ls",
+  "description": "Elixir plugin with debugger support, autocomplete, and more. Powered by ElixirLS",
+  "author": "Jake Becker",
+  "license": "MIT",
+  "publisher": "JakeBecker",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.8.0"
+  },
+  "categories": [
+    "Languages",
+    "Debuggers"
+  ],
+  "activationEvents": [
+    "onLanguage:elixir"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "elixir",
+        "aliases": [
+          "Elixir",
+          "elixir"
+        ],
+        "extensions": [
+          ".ex",
+          ".exs"
+        ],
+        "configuration": "./elixir.configuration.json"
+      },
+      {
+        "id": "Eex",
+        "aliases": [
+          "Eex",
+          "eex"
+        ],
+        "extensions": [
+          ".eex"
+        ]
+      },
+      {
+        "id": "HTML (Eex)",
+        "aliases": [
+          "HTML (Eex)"
+        ],
+        "extensions": [
+          ".html.eex"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "elixir",
+        "scopeName": "source.elixir",
+        "path": "./syntaxes/elixir.json"
+      },
+      {
+        "language": "Eex",
+        "scopeName": "text.elixir",
+        "path": "./syntaxes/eex.json"
+      },
+      {
+        "language": "HTML (Eex)",
+        "scopeName": "text.html.elixir",
+        "path": "./syntaxes/html (eex).json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "elixir",
+        "path": "./snippets/snippets.json"
+      }
+    ],
+    "breakpoints": [
+      {
+        "language": "elixir"
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "mix_task",
+        "label": "Mix Task",
+        "program": "./scripts/debug.sh",
+        "languages": ["elixir"],
+        "configurationAttributes": {
+          "launch": {
+            "required": ["projectDir"],
+            "properties": {
+              "task": {
+                "type": "string",
+                "description": "Mix task name (without arguments)",
+                "default": "run"
+              },
+              "taskArgs": {
+                "type": "array",
+                "description": "List of arguments for task",
+                "default": [],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "projectDir": {
+                "type": "string",
+                "description": "Project root directory (usually the workspace root)",
+                "default": "${workspaceRoot}"
+              },
+              "requireFiles": {
+                "type": "array",
+                "description": "Paths for any .exs files to interpret before debugging in the order they should be loaded. Accepts path wildcards",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stackTraceMode": {
+                "type": "string",
+                "description": ":int.stack_trace/1 option",
+                "enum": [
+                  "all",
+                  "no_tail",
+                  "false"
+                ],
+                "default": "no_tail"
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "mix_task",
+            "name": "mix (Default task)",
+            "request": "launch",
+            "projectDir": "${workspaceRoot}"
+          },
+          {
+            "type": "mix_task",
+            "name": "mix test",
+            "request": "launch",
+            "task": "test",
+            "taskArgs": ["--trace"],
+            "projectDir": "${workspaceRoot}",
+            "requireFiles": ["test/**/test_helper.exs", "test/**/*_test.exs"]
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "Elixir Mix",
+            "description": "Launch a Mix task",
+            "body": {
+              "type": "mix_task",
+              "request": "launch",
+              "name": "mix ${1:task}",
+              "task": "${1:task}",
+              "taskArgs": [],
+              "projectDir": "^\"\\${workspaceRoot}\""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "./build.sh",
+    "compile": "./build.sh",
+    "update-vscode": "node ./node_modules/vscode/bin/install",
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.33",
+    "@types/node": "^6.0.52",
+    "typescript": "^2.1.5",
+    "vscode": "^1.0.3"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^3.2.0"
+  }
+}

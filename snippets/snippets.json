@@ -1,0 +1,133 @@
+{
+	"case": {
+		"prefix": "case",
+		"body": "case $1 do\n\t$2 ->\n\t\t$0\nend",
+		"description": "case",
+		"scope": "source.elixir"
+	},
+	"cond": {
+		"prefix": "cond",
+		"body": "cond do\n\t$1 ->\n\t\t$0\nend",
+		"description": "cond",
+		"scope": "source.elixir"
+	},
+	"def": {
+		"prefix": "def",
+		"body": "def $1 do\n\t$0\nend",
+		"description": "def",
+		"scope": "source.elixir"
+	},
+	"test": {
+		"prefix": "test",
+		"body": "test $1 do\n\t$0\nend",
+		"description": "test",
+		"scope": "source.elixir"
+	},
+	"defc": {
+		"prefix": "defc",
+		"body": "defcallback $1 :: $0",
+		"description": "defcallback",
+		"scope": "source.elixir"
+	},
+	"defd": {
+		"prefix": "defd",
+		"body": "defdelegate $1 to: $0",
+		"description": "defdelegate",
+		"scope": "source.elixir"
+	},
+	"defe": {
+		"prefix": "defe",
+		"body": "defexception [${1::message}]",
+		"description": "defexception",
+		"scope": "source.elixir"
+	},
+	"defi": {
+		"prefix": "defi",
+		"body": "defimpl $1, for: $2 do\n  $0\nend",
+		"description": "defimpl",
+		"scope": "source.elixir"
+	},
+	"defm": {
+		"prefix": "defm",
+		"body": "defmacro $1 do\n\t$0\nend",
+		"description": "defmacro",
+		"scope": "source.elixir"
+	},
+	"defmc": {
+		"prefix": "defmc",
+		"body": "defmacrocallback $1 :: $0",
+		"description": "defmacrocallback",
+		"scope": "source.elixir"
+	},
+	"defmp": {
+		"prefix": "defmp",
+		"body": "defmacrop $1 do\n\t$0\nend",
+		"description": "defmacrop",
+		"scope": "source.elixir"
+	},
+	"defmod": {
+		"prefix": "defmod",
+		"body": "defmodule $1 do\n\t$0\nend",
+		"description": "defmodule",
+		"scope": "source.elixir"
+	},
+	"defp": {
+		"prefix": "defp",
+		"body": "defp $1 do\n\t$0\nend",
+		"description": "defp",
+		"scope": "source.elixir"
+	},
+	"defpro": {
+		"prefix": "defpro",
+		"body": "defprotocol $1 do\n  $0\nend",
+		"description": "defprotocol",
+		"scope": "source.elixir"
+	},
+	"defs": {
+		"prefix": "defs",
+		"body": "defstruct $1: $2",
+		"description": "defstruct",
+		"scope": "source.elixir"
+	},
+	"do": {
+		"prefix": "do",
+		"body": "do\n\t$0\nend",
+		"descripton": "do/end block",
+		"scope": "source.elixir"
+	},
+	"doc": {
+		"prefix": "doc",
+		"body": "@doc \"\"\"\n$0\n\"\"\"",
+		"description": "doc",
+		"scope": "source.elixir"
+	},
+	"i": {
+		"prefix": "i",
+		"body": "inspect($0)",
+		"description": "IO.inspect",
+		"scope": "source.elixir"
+	},
+	"ii": {
+		"prefix": "ii",
+		"body": "IO.inspect($0)",
+		"description": "IO.inspect",
+		"scope": "source.elixir"
+	},
+	"mdoc": {
+		"prefix": "mdoc",
+		"body": "@moduledoc \"\"\"\n$0\n\"\"\"",
+		"description": "moduledoc"
+	},
+	"rec": {
+		"prefix": "rec",
+		"body": "receive do\n\t${1:{${2::message_type}, ${3:value}\\}} ->\n    ${0:# code}\nend\n",
+		"description": "receive",
+		"scope": "source.elixir"
+	},
+	"req": {
+		"prefix": "req",
+		"body": "require $0",
+		"description": "require",
+		"scope": "source.elixir"
+	}
+}
