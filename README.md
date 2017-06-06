@@ -1,52 +1,43 @@
-# Elixir Language Server (ElixirLS)
+# ElixirLS: Elixir support and debugger for VS Code
 
-*This project is in early alpha. It has only been tested with Elixir 1.4 on OSX. Wider support is intended soon.*
+Provides Elixir language support and debugger. This extension is powered by the [Elixir Language Server (ElixirLS)](https://github.com/JakeBecker/elixir-ls), an Elixir implementation of Microsoft's IDE-agnostic [Language Server Protocol](https://github.com/Microsoft/language-server-protocol) and [VS Code debug protocol](https://code.visualstudio.com/docs/extensionAPI/api-debugging). Visit its page for more information. For a guide to debugger usage in Elixir, read [this blog post](https://medium.com/@JakeBeckerCode/debugging-elixir-in-vs-code).
 
-The Elixir Language Server provides a server that runs in the background, providing IDEs, editors, and other tools with information about Elixir Mix projects. It adheres to the [Language Server Protocol](https://github.com/Microsoft/language-server-protocol/blob/master/protocol.md), a standard supported by Microsoft and Red Hat for frontend-independant IDE support.
+**This is a very early release. It only works with Elixir 1.4, and it's only been tested on OSX. If all you want is a good, stable Elixir editor, stick with whatever you're using now until ElixirLS is more mature.**
 
 Features include:
 
-- Debugger support!!!
+- Debugger supporting line breakpoints
 - Inline reporting of build warnings and errors
 - Documentation lookup on hover
 - Go-to-definition
 - Code completion
 
-[screenshot]
+![Screenshot](images/screenshot.png?raw=true)
 
-ElixirLS is intended to be frontend-independent, but at this point has only been tested with VS Code. The VS Code plugin code is [here] and can be installed by searching "Elixir IDE" from the VS Code marketplace. The plugin repo includes this repository as a Git submodule -- if you want to try developing ElixirLS, the easiest way is to check out that repository and 
+## Contributing
 
-## Debugger support
+Most of the functionality of this extension comes from ElixirLS which is included as a Git submodule in the `elixir-ls` folder. Make sure you clone the repo using `git clone --recursive` or run `git submodule init && git submodule update` after cloning. To launch the extension from VS Code, run the "Launch Extension" launch config.
 
-ElixirLS includes debugger support adhering to the [VS Code debugger protocol](https://github.com/Microsoft/vscode/blob/master/src/vs/workbench/parts/debug/common/debugProtocol.d.ts) which is closely related to the Language Server Protocol. At the moment, only line breakpoints are supported.
-
-When debugging in Elixir or Erlang, only modules that have been "interpreted" (using `:int.ni/1` or `:int.i/1`) will accept breakpoints or show up in stack traces. The debugger in ElixirLS automatically interprets all modules in the Mix project and dependencies prior to launching the Mix task, so you can set breakpoints anywhere in your project or dependency modules.
-
-In order to debug modules in `.exs` files (such as tests), they must be specified under `requireFiles` in your launch configuration so they can be loaded and interpreted prior to running the task. For example, the default launch configuration for "mix test" in the VS Code plugin looks like this:
+Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to fork the [ElixirLS](https://github.com/JakeBecker/elixir-ls) repo on Github and push any changes you make to the ElixirLS submodule to your fork. An example of how that might look:
 
 ```
-{
-  "type": "mix_task",
-  "name": "mix test",
-  "request": "launch",
-  "task": "test",
-  "taskArgs": ["--trace"],
-  "projectDir": "${workspaceRoot}",
-  "requireFiles": [
-    "test/**/test_helper.exs",
-    "test/**/*_test.exs"
-  ]
-}
+# Clone this repo recursively to ensure you get the elixir-ls submodule
+git clone --recursive git@github.com:JakeBecker/vscode-elixir-ls.git
+
+# Enter the submodule directory. Now, if you run git commands, they run in the submodule
+cd vscode-elixir-ls/elixir-ls
+
+# Create your feature branch
+git checkout -b my_new_branch
+
+# Add your forked elixir-ls repository as a remote
+git remote add my_fork git@github.com:<your_github_username>/elixir-ls.git
+
+# Make changes in the elixir-ls folder, commit them, and push to your forked repo
+git commit ...
+git push my_fork my_new_branch
 ```
-
-## Automatic builds and error reporting
-
-In order to provide features like documentation look-up and code completion, ElixirLS needs to be able to load your project's compiled modules. ElixirLS attempts to compile your project automatically and reports build errors and warnings in the editor.
-
-At the moment, this compilation is performed using a fork of Elixir 1.4's compiler. This is somewhat brittle, and making it more robust is a high priority in the near future. To avoid interfering with the developer's CLI workflow, ElixirLS creates a folder `.elixir_ls` in the project root and saves its build output there, so add `.elixir_ls` to your gitignore file.
-
-Note that compiling untrusted Elixir files can be dangerous. Elixir can execute arbitrary code at compile time, which is how it can support such extensive metaprogramming. Consequently, compiling untrusted Elixir code is a lot like executing an untrusted script. Since ElixirLS compiles your code automatically, opening a project in an ElixirLS-enabled editor has the same risks as running `mix compile`. It's an unlikely attack vector, but worth being aware of.
 
 ## Acknowledgements and related projects
 
-ElixirLS isn't the first frontend-independant server for Elixir language support. The original was [Alchemist Server](https://github.com/tonini/alchemist-server/), which powers the Alchemist plugin for Emacs. Another project, [Elixir Sense](https://github.com/msaraiva/elixir_sense), builds upon Alchemist and powers the [Elixir plugin for Atom](https://github.com/msaraiva/atom-elixir) as well as [another VS Code plugin](). ElixirLS uses Elixir Sense for several code insight features under-the-hood. Credit for those projects goes to their respective authors.
+There is another VS Code extension for Elixir, [VSCode Elixir](https://github.com/fr1zle/vscode-elixir). It's powered by [Elixir Sense](https://github.com/msaraiva/elixir_sense), another language "smartness" server similar to ElixirLS. Much of this extension's client code (such as syntax highlighting) was copied directly from VSCode Elixir, for which they deserve all the credit.

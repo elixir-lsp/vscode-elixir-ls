@@ -11,7 +11,7 @@ import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, T
 
 export function activate(context: ExtensionContext) {
 
-	const serverPath = context.asAbsolutePath(path.join(".", "elixir_ls", "apps", "language_server"));
+	const serverPath = context.asAbsolutePath(path.join(".", "elixir-ls", "apps", "language_server"));
 	
 	// If the extension is launched in debug mode then the debug server options are used
 	// Otherwise the run options are used
@@ -37,7 +37,7 @@ export function activate(context: ExtensionContext) {
 	}
 	
 	// Create the language client and start the client.
-	let disposable = new LanguageClient('elixirIDE', 'Elixir IDE', serverOptions, clientOptions).start();
+	let disposable = new LanguageClient('ElixirLS', 'ElixirLS', serverOptions, clientOptions).start();
 	
 	// Push the disposable to the context's subscriptions so that the 
 	// client can be deactivated on extension deactivation

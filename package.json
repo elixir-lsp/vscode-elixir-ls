@@ -1,6 +1,9 @@
 {
   "name": "elixir-ls",
-  "description": "Elixir plugin with debugger support, autocomplete, and more. Powered by ElixirLS",
+  "displayName": "ElixirLS: Elixir support and debugger",
+  "homepage": "https://github.com/JakeBecker/elixir-ls",
+  "icon": "images/logo.png",
+  "description": "Elixir support with debugger, autocomplete, and more. Powered by ElixirLS.",
   "author": "Jake Becker",
   "license": "MIT",
   "publisher": "JakeBecker",
@@ -83,10 +86,14 @@
         "type": "mix_task",
         "label": "Mix Task",
         "program": "./scripts/debug.sh",
-        "languages": ["elixir"],
+        "languages": [
+          "elixir"
+        ],
         "configurationAttributes": {
           "launch": {
-            "required": ["projectDir"],
+            "required": [
+              "projectDir"
+            ],
             "properties": {
               "task": {
                 "type": "string",
@@ -138,9 +145,14 @@
             "name": "mix test",
             "request": "launch",
             "task": "test",
-            "taskArgs": ["--trace"],
+            "taskArgs": [
+              "--trace"
+            ],
             "projectDir": "${workspaceRoot}",
-            "requireFiles": ["test/**/test_helper.exs", "test/**/*_test.exs"]
+            "requireFiles": [
+              "test/**/test_helper.exs",
+              "test/**/*_test.exs"
+            ]
           }
         ],
         "configurationSnippets": [
