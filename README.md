@@ -12,7 +12,7 @@ Features include:
 - Go-to-definition
 - Code completion
 
-![Screenshot](images/screenshot.png?raw=true)
+![Screenshot](https://raw.githubusercontent.com/JakeBecker/elixir-ls/master/screenshot.png)
 
 ## Contributing
 
