@@ -1,3 +1,6 @@
 out
 node_modules
 *.vsix
+
+# We store the build artifacts from ElixirLS here
+/elixir-ls-release
