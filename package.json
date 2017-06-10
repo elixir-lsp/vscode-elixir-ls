@@ -85,7 +85,10 @@
             {
                 "type": "mix_task",
                 "label": "Mix Task",
-                "program": "./scripts/debug.sh",
+                "program": "elixir-ls-release/exscript.sh",
+                "args": [
+                    "./elixir-ls-release/debugger"
+                ],
                 "languages": [
                     "elixir"
                 ],

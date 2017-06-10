@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
-
-SCRIPTPATH=`dirname $0`
+SCRIPT=`realpath $0`
+SCRIPTPATH=`dirname $SCRIPT`
 
 # Compile typescript
 tsc -p ./
@@ -12,6 +12,9 @@ if [ ! -f "$SCRIPTPATH/elixir-ls/mix.exs" ]; then
 fi
 
 echo "Building ElixirLS submodule"
-cd "$SCRIPTPATH/elixir-ls"
-mix deps.get
-mix compile
+"$SCRIPTPATH"/elixir-ls/release.sh
+
+echo "Copy results into elixir-ls-release"
+rm -rf elixir-ls-release
+mkdir elixir-ls-release
+cp -r "$SCRIPTPATH"/elixir-ls/release/* elixir-ls-release

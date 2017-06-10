@@ -11,14 +11,15 @@ import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, T
 
 export function activate(context: ExtensionContext) {
 
-	const serverPath = context.asAbsolutePath(path.join(".", "elixir-ls", "apps", "language_server"));
-	
+	const releasePath = context.asAbsolutePath(path.join(".", "elixir-ls-release"));
+	const exscriptPath = path.join(releasePath, "exscript.sh")
+	const languageServerPath = path.join(releasePath, "language_server")
+
 	// If the extension is launched in debug mode then the debug server options are used
 	// Otherwise the run options are used
-	const args = ["run", "--no-halt", "--no-compile", "--no-deps-check"]
 	let serverOptions: ServerOptions = {
-		run: {command: "mix", args: args, options: {cwd: serverPath}},
-		debug: {command: "mix", args: args, options: {cwd: serverPath}},
+		run: {command: exscriptPath, args: [languageServerPath]},
+		debug: {command: exscriptPath, args: [languageServerPath]}
 	}
 	
 	// Options to control the language client

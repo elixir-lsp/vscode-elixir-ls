@@ -1,3 +1,4 @@
+elixir-ls/**
 .vscode/**
 typings/**
 out/test/**
