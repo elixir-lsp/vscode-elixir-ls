@@ -8,11 +8,13 @@ import * as path from 'path';
 
 import { workspace, Disposable, ExtensionContext } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
+import { platform } from 'os';
 
 export function activate(context: ExtensionContext) {
 
 	const releasePath = context.asAbsolutePath(path.join(".", "elixir-ls-release"));
-	const exscriptPath = path.join(releasePath, "exscript.sh")
+	const scriptName = platform() == "win32" ? "exscript.bat" : "exscript.sh";
+	const exscriptPath = path.join(releasePath, scriptName);
 	const languageServerPath = path.join(releasePath, "language_server")
 
 	// If the extension is launched in debug mode then the debug server options are used
