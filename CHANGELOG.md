@@ -1,3 +1,7 @@
+### v0.0.7: 12 Jun 2017
+  - Fix launching of debugger on OSX (when working directory is not set to the extension directory)
+  - Fix launching of language server when Elixir is installed with "asdf" tool. (Fix in 0.0.6 didn't actually work)
+
 ### v0.0.6: 12 Jun 2017
   - Handle Elixir installations that were done via the "asdf" tool
 
