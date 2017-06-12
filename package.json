@@ -89,12 +89,10 @@
                     "program": "elixir-ls-release/debugger.bat"
                 },
                 "linux":{
-                    "program": "elixir-ls-release/exscript.sh",
-                    "args": ["./elixir-ls-release/debugger"]
+                    "program": "elixir-ls-release/debugger.sh"
                 },
                 "osx": {
-                    "program": "elixir-ls-release/exscript.sh",
-                    "args": ["./elixir-ls-release/debugger"]
+                    "program": "elixir-ls-release/debugger.sh"
                 },
                 "languages": [
                     "elixir"
