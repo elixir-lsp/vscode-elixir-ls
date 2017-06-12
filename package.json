@@ -7,7 +7,7 @@
     "author": "Jake Becker",
     "license": "MIT",
     "publisher": "JakeBecker",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "engines": {
         "vscode": "^1.8.0"
     },
@@ -85,10 +85,17 @@
             {
                 "type": "mix_task",
                 "label": "Mix Task",
-                "program": "elixir-ls-release/exscript.sh",
-                "args": [
-                    "./elixir-ls-release/debugger"
-                ],
+                "windows":{
+                    "program": "elixir-ls-release/debugger.bat"
+                },
+                "linux":{
+                    "program": "elixir-ls-release/exscript.sh",
+                    "args": ["./elixir-ls-release/debugger"]
+                },
+                "osx": {
+                    "program": "elixir-ls-release/exscript.sh",
+                    "args": ["./elixir-ls-release/debugger"]
+                },
                 "languages": [
                     "elixir"
                 ],
