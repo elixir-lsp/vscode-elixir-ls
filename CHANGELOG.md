@@ -1,3 +1,6 @@
+### v0.0.6: 12 Jun 2017
+  - Handle Elixir installations that were done via the "asdf" tool
+
 ### v0.0.5: 11 Jun 2017
   - Windows support
 
