@@ -1,3 +1,7 @@
+### v0.0.9: 23 Jun 2017
+  - Revert to building with Erlang OTP 19.2 instead of 20.0. It seems that escripts built with 20.0 won't run on 19.2 runtimes.
+  - Fix handling of Windows paths with non-default drive letter
+
 ### v0.0.8: 23 Jun 2017
   - Enable setting breakpoints in Erlang modules
 
