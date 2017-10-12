@@ -1,3 +1,9 @@
+### v0.2.0: 17 Oct 2017
+  - Rewritten build system to make use of Elixir 1.6 compiler diagnostics
+  - Code formatting in Elixir 1.6
+  - Automatic dialyzer server in Erlang/OTP 20
+  - Lots and lots of refactoring
+
 ### v0.0.9: 23 Jun 2017
   - Revert to building with Erlang OTP 19.2 instead of 20.0. It seems that escripts built with 20.0 won't run on 19.2 runtimes.
   - Fix handling of Windows paths with non-default drive letter
