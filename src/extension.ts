@@ -20,15 +20,14 @@ export function activate(context: ExtensionContext) {
   const releasePath = context.asAbsolutePath(
     path.join(".", "elixir-ls-release")
   );
-  const scriptName = platform() == "win32" ? "exscript.bat" : "exscript.sh";
-  const exscriptPath = path.join(releasePath, scriptName);
-  const languageServerPath = path.join(releasePath, "language_server");
+  const command = platform() == "win32" ? "exscript.bat" : "./exscript.sh";
+  const languageServerEscript = "language_server";
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
   let serverOptions: ServerOptions = {
-    run: { command: exscriptPath, args: [languageServerPath] },
-    debug: { command: exscriptPath, args: [languageServerPath] }
+    run: { command: command, args: [languageServerEscript], options: {cwd: releasePath} },
+    debug: { command: command, args: [languageServerEscript], options: {cwd: releasePath} }
   };
 
   // Options to control the language client
