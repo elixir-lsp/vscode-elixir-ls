@@ -1,3 +1,8 @@
+### v0.2.1: 19 Oct 2017
+  - Fix bug where deps are recompiled after every change
+  - Update README
+  - Update syntax highlighting (merged from fr1zle/vscode-elixir)
+
 ### v0.2.0: 17 Oct 2017
   - Rewritten build system to make use of Elixir 1.6 compiler diagnostics
   - Code formatting in Elixir 1.6

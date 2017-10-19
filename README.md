@@ -2,17 +2,27 @@
 
 Provides Elixir language support and debugger. This extension is powered by the [Elixir Language Server (ElixirLS)](https://github.com/JakeBecker/elixir-ls), an Elixir implementation of Microsoft's IDE-agnostic [Language Server Protocol](https://github.com/Microsoft/language-server-protocol) and [VS Code debug protocol](https://code.visualstudio.com/docs/extensionAPI/api-debugging). Visit its page for more information. For a guide to debugger usage in Elixir, read [this blog post](https://medium.com/@JakeBeckerCode/debugging-elixir-in-vs-code-400e21814614).
 
-**This is a very early release and is not yet stable. If all you want is a good, stable Elixir editor, stick with whatever you're using now until ElixirLS is more mature.**
-
 Features include:
 
-- Debugger supporting line breakpoints
-- Inline reporting of build warnings and errors
+- Debugger support (requires Erlang >= OTP 19)
+- Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
+- Inline reporting of build warnings and errors (requires Elixir >= 1.6)
 - Documentation lookup on hover
 - Go-to-definition
 - Code completion
+- Code formatter (requires Elixir >= 1.6)
 
-![Screenshot](https://raw.githubusercontent.com/JakeBecker/elixir-ls/master/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/JakeBecker/elixir-ls/master/images/screenshot.png)
+
+## Supported versions
+
+Elixir:
+- 1.3 minimum
+- \>= 1.6.0-dev recommended. Required for reporting of build warnings and errors, and for code formatting support.
+
+Erlang:
+- OTP 18 minimum
+- OTP 20 recommended. >= OTP 19 is required for debugger support, and OTP 20 is recommended for automatic incremental Dialyzer integration.
 
 ## Contributing
 
