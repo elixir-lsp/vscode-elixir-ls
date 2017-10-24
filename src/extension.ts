@@ -5,6 +5,9 @@
 "use strict";
 
 import * as path from "path";
+import * as shell from "shelljs";
+import findErlLibs from "./findErlLibs";
+import * as vscode from 'vscode';
 
 import { workspace, Disposable, ExtensionContext } from "vscode";
 import {
@@ -17,17 +20,19 @@ import {
 import { platform } from "os";
 
 export function activate(context: ExtensionContext) {
-  const releasePath = context.asAbsolutePath(
-    path.join(".", "elixir-ls-release")
-  );
-  const command = platform() == "win32" ? "exscript.bat" : "./exscript.sh";
-  const languageServerEscript = "language_server";
+  process.env.ERL_LIBS = findErlLibs(context.asAbsolutePath("."));
+  const mixPath = shell.which("mix").toString();
+
+  const serverOpts = {
+    command: mixPath,
+    args: ["elixir_ls.language_server"],
+  };
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
   let serverOptions: ServerOptions = {
-    run: { command: command, args: [languageServerEscript], options: {cwd: releasePath} },
-    debug: { command: command, args: [languageServerEscript], options: {cwd: releasePath} }
+    run: serverOpts,
+    debug: serverOpts
   };
 
   // Options to control the language client
