@@ -1,3 +1,10 @@
+### v0.2.3: 24 Oct 2017
+  - Fix failing debugger launch
+  - Fix segfaults in OTP 20 caused by regexes precompiled in OTP 19
+
+### v0.2.2: 19 Oct 2017
+  - Fix launch on Windows when there are spaces in the path
+
 ### v0.2.1: 19 Oct 2017
   - Fix bug where deps are recompiled after every change
   - Update README
