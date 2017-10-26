@@ -1,3 +1,8 @@
+### v0.2.4: 25 Oct 2017
+  - Package ElixirLS as .ez archives instead of escripts. This should make `asdf` installs work.
+  - Fix debugger error logging when initialize fails
+  - Fix timeouts when calling back into the language server with build or dialyzer results
+
 ### v0.2.3: 24 Oct 2017
   - Fix failing debugger launch
   - Fix segfaults in OTP 20 caused by regexes precompiled in OTP 19
