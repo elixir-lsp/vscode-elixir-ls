@@ -1,3 +1,6 @@
+### v0.2.5: 25 Oct 2017
+  - Improve error output in debugger and fix failures to launch debugger
+
 ### v0.2.4: 25 Oct 2017
   - Package ElixirLS as .ez archives instead of escripts. This should make `asdf` installs work.
   - Fix debugger error logging when initialize fails
