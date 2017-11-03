@@ -13,6 +13,7 @@ import { workspace, Disposable, ExtensionContext } from "vscode";
 import {
   LanguageClient,
   LanguageClientOptions,
+  RevealOutputChannelOn,
   SettingMonitor,
   ServerOptions,
   TransportKind
@@ -39,6 +40,8 @@ export function activate(context: ExtensionContext) {
   let clientOptions: LanguageClientOptions = {
     // Register the server for Elixir documents
     documentSelector: ["elixir"],
+    // Don't focus the Output pane on errors because request handler errors are no big deal
+    revealOutputChannelOn: RevealOutputChannelOn.Never,
     synchronize: {
       // Synchronize the setting section 'elixirLS' to the server
       configurationSection: "elixirLS",
