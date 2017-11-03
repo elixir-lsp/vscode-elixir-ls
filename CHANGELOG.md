@@ -1,4 +1,4 @@
-### v0.2.5: 25 Oct 2017
+### v0.2.5: 3 Nov 2017
   - Improve error output in debugger and fix failures to launch debugger
 
 ### v0.2.4: 25 Oct 2017
