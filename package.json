@@ -7,7 +7,8 @@
     "url": "https://github.com/JakeBecker/vscode-elixir-ls.git"
   },
   "icon": "images/logo.png",
-  "description": "Elixir support with debugger, autocomplete, and more. Powered by ElixirLS.",
+  "description":
+    "Elixir support with debugger, autocomplete, and more. Powered by ElixirLS.",
   "author": "Jake Becker",
   "license": "MIT",
   "publisher": "JakeBecker",
@@ -15,13 +16,8 @@
   "engines": {
     "vscode": "^1.8.0"
   },
-  "categories": [
-    "Languages",
-    "Debuggers"
-  ],
-  "activationEvents": [
-    "onLanguage:elixir"
-  ],
+  "categories": ["Languages", "Debuggers"],
+  "activationEvents": ["onLanguage:elixir"],
   "main": "./out/src/extension",
   "contributes": {
     "configuration": {
@@ -33,7 +29,8 @@
           "description": "Run ElixirLS's rapid Dialyzer when code is saved"
         },
         "elixirLS.dialyzerWarnOpts": {
-          "description": "Dialyzer options to enable or disable warnings. See Dialyzer's documentation for options. Note that the \"race_conditions\" option is unsupported",
+          "description":
+            "Dialyzer options to enable or disable warnings. See Dialyzer's documentation for options. Note that the \"race_conditions\" option is unsupported",
           "type": "array",
           "uniqueItems": true,
           "items": {
@@ -70,34 +67,19 @@
     "languages": [
       {
         "id": "elixir",
-        "aliases": [
-          "Elixir",
-          "elixir"
-        ],
-        "extensions": [
-          ".ex",
-          ".exs"
-        ],
+        "aliases": ["Elixir", "elixir"],
+        "extensions": [".ex", ".exs"],
         "configuration": "./elixir.configuration.json"
       },
       {
         "id": "Eex",
-        "aliases": [
-          "Eex",
-          "eex"
-        ],
-        "extensions": [
-          ".eex"
-        ]
+        "aliases": ["Eex", "eex"],
+        "extensions": [".eex"]
       },
       {
         "id": "HTML (Eex)",
-        "aliases": [
-          "HTML (Eex)"
-        ],
-        "extensions": [
-          ".html.eex"
-        ]
+        "aliases": ["HTML (Eex)"],
+        "extensions": [".html.eex"]
       }
     ],
     "grammars": [
@@ -141,14 +123,10 @@
         "osx": {
           "program": "scripts/debugger.sh"
         },
-        "languages": [
-          "elixir"
-        ],
+        "languages": ["elixir"],
         "configurationAttributes": {
           "launch": {
-            "required": [
-              "projectDir"
-            ],
+            "required": ["projectDir"],
             "properties": {
               "task": {
                 "type": "string",
@@ -165,12 +143,14 @@
               },
               "projectDir": {
                 "type": "string",
-                "description": "Project root directory (usually the workspace root)",
+                "description":
+                  "Project root directory (usually the workspace root)",
                 "default": "${workspaceRoot}"
               },
               "requireFiles": {
                 "type": "array",
-                "description": "Paths for any .exs files to interpret before debugging in the order they should be loaded. Accepts path wildcards",
+                "description":
+                  "Paths for any .exs files to interpret before debugging in the order they should be loaded. Accepts path wildcards",
                 "items": {
                   "type": "string"
                 }
@@ -178,11 +158,7 @@
               "stackTraceMode": {
                 "type": "string",
                 "description": ":int.stack_trace/1 option",
-                "enum": [
-                  "all",
-                  "no_tail",
-                  "false"
-                ],
+                "enum": ["all", "no_tail", "false"],
                 "default": "no_tail"
               }
             }
@@ -200,14 +176,9 @@
             "name": "mix test",
             "request": "launch",
             "task": "test",
-            "taskArgs": [
-              "--trace"
-            ],
+            "taskArgs": ["--trace"],
             "projectDir": "${workspaceRoot}",
-            "requireFiles": [
-              "test/**/test_helper.exs",
-              "test/**/*_test.exs"
-            ]
+            "requireFiles": ["test/**/test_helper.exs", "test/**/*_test.exs"]
           }
         ],
         "configurationSnippets": [
@@ -228,8 +199,10 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "tsc -p ./ && cd elixir-ls && mix release -o ../elixir-ls-release",
-    "compile": "tsc -p ./ && cd elixir-ls && mix release -o ../elixir-ls-release",
+    "vscode:prepublish":
+      "tsc -p ./ && cd elixir-ls && mix release -o ../elixir-ls-release",
+    "compile":
+      "tsc -p ./ && cd elixir-ls && mix release -o ../elixir-ls-release",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
