@@ -7,7 +7,7 @@
 import * as path from "path";
 import * as shell from "shelljs";
 import findErlLibs from "./findErlLibs";
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 import { workspace, Disposable, ExtensionContext } from "vscode";
 import {
@@ -25,7 +25,7 @@ export function activate(context: ExtensionContext) {
 
   const serverOpts = {
     command: mixPath,
-    args: ["elixir_ls.language_server"],
+    args: ["elixir_ls.language_server"]
   };
 
   // If the extension is launched in debug mode then the debug server options are used
