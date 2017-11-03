@@ -1,3 +1,6 @@
+### v0.2.6: 3 Nov 2017
+  - Don't focus Output pane on errors because request handler errors are common and recoverable
+
 ### v0.2.5: 3 Nov 2017
   - Improve error output in debugger and fix failures to launch debugger
 
