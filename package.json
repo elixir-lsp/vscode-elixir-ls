@@ -56,11 +56,6 @@
             ]
           },
           "default": []
-        },
-        "elixirLS.formatterLineLength": {
-          "description": "Target line length for code formatter",
-          "type": "integer",
-          "default": 98
         }
       }
     },
