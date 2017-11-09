@@ -12,7 +12,7 @@
   "author": "Jake Becker",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "engines": {
     "vscode": "^1.8.0"
   },
@@ -56,11 +56,6 @@
             ]
           },
           "default": []
-        },
-        "elixirLS.formatterLineLength": {
-          "description": "Target line length for code formatter",
-          "type": "integer",
-          "default": 98
         }
       }
     },
