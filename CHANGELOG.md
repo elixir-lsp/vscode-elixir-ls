@@ -1,3 +1,6 @@
+### v0.2.7: 9 Nov 2017
+  - Read formatter options from `.formatter.exs` in project root instead of including line length in extension config options
+
 ### v0.2.6: 3 Nov 2017
   - Don't focus Output pane on errors because request handler errors are common and recoverable
 
