@@ -12,7 +12,7 @@
   "author": "Jake Becker",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "engines": {
     "vscode": "^1.8.0"
   },
@@ -20,6 +20,11 @@
   "activationEvents": ["onLanguage:elixir"],
   "main": "./out/src/extension",
   "contributes": {
+    "configurationDefaults": {
+      "[elixir]": {
+        "editor.quickSuggestions": false
+      }
+    },
     "configuration": {
       "title": "ElixirLS configuration",
       "properties": {
@@ -56,6 +61,18 @@
             ]
           },
           "default": []
+        },
+        "elixirLS.mixEnv": {
+          "type": "string",
+          "description": "Mix environment to use for compilation",
+          "default": "test",
+          "minLength": 1
+        },
+        "elixirLS.projectDir": {
+          "type": "string",
+          "description":
+            "Subdirectory containing Mix project if not in the project root",
+          "minLength": 1
         }
       }
     },
@@ -136,11 +153,31 @@
                   "type": "string"
                 }
               },
+              "env": {
+                "type": "object",
+                "description":
+                  "Environment variables to set before debugging. You may want to set MIX_ENV in here."
+              },
               "projectDir": {
                 "type": "string",
                 "description":
                   "Project root directory (usually the workspace root)",
                 "default": "${workspaceRoot}"
+              },
+              "startApps": {
+                "type": "boolean",
+                "description":
+                  "Run apps.start before requiring files. This should be set to true for Phoenix tests, but false in most other cases"
+              },
+              "excludeModules": {
+                "type": "array",
+                "description":
+                  "Names of modules not to interpret. If a module contains NIFs, you should exclude it. Examples: Some.Module, :erlang_module",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
               },
               "requireFiles": {
                 "type": "array",
@@ -172,6 +209,7 @@
             "request": "launch",
             "task": "test",
             "taskArgs": ["--trace"],
+            "startApps": true,
             "projectDir": "${workspaceRoot}",
             "requireFiles": ["test/**/test_helper.exs", "test/**/*_test.exs"]
           }

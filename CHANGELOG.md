@@ -1,3 +1,11 @@
+### v0.2.8: 29 Nov 2017
+  - Add auto-indentation rules (copied from [fr1zle/vscode-elixir](https://github.com/fr1zle/vscode-elixir))
+  - Disable `editor.quickSuggestions` by default so autocomplete suggestions are triggered automatically only when after a ".". This is nice because the language server irritatingly tries to auto-complete things like "do" or "else" if they come at the end of a line.
+  - Add configuration option "mixEnv" to set the Mix environment used when compiling. It now defaults to "test" instead of "dev" to aid in TDD and to avoid interfering with the Phoenix dev server.
+  - Add configuration option "projectDir" for when your Mix project is in a subdirectory instead of the workspace root.
+  - Add debug launch configuration option "env" to set environment variables (including `MIX_ENV`)
+  - Add debug launch configuration option "excludeModules" to avoid interpreting modules. This is important if for modules that contain NIFs which can't be debugged.
+
 ### v0.2.7: 9 Nov 2017
   - Read formatter options from `.formatter.exs` in project root instead of including line length in extension config options
 
