@@ -8,6 +8,7 @@ import * as path from "path";
 import * as shell from "shelljs";
 import findErlLibs from "./findErlLibs";
 import * as vscode from "vscode";
+import { configuration } from "./configuration";
 
 import { workspace, Disposable, ExtensionContext } from "vscode";
 import {
@@ -63,4 +64,8 @@ export function activate(context: ExtensionContext) {
   // Push the disposable to the context's subscriptions so that the
   // client can be deactivated on extension deactivation
   context.subscriptions.push(disposable);
+
+  context.subscriptions.push(
+    vscode.languages.setLanguageConfiguration("elixir", configuration)
+  );
 }
