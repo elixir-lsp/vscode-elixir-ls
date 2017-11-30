@@ -1,3 +1,7 @@
+### v0.2.9: 29 Nov 2017
+
+* Fix autocomplete not firing after "."
+
 ### v0.2.8: 29 Nov 2017
 
 * Add auto-indentation rules (copied from
