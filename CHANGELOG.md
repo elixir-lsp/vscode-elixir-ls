@@ -1,3 +1,6 @@
+### v0.2.10: 24 Jan 2017
+* Fix builds and related features on Windows
+
 ### v0.2.9: 29 Nov 2017
 
 * Fix autocomplete not firing after "."

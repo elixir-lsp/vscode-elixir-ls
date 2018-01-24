@@ -7,17 +7,21 @@
     "url": "https://github.com/JakeBecker/vscode-elixir-ls.git"
   },
   "icon": "images/logo.png",
-  "description":
-    "Elixir support with debugger, autocomplete, and more. Powered by ElixirLS.",
+  "description": "Elixir support with debugger, autocomplete, and more. Powered by ElixirLS.",
   "author": "Jake Becker",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "engines": {
     "vscode": "^1.8.0"
   },
-  "categories": ["Languages", "Debuggers"],
-  "activationEvents": ["onLanguage:elixir"],
+  "categories": [
+    "Languages",
+    "Debuggers"
+  ],
+  "activationEvents": [
+    "onLanguage:elixir"
+  ],
   "main": "./out/src/extension",
   "contributes": {
     "configurationDefaults": {
@@ -34,8 +38,7 @@
           "description": "Run ElixirLS's rapid Dialyzer when code is saved"
         },
         "elixirLS.dialyzerWarnOpts": {
-          "description":
-            "Dialyzer options to enable or disable warnings. See Dialyzer's documentation for options. Note that the \"race_conditions\" option is unsupported",
+          "description": "Dialyzer options to enable or disable warnings. See Dialyzer's documentation for options. Note that the \"race_conditions\" option is unsupported",
           "type": "array",
           "uniqueItems": true,
           "items": {
@@ -70,8 +73,7 @@
         },
         "elixirLS.projectDir": {
           "type": "string",
-          "description":
-            "Subdirectory containing Mix project if not in the project root",
+          "description": "Subdirectory containing Mix project if not in the project root",
           "minLength": 1
         }
       }
@@ -79,19 +81,34 @@
     "languages": [
       {
         "id": "elixir",
-        "aliases": ["Elixir", "elixir"],
-        "extensions": [".ex", ".exs"],
+        "aliases": [
+          "Elixir",
+          "elixir"
+        ],
+        "extensions": [
+          ".ex",
+          ".exs"
+        ],
         "configuration": "./elixir.configuration.json"
       },
       {
         "id": "Eex",
-        "aliases": ["Eex", "eex"],
-        "extensions": [".eex"]
+        "aliases": [
+          "Eex",
+          "eex"
+        ],
+        "extensions": [
+          ".eex"
+        ]
       },
       {
         "id": "HTML (Eex)",
-        "aliases": ["HTML (Eex)"],
-        "extensions": [".html.eex"]
+        "aliases": [
+          "HTML (Eex)"
+        ],
+        "extensions": [
+          ".html.eex"
+        ]
       }
     ],
     "grammars": [
@@ -135,10 +152,14 @@
         "osx": {
           "program": "scripts/debugger.sh"
         },
-        "languages": ["elixir"],
+        "languages": [
+          "elixir"
+        ],
         "configurationAttributes": {
           "launch": {
-            "required": ["projectDir"],
+            "required": [
+              "projectDir"
+            ],
             "properties": {
               "task": {
                 "type": "string",
@@ -155,24 +176,20 @@
               },
               "env": {
                 "type": "object",
-                "description":
-                  "Environment variables to set before debugging. You may want to set MIX_ENV in here."
+                "description": "Environment variables to set before debugging. You may want to set MIX_ENV in here."
               },
               "projectDir": {
                 "type": "string",
-                "description":
-                  "Project root directory (usually the workspace root)",
+                "description": "Project root directory (usually the workspace root)",
                 "default": "${workspaceRoot}"
               },
               "startApps": {
                 "type": "boolean",
-                "description":
-                  "Run apps.start before requiring files. This should be set to true for Phoenix tests, but false in most other cases"
+                "description": "Run apps.start before requiring files. This should be set to true for Phoenix tests, but false in most other cases"
               },
               "excludeModules": {
                 "type": "array",
-                "description":
-                  "Names of modules not to interpret. If a module contains NIFs, you should exclude it. Examples: Some.Module, :erlang_module",
+                "description": "Names of modules not to interpret. If a module contains NIFs, you should exclude it. Examples: Some.Module, :erlang_module",
                 "items": {
                   "type": "string",
                   "minLength": 1
@@ -181,8 +198,7 @@
               },
               "requireFiles": {
                 "type": "array",
-                "description":
-                  "Paths for any .exs files to interpret before debugging in the order they should be loaded. Accepts path wildcards",
+                "description": "Paths for any .exs files to interpret before debugging in the order they should be loaded. Accepts path wildcards",
                 "items": {
                   "type": "string"
                 }
@@ -190,7 +206,11 @@
               "stackTraceMode": {
                 "type": "string",
                 "description": ":int.stack_trace/1 option",
-                "enum": ["all", "no_tail", "false"],
+                "enum": [
+                  "all",
+                  "no_tail",
+                  "false"
+                ],
                 "default": "no_tail"
               }
             }
@@ -208,10 +228,15 @@
             "name": "mix test",
             "request": "launch",
             "task": "test",
-            "taskArgs": ["--trace"],
+            "taskArgs": [
+              "--trace"
+            ],
             "startApps": true,
             "projectDir": "${workspaceRoot}",
-            "requireFiles": ["test/**/test_helper.exs", "test/**/*_test.exs"]
+            "requireFiles": [
+              "test/**/test_helper.exs",
+              "test/**/*_test.exs"
+            ]
           }
         ],
         "configurationSnippets": [
@@ -232,10 +257,8 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish":
-      "tsc -p ./ && cd elixir-ls && mix release -o ../elixir-ls-release",
-    "compile":
-      "tsc -p ./ && cd elixir-ls && mix release -o ../elixir-ls-release",
+    "vscode:prepublish": "tsc -p ./ && cd elixir-ls && mix release -o ../elixir-ls-release",
+    "compile": "tsc -p ./ && cd elixir-ls && mix release -o ../elixir-ls-release",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
