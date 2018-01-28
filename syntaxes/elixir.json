@@ -10,16 +10,12 @@
   "name": "Elixir",
   "patterns": [
     {
-      "captures": {
-        "1": {
-          "name": "keyword.control.module.elixir"
-        },
-        "2": {
-          "name": "entity.name.type.module.elixir"
-        }
-      },
-      "match": "^\\s*(defmodule)\\s+(([A-Z]\\w*\\s*(\\.)\\s*)*[A-Z]\\w*)",
-      "name": "meta.module.elixir"
+      "match": "^\\s*(defmodule)\\s+",
+      "name": "keyword.control.module.elixir"
+    },
+    {
+      "match": "([A-Z]\\w*\\s*(\\.)\\s*)*[A-Z]\\w*",
+      "name": "entity.name.type.module.elixir"
     },
     {
       "begin": "@(module|type)?doc (~s)?\"\"\"",
@@ -105,17 +101,14 @@
       "name": "constant.other.symbol.elixir"
     },
     {
-      "match": "(?<!\\.)\\b(do|end|case|bc|lc|for|if|cond|with|unless|try|receive|fn|defmodule|defprotocol|defimpl|defrecordp?|defstruct|defdelegate|defcallback|defexception|defoverridable|exit|after|rescue|catch|else|raise|throw|quote|unquote|super|when|and|or|not|in)\\b(?![?!])",
+      "match": "(?<!\\.)\\b(do|end|case|bc|lc|for|if|cond|with|unless|try|receive|fn|defmodule|defprotocol|defp?|defmacrop?|defimpl|defrecordp?|defstruct|defdelegate|defcallback|defexception|defoverridable|exit|after|rescue|catch|else|raise|throw|quote|unquote|super|when|and|or|not|in)\\b(?![?!])",
       "name": "keyword.control.elixir"
     },
     {
       "comment": "Function with parameters",
-      "begin": "\\b(defp?|defmacrop?)\\b\\s*([_$a-z][$\\w]*[!?]?)\\s*\\(",
+      "begin": "([_$a-z][$\\w]*[!?]?)\\s*\\(",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.elixir"
-        },
-        "2": {
           "name": "entity.name.function.elixir"
         }
       },
@@ -2054,7 +2047,7 @@
     },
     {
       "comment": "matches: | ++ -- ** \\ <- <> << >> :: .. |> => -> <|> <~> <~ <<~ ~> ~>>",
-      "match": "\\+\\+|\\-\\-|\\*\\*|\\\\\\\\|\\<\\-|<\\<\\~|\\<\\>|\\<\\<|\\>\\>|\\:\\:|\\.\\.|\\|>|=>|<\\|\\>|<~>|->|~>>|~>|<~|(?<!\\|)\\|(?!\\|)",
+      "match": "&|\\+\\+|\\-\\-|\\*\\*|\\\\\\\\|\\<\\-|<\\<\\~|\\<\\>|\\<\\<|\\>\\>|\\:\\:|\\.\\.|\\|>|=>|<\\|\\>|<~>|->|~>>|~>|<~|(?<!\\|)\\|(?!\\|)",
       "name": "keyword.operator.other.elixir"
     },
     {
