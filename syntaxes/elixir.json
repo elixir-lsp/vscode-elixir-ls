@@ -10,10 +10,12 @@
   "name": "Elixir",
   "patterns": [
     {
+      "comment": "defmodule keyword",
       "match": "^\\s*(defmodule)\\s+",
       "name": "keyword.control.module.elixir"
     },
     {
+      "comment": "module name",
       "match": "([A-Z]\\w*\\s*(\\.)\\s*)*[A-Z]\\w*",
       "name": "entity.name.type.module.elixir"
     },
@@ -2046,7 +2048,7 @@
       "name": "keyword.operator.bitwise.elixir"
     },
     {
-      "comment": "matches: | ++ -- ** \\ <- <> << >> :: .. |> => -> <|> <~> <~ <<~ ~> ~>>",
+      "comment": "matches: & | ++ -- ** \\ <- <> << >> :: .. |> => -> <|> <~> <~ <<~ ~> ~>>",
       "match": "&|\\+\\+|\\-\\-|\\*\\*|\\\\\\\\|\\<\\-|<\\<\\~|\\<\\>|\\<\\<|\\>\\>|\\:\\:|\\.\\.|\\|>|=>|<\\|\\>|<~>|->|~>>|~>|<~|(?<!\\|)\\|(?!\\|)",
       "name": "keyword.operator.other.elixir"
     },
