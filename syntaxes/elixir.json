@@ -10,16 +10,14 @@
   "name": "Elixir",
   "patterns": [
     {
-      "captures": {
-        "1": {
-          "name": "keyword.control.module.elixir"
-        },
-        "2": {
-          "name": "entity.name.type.module.elixir"
-        }
-      },
-      "match": "^\\s*(defmodule)\\s+(([A-Z]\\w*\\s*(\\.)\\s*)*[A-Z]\\w*)",
-      "name": "meta.module.elixir"
+      "comment": "defmodule keyword",
+      "match": "^\\s*(defmodule)\\s+",
+      "name": "keyword.control.module.elixir"
+    },
+    {
+      "comment": "module name",
+      "match": "([A-Z]\\w*\\s*(\\.)\\s*)*[A-Z]\\w*",
+      "name": "entity.name.type.module.elixir"
     },
     {
       "begin": "@(module|type)?doc (~s)?\"\"\"",
@@ -105,17 +103,26 @@
       "name": "constant.other.symbol.elixir"
     },
     {
-      "match": "(?<!\\.)\\b(do|end|case|bc|lc|for|if|cond|with|unless|try|receive|fn|defmodule|defprotocol|defimpl|defrecordp?|defstruct|defdelegate|defcallback|defexception|defoverridable|exit|after|rescue|catch|else|raise|throw|quote|unquote|super|when|and|or|not|in)\\b(?![?!])",
-      "name": "keyword.control.elixir"
-    },
-    {
-      "comment": "Function with parameters",
-      "begin": "\\b(defp?|defmacrop?)\\b\\s*([_$a-z][$\\w]*[!?]?)\\s*\\(",
-      "beginCaptures": {
+      "comment": "Function without parameters",
+      "match": "\\b(defp?|defmacrop?)\\b\\s*([_$a-z][$\\w]*[!?]?)",
+      "captures": {
         "1": {
           "name": "keyword.control.elixir"
         },
         "2": {
+          "name": "entity.name.function.elixir"
+        }
+      }
+    },
+    {
+      "match": "(?<!\\.)\\b(do|end|case|bc|lc|for|if|cond|with|unless|try|receive|fn|defmodule|defprotocol|defp?|defmacrop?|defimpl|defrecordp?|defstruct|defdelegate|defcallback|defexception|defoverridable|exit|after|rescue|catch|else|raise|throw|quote|unquote|super|when|and|or|not|in)\\b(?![?!])",
+      "name": "keyword.control.elixir"
+    },
+    {
+      "comment": "Function with parameters",
+      "begin": "([_$a-z][$\\w]*[!?]?)\\s*\\(",
+      "beginCaptures": {
+        "1": {
           "name": "entity.name.function.elixir"
         }
       },
@@ -128,18 +135,6 @@
           "include": "#function_parameter"
         }
       ]
-    },
-    {
-      "comment": "Function without parameters",
-      "match": "\\b(defp?|defmacrop?)\\b\\s*([_$a-z][$\\w]*[!?]?)",
-      "captures": {
-        "1": {
-          "name": "keyword.control.elixir"
-        },
-        "2": {
-          "name": "entity.name.function.elixir"
-        }
-      }
     },
     {
       "comment": " as above, just doesn't need a 'end' and does a logic operation",
@@ -2053,8 +2048,8 @@
       "name": "keyword.operator.bitwise.elixir"
     },
     {
-      "comment": "matches: | ++ -- ** \\ <- <> << >> :: .. |> => -> <|> <~> <~ <<~ ~> ~>>",
-      "match": "\\+\\+|\\-\\-|\\*\\*|\\\\\\\\|\\<\\-|<\\<\\~|\\<\\>|\\<\\<|\\>\\>|\\:\\:|\\.\\.|\\|>|=>|<\\|\\>|<~>|->|~>>|~>|<~|(?<!\\|)\\|(?!\\|)",
+      "comment": "matches: & | ++ -- ** \\ <- <> << >> :: .. |> => -> <|> <~> <~ <<~ ~> ~>>",
+      "match": "&|\\+\\+|\\-\\-|\\*\\*|\\\\\\\\|\\<\\-|<\\<\\~|\\<\\>|\\<\\<|\\>\\>|\\:\\:|\\.\\.|\\|>|=>|<\\|\\>|<~>|->|~>>|~>|<~|(?<!\\|)\\|(?!\\|)",
       "name": "keyword.operator.other.elixir"
     },
     {
