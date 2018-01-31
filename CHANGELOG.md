@@ -1,3 +1,6 @@
+### v0.2.11: 31 Jan 2017
+* Improve syntax highlighting (Thanks to @TeeSeal)
+
 ### v0.2.10: 24 Jan 2017
 * Fix builds and related features on Windows
 
