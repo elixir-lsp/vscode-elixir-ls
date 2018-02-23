@@ -17,8 +17,8 @@ Features include:
 ## Supported versions
 
 Elixir:
-- 1.3 minimum
-- \>= 1.6.0-dev recommended. Required for reporting of build warnings and errors, and for code formatting support.
+- 1.4 minimum
+- \>= 1.6 recommended. Required for reporting of build warnings and errors, and for code formatting support.
 
 Erlang:
 - OTP 18 minimum
