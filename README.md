@@ -9,7 +9,7 @@ Features include:
 - Inline reporting of build warnings and errors (requires Elixir >= 1.6)
 - Documentation lookup on hover
 - Go-to-definition
-- Code completion
+- Code completion (triggered by typing `SomeModule.` or hitting `Ctrl + Space`. You can enable `editor.quickSuggestions` for continuous autocompletion)
 - Code formatter (requires Elixir >= 1.6)
 
 ![Screenshot](https://raw.githubusercontent.com/JakeBecker/elixir-ls/master/images/screenshot.png)
