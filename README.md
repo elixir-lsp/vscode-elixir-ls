@@ -10,7 +10,7 @@ Features include:
 - Documentation lookup on hover
 - Go-to-definition
 - Code completion (triggered by typing `SomeModule.` or hitting `Ctrl + Space`. You can enable `editor.quickSuggestions` for continuous autocompletion)
-- Code formatter (requires Elixir >= 1.6)
+- Code formatter (requires Elixir >= 1.6. Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
 
 ![Screenshot](https://raw.githubusercontent.com/JakeBecker/elixir-ls/master/images/screenshot.png)
 
