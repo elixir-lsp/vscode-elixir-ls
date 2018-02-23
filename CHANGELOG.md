@@ -2,10 +2,10 @@
 * Fix bug where Dialyzer warnings sometimes remain after being fixed
 * Override build directory to ".elixir_ls/build" as  [https://github.com/elixir-lang/elixir/issues/7356#issuecomment-366644546](recommended by José Valim)
 
-### v0.2.11: 31 Jan 2017
+### v0.2.11: 31 Jan 2018
 * Improve syntax highlighting (Thanks to @TeeSeal)
 
-### v0.2.10: 24 Jan 2017
+### v0.2.10: 24 Jan 2018
 * Fix builds and related features on Windows
 
 ### v0.2.9: 29 Nov 2017
