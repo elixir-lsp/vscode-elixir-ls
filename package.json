@@ -13,7 +13,7 @@
   "publisher": "JakeBecker",
   "version": "0.2.12",
   "engines": {
-    "vscode": "^1.8.0"
+    "vscode": "^1.20.1"
   },
   "categories": [
     "Languages",
@@ -271,6 +271,6 @@
   "dependencies": {
     "shelljs": "^0.7.8",
     "upath": "^1.0.0",
-    "vscode-languageclient": "^3.2.0"
+    "vscode-languageclient": "^3.5.0"
   }
 }
