@@ -1,6 +1,7 @@
 ### v0.2.12: 22 Feb 2018
 * Fix bug where Dialyzer warnings sometimes remain after being fixed
 * Override build directory to ".elixir_ls/build" as  [https://github.com/elixir-lang/elixir/issues/7356#issuecomment-366644546](recommended by José Valim)
+* Fix restart button in debugger
 
 ### v0.2.11: 31 Jan 2018
 * Improve syntax highlighting (Thanks to @TeeSeal)
