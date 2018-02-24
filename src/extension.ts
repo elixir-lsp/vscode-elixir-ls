@@ -23,10 +23,15 @@ import { platform } from "os";
 
 export function activate(context: ExtensionContext) {
   process.env.ERL_LIBS = findErlLibs(context.asAbsolutePath("."));
-  const mixPath = shell.which("mix").toString();
+
+  const mix = shell.which("mix")
+  if (!mix) {
+    vscode.window.showErrorMessage("'mix' command not found in path. Ensure Elixir is installed and available in path")
+    return null;
+  }
 
   const serverOpts = {
-    command: mixPath,
+    command: mix.toString(),
     args: ["elixir_ls.language_server"]
   };
 
