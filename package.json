@@ -144,13 +144,13 @@
         "type": "mix_task",
         "label": "Mix Task",
         "windows": {
-          "program": "scripts/debugger.bat"
+          "program": "elixir-ls-release/debugger.bat"
         },
         "linux": {
-          "program": "scripts/debugger.sh"
+          "program": "elixir-ls-release/debugger.sh"
         },
         "osx": {
-          "program": "scripts/debugger.sh"
+          "program": "elixir-ls-release/debugger.sh"
         },
         "languages": [
           "elixir"
