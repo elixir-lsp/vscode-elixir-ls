@@ -22,14 +22,17 @@ import { platform } from "os";
 
 export function activate(context: ExtensionContext) {
   if (!shell.which("mix")) {
-    vscode.window.showErrorMessage("'mix' command not found in path. Ensure Elixir is installed and available in path")
+    vscode.window.showErrorMessage(
+      "'mix' command not found in path. Ensure Elixir is installed and available in path"
+    );
     return null;
   }
 
-  const command = platform() == "win32" ? "language_server.bat" : "language_server.sh";
+  const command =
+    platform() == "win32" ? "language_server.bat" : "language_server.sh";
 
   const serverOpts = {
-    command: context.asAbsolutePath("./elixir-ls-release/" + command),
+    command: context.asAbsolutePath("./elixir-ls-release/" + command)
   };
 
   // If the extension is launched in debug mode then the debug server options are used
