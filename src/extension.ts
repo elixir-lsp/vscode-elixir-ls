@@ -6,7 +6,6 @@
 
 import * as path from "path";
 import * as shell from "shelljs";
-import findErlLibs from "./findErlLibs";
 import * as vscode from "vscode";
 import { configuration } from "./configuration";
 
@@ -22,17 +21,15 @@ import {
 import { platform } from "os";
 
 export function activate(context: ExtensionContext) {
-  process.env.ERL_LIBS = findErlLibs(context.asAbsolutePath("."));
-
-  const mix = shell.which("mix")
-  if (!mix) {
+  if (!shell.which("mix")) {
     vscode.window.showErrorMessage("'mix' command not found in path. Ensure Elixir is installed and available in path")
     return null;
   }
 
+  const command = platform() == "win32" ? "language_server.bat" : "language_server.sh";
+
   const serverOpts = {
-    command: mix.toString(),
-    args: ["elixir_ls.language_server"]
+    command: context.asAbsolutePath("./elixir-ls-release/" + command),
   };
 
   // If the extension is launched in debug mode then the debug server options are used
