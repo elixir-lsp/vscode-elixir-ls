@@ -21,9 +21,9 @@ import {
 import { platform } from "os";
 
 export function activate(context: ExtensionContext) {
-  if (!shell.which("mix")) {
+  if (!shell.which("elixir")) {
     vscode.window.showErrorMessage(
-      "'mix' command not found in path. Ensure Elixir is installed and available in path"
+      "'elixir' command not found in path. Ensure Elixir is installed and available in path"
     );
     return null;
   }

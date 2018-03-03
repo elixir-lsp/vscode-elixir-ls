@@ -1,3 +1,6 @@
+### v0.2.14: 3 Mar 2018
+* Fix failures to launch in some projects
+
 ### v0.2.13: 2 Mar 2018
 * New feature: Find references to modules and functions (Thanks to @mattbaker)
 * New feature: Find symbols in document (Thanks to @mattbaker)
