@@ -11,7 +11,7 @@
   "author": "Jake Becker",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "engines": {
     "vscode": "^1.20.1"
   },

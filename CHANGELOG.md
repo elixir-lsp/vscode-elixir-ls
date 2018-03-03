@@ -1,3 +1,8 @@
+### v0.2.13: 2 Mar 2018
+* New feature: Find references to modules and functions (Thanks to @mattbaker)
+* New feature: Find symbols in document (Thanks to @mattbaker)
+* Fix failure to launch if project prints anything to stdout in the mixfile
+
 ### v0.2.12: 22 Feb 2018
 * Fix bug where Dialyzer warnings sometimes remain after being fixed
 * Override build directory to ".elixir_ls/build" as  [recommended by José Valim](https://github.com/elixir-lang/elixir/issues/7356#issuecomment-366644546)
