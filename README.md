@@ -11,6 +11,8 @@ Features include:
 - Go-to-definition
 - Code completion (triggered by typing `SomeModule.` or hitting `Ctrl + Space`. You can enable `editor.quickSuggestions` for continuous autocompletion)
 - Code formatter (requires Elixir >= 1.6. Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
+- Find references to functions and modules (Thanks to @mattbaker)
+- Quick symbol lookup in file (Thanks to @mattbaker)
 
 ![Screenshot](https://raw.githubusercontent.com/JakeBecker/elixir-ls/master/images/screenshot.png)
 
