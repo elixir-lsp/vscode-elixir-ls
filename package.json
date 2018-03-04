@@ -259,8 +259,8 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "tsc -p ./ && cd elixir-ls && mix release -o ../elixir-ls-release",
-    "compile": "tsc -p ./ && cd elixir-ls && mix release -o ../elixir-ls-release",
+    "vscode:prepublish": "tsc -p ./ && cd elixir-ls && mix elixir_ls.release -o ../elixir-ls-release",
+    "compile": "tsc -p ./ && cd elixir-ls && mix elixir_ls.release -o ../elixir-ls-release",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
