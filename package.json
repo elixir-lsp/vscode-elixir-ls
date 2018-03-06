@@ -26,9 +26,9 @@
   "contributes": {
     "configurationDefaults": {
       "[elixir]": {
-        "editor.quickSuggestions": false,
         "editor.insertSpaces": true,
-        "editor.tabSize": 2
+        "editor.tabSize": 2,
+        "editor.wordBasedSuggestions": false
       }
     },
     "configuration": {
@@ -128,12 +128,6 @@
         "language": "HTML (Eex)",
         "scopeName": "text.html.elixir",
         "path": "./syntaxes/html (eex).json"
-      }
-    ],
-    "snippets": [
-      {
-        "language": "elixir",
-        "path": "./snippets/snippets.json"
       }
     ],
     "breakpoints": [
