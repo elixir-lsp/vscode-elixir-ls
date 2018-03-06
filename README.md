@@ -9,7 +9,7 @@ Features include:
 - Inline reporting of build warnings and errors (requires Elixir >= 1.6)
 - Documentation lookup on hover
 - Go-to-definition
-- Code completion (triggered by typing `SomeModule.` or hitting `Ctrl + Space`. You can enable `editor.quickSuggestions` for continuous autocompletion)
+- Code completion
 - Code formatter (requires Elixir >= 1.6. Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
 - Find references to functions and modules (Thanks to @mattbaker)
 - Quick symbol lookup in file (Thanks to @mattbaker)

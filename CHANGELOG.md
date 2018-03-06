@@ -1,3 +1,6 @@
+### v0.2.15: 6 Mar 2018
+* Improve autocomplete and re-enable quickSuggestions by default
+
 ### v0.2.14: 3 Mar 2018
 * Fix failures to launch in some projects
 
