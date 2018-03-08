@@ -1,3 +1,9 @@
+### v0.2.16: 7 Mar 2018
+* New feature: Smart automatic insertion of "end" when beginning a block. This replaces the autocomplete-based approach and fixes the very annoying completion of "->" with "end" when not appropriate
+* ** ACCEPT AUTOCOMPLETE SUGGESTIONS WITH TAB INSTEAD OF ENTER.** See readme for an explanation of why. You can change it back if you really want.
+* Change default settings to automatically trim trailing whitespace and add newline at end of file
+* Don't trigger autocomplete on "_" because you're usually just naming an unused variable
+
 ### v0.2.15: 6 Mar 2018
 * Improve autocomplete and re-enable quickSuggestions by default
 
