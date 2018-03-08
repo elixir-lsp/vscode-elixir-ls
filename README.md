@@ -4,27 +4,29 @@ Provides Elixir language support and debugger. This extension is powered by the 
 
 Features include:
 
-- Debugger support (requires Erlang >= OTP 19)
-- Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
-- Inline reporting of build warnings and errors (requires Elixir >= 1.6)
-- Documentation lookup on hover
-- Go-to-definition
-- Code completion
-- Code formatter (requires Elixir >= 1.6. Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
-- Find references to functions and modules (Thanks to @mattbaker)
-- Quick symbol lookup in file (Thanks to @mattbaker)
+* Debugger support (requires Erlang >= OTP 19)
+* Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
+* Inline reporting of build warnings and errors (requires Elixir >= 1.6)
+* Documentation lookup on hover
+* Go-to-definition
+* Code completion
+* Code formatter (requires Elixir >= 1.6. Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
+* Find references to functions and modules (Thanks to @mattbaker)
+* Quick symbol lookup in file (Thanks to @mattbaker)
 
 ![Screenshot](https://raw.githubusercontent.com/JakeBecker/elixir-ls/master/images/screenshot.png)
 
 ## Supported versions
 
 Elixir:
-- 1.4 minimum
-- \>= 1.6 recommended. Required for reporting of build warnings and errors, and for code formatting support.
+
+* 1.4 minimum
+* \>= 1.6 recommended. Required for reporting of build warnings and errors, and for code formatting support.
 
 Erlang:
-- OTP 18 minimum
-- OTP 20 recommended. >= OTP 19 is required for debugger support, and OTP 20 is recommended for automatic incremental Dialyzer integration.
+
+* OTP 18 minimum
+* OTP 20 recommended. >= OTP 19 is required for debugger support, and OTP 20 is recommended for automatic incremental Dialyzer integration.
 
 ## Contributing
 
