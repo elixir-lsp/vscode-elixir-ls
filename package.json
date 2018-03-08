@@ -28,7 +28,9 @@
       "[elixir]": {
         "editor.insertSpaces": true,
         "editor.tabSize": 2,
-        "editor.wordBasedSuggestions": false
+        "editor.wordBasedSuggestions": false,
+        "editor.formatOnType": true,
+        "editor.acceptSuggestionOnEnter": "off"
       }
     },
     "configuration": {
