@@ -30,7 +30,9 @@
         "editor.tabSize": 2,
         "editor.wordBasedSuggestions": false,
         "editor.formatOnType": true,
-        "editor.acceptSuggestionOnEnter": "off"
+        "editor.acceptSuggestionOnEnter": "off",
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true
       }
     },
     "configuration": {
