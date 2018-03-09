@@ -21,9 +21,11 @@ Features include:
 
 ElixirLS is opinionated and sets the following default settings for Elixir files:
 
-```
+```json
 "editor.insertSpaces": true,
 "editor.tabSize": 2,
+"editor.wordBasedSuggestions": false,
+"editor.formatOnType": true, // The name of this setting is misleading, see below
 "editor.acceptSuggestionOnEnter": "off",
 "files.trimTrailingWhitespace": true,
 "files.insertFinalNewline": true
@@ -32,6 +34,8 @@ ElixirLS is opinionated and sets the following default settings for Elixir files
 You can, of course, change them in your user settings, or on a per project basis in `.vscode/settings.json`.
 
 It make take some getting used to, but I highly recommend leaving `acceptSuggestionOnEnter` off and using using `tab` instead of `enter` for autocomplete. In Elixir, it's very common to end a line with an identifier (such as `:error`, for example), and ElixirLS will sometimes try to autocomplete that (into `:error_handler` or `:error_logger`, for example). If you're typing quickly, you may hit enter before even noticing the suggestion and insert it by mistake. ElixirLS tries to prevent this in some cases (such as ending a line with `else` or `end`), but the better solution is to get used to using `tab` to accept suggestions. Automatic completion of `do` blocks is handled separately and does not require you to accept an autocomplete suggestion.
+
+`editor.formatOnType` being set to true makes it sound like it would run the Elixir formatter on your code constantly, but all it really does is automatically close `do` and `fn ->` blocks with an `end`.
 
 ## Supported versions
 
