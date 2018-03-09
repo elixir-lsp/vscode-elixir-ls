@@ -21,7 +21,7 @@ Features include:
 
 ElixirLS is opinionated and sets the following default settings for Elixir files:
 
-```json
+```
 {
   // Based on Elixir formatter's style
   "editor.insertSpaces": true,
