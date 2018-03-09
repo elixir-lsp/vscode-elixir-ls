@@ -11,7 +11,7 @@
   "author": "Jake Becker",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "engines": {
     "vscode": "^1.20.1"
   },
@@ -31,6 +31,7 @@
         "editor.wordBasedSuggestions": false,
         "editor.formatOnType": true,
         "editor.acceptSuggestionOnEnter": "off",
+        "editor.trimAutoWhitespace": false,
         "files.trimTrailingWhitespace": true,
         "files.insertFinalNewline": true
       }
@@ -81,6 +82,11 @@
           "type": "string",
           "description": "Subdirectory containing Mix project if not in the project root",
           "minLength": 1
+        },
+        "elixirLS.fetchDeps": {
+          "type": "boolean",
+          "description": "Automatically fetch project dependencies when compiling",
+          "default": true
         }
       }
     },

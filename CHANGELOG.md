@@ -1,3 +1,8 @@
+### v0.2.17: 9 Mar 2018
+* New feature: Automatically fetch deps when compiling. Set `elixirLS.fetchDeps` to `false` to disable
+* New feature: Incremental text synchronization
+* Minor improvements to autocomplete and automatic block closing
+
 ### v0.2.16: 7 Mar 2018
 * New feature: Smart automatic insertion of "end" when beginning a block. This replaces the autocomplete-based approach and fixes the very annoying completion of "->" with "end" when not appropriate
 * ** ACCEPT AUTOCOMPLETE SUGGESTIONS WITH TAB INSTEAD OF ENTER.** See readme for an explanation of why. You can change it back if you really want.
