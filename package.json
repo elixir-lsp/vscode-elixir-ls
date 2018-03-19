@@ -260,6 +260,56 @@
           }
         ]
       }
+    ],
+    "problemMatchers": "Borrowed from vscode-elixir",
+    "problemMatchers": [
+        {
+        "name": "mixCompileError",
+        "owner": "elixir",
+        "fileLocation": ["relative", "${workspaceRoot}"],
+        "severity": "error",
+        "pattern": {
+          "regexp": "^\\*\\* \\((\\w+)\\) (.*):(\\d+): (.*)$",
+          "file": 2,
+          "location": 3,
+          "message": 0
+        }
+      },
+      {
+        "name": "mixCompileWarning",
+        "owner": "elixir",
+        "fileLocation": ["relative", "${workspaceRoot}"],
+        "severity": "warning",
+        "pattern": [
+          {
+            "regexp": "^warning: (.*)$",
+            "message": 1
+          },
+          {
+            "regexp": "^  (.*):(\\d+)(.*)$",
+            "file": 1,
+            "location": 2,
+            "message": 3
+          }
+        ]
+      },
+      {
+        "name": "mixTestFailure",
+        "owner": "elixir",
+        "fileLocation": ["relative", "${workspaceRoot}"],
+        "severity": "warning",
+        "pattern": [
+          {
+            "regexp": "^\\s*\\d+\\) (.*)$",
+            "message": 1
+          },
+          {
+            "regexp": "^\\s*(.*):(\\d+)$",
+            "file": 1,
+            "location": 2
+          }
+        ]
+      }
     ]
   },
   "scripts": {
