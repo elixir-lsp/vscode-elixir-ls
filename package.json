@@ -261,9 +261,8 @@
         ]
       }
     ],
-    "problemMatchers": "Borrowed from vscode-elixir",
     "problemMatchers": [
-        {
+      {
         "name": "mixCompileError",
         "owner": "elixir",
         "fileLocation": ["relative", "${workspaceRoot}"],
