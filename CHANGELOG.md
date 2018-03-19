@@ -1,3 +1,8 @@
+### v0.2.18: 19 Mar 2018
+* Fix autocomplete bugs when typing in parentheses
+* Copy latest syntax highlighting from fr1zle/vscode-elixir
+* Handle `subdirectories` and `import_deps` in `.formatter.exs`. Requires the latest Elixir (1.6.5), which you can install via kiex with `kiex install master` prior to its release.
+
 ### v0.2.17: 9 Mar 2018
 * New feature: Automatically fetch deps when compiling. Set `elixirLS.fetchDeps` to `false` to disable
 * New feature: Incremental text synchronization
