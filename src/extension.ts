@@ -45,7 +45,10 @@ export function activate(context: ExtensionContext) {
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     // Register the server for Elixir documents
-    documentSelector: ["elixir"],
+    documentSelector: [
+      { language: "elixir", scheme: "file" },
+      { language: "elixir", scheme: "untitled" }
+    ],
     // Don't focus the Output pane on errors because request handler errors are no big deal
     revealOutputChannelOn: RevealOutputChannelOn.Never,
     synchronize: {
