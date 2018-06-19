@@ -151,7 +151,7 @@
       "name": "constant.language.elixir"
     },
     {
-      "match": "\\b(__(CALLER|ENV|MODULE|DIR)__)\\b(?![?!])",
+      "match": "\\b(__(CALLER|ENV|MODULE|DIR|STACKTRACE)__)\\b(?![?!])",
       "name": "variable.language.elixir"
     },
     {
