@@ -265,7 +265,10 @@
       {
         "name": "mixCompileError",
         "owner": "elixir",
-        "fileLocation": ["relative", "${workspaceRoot}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceRoot}"
+        ],
         "severity": "error",
         "pattern": {
           "regexp": "^\\*\\* \\((\\w+)\\) (.*):(\\d+): (.*)$",
@@ -277,7 +280,10 @@
       {
         "name": "mixCompileWarning",
         "owner": "elixir",
-        "fileLocation": ["relative", "${workspaceRoot}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceRoot}"
+        ],
         "severity": "warning",
         "pattern": [
           {
@@ -295,7 +301,10 @@
       {
         "name": "mixTestFailure",
         "owner": "elixir",
-        "fileLocation": ["relative", "${workspaceRoot}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceRoot}"
+        ],
         "severity": "warning",
         "pattern": [
           {
@@ -321,11 +330,9 @@
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.0.52",
     "typescript": "^2.1.5",
-    "vscode": "^1.0.3"
+    "vscode": "^1.1.18"
   },
   "dependencies": {
-    "shelljs": "^0.7.8",
-    "upath": "^1.0.0",
     "vscode-languageclient": "^3.5.0"
   }
 }
