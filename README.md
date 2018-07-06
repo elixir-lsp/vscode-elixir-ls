@@ -49,13 +49,13 @@ It may take some getting used to, but I highly recommend leaving `acceptSuggesti
 
 Elixir:
 
-* 1.4 minimum
-* \>= 1.6 recommended. Required for reporting of build warnings and errors, and for code formatting support.
+* 1.6.0 minimum
+* \>= 1.6.6 recommended
 
 Erlang:
 
 * OTP 18 minimum
-* OTP 20 recommended. >= OTP 19 is required for debugger support, and OTP 20 is recommended for automatic incremental Dialyzer integration.
+* \>= OTP 20 recommended
 
 ## Contributing
 
