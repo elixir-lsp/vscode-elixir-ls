@@ -4,10 +4,9 @@
  * ------------------------------------------------------------------------------------------ */
 "use strict";
 
-import * as path from "path";
-import * as shell from "shelljs";
 import * as vscode from "vscode";
 import { configuration } from "./configuration";
+import { execSync } from "child_process";
 
 import { workspace, Disposable, ExtensionContext } from "vscode";
 import {
@@ -21,11 +20,20 @@ import {
 import { platform } from "os";
 
 export function activate(context: ExtensionContext) {
-  if (!shell.which("elixir")) {
+  try {
+    const result = execSync('elixir -e ""');
+    if (result.length != 0) {
+      vscode.window.showErrorMessage(
+        "Running 'elixir' command caused extraneous print to stdout. See VS Code's developer console for details."
+      );
+      console.warn(
+        "Running 'elixir -e \"\"' printed to stdout:\n" + result.toString()
+      );
+    }
+  } catch {
     vscode.window.showErrorMessage(
-      "'elixir' command not found in path. Ensure Elixir is installed and available in path"
+      "Failed to run 'elixir' command. ElixirLS will probably fail to launch."
     );
-    return null;
   }
 
   const command =
