@@ -1,3 +1,8 @@
+### v0.2.19: 06 Jul 2018
+* Fix compatibility issues with recent Elixir versions (1.7.0-dev) and Erlang OTP 21
+* Go-to-definition now works for variables (thanks to [Elixir Sense](https://github.com/msaraiva/elixir_sense))
+* Better error messages when server crashes or fails to launch
+
 ### v0.2.18: 19 Mar 2018
 * Fix autocomplete bugs when typing in parentheses
 * Copy latest syntax highlighting from fr1zle/vscode-elixir
