@@ -7,6 +7,7 @@
 import * as vscode from "vscode";
 import { configuration } from "./configuration";
 import { execSync } from "child_process";
+import * as shell from "shelljs";
 
 import { workspace, Disposable, ExtensionContext } from "vscode";
 import {
@@ -20,21 +21,7 @@ import {
 import { platform } from "os";
 
 export function activate(context: ExtensionContext) {
-  try {
-    const result = execSync('elixir -e ""');
-    if (result.length != 0) {
-      vscode.window.showErrorMessage(
-        "Running 'elixir' command caused extraneous print to stdout. See VS Code's developer console for details."
-      );
-      console.warn(
-        "Running 'elixir -e \"\"' printed to stdout:\n" + result.toString()
-      );
-    }
-  } catch {
-    vscode.window.showErrorMessage(
-      "Failed to run 'elixir' command. ElixirLS will probably fail to launch."
-    );
-  }
+  testElixir();
 
   const command =
     platform() == "win32" ? "language_server.bat" : "language_server.sh";
@@ -84,4 +71,45 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.languages.setLanguageConfiguration("elixir", configuration)
   );
+}
+
+function testElixirCommand(command: String) {
+  try {
+    return execSync(`${command} -e ""`);
+  } catch {
+    return false;
+  }
+}
+
+function testElixir() {
+  var testResult = testElixirCommand("elixir");
+  if (testResult === false) {
+    // Try finding elixir in the path directly
+    const elixirPath = shell.which("elixir");
+    if (elixirPath) {
+      testResult = testElixirCommand(elixirPath);
+    }
+  }
+
+  if (!testResult) {
+    vscode.window.showErrorMessage(
+      "Failed to run 'elixir' command. ElixirLS will probably fail to launch. Logged PATH to Development Console."
+    );
+    console.warn(
+      `Failed to run 'elixir' command. Current process's PATH: ${
+        process.env["PATH"]
+      }`
+    );
+    return false;
+  } else if (testResult.length > 0) {
+    vscode.window.showErrorMessage(
+      "Running 'elixir' command caused extraneous print to stdout. See VS Code's developer console for details."
+    );
+    console.warn(
+      "Running 'elixir -e \"\"' printed to stdout:\n" + testResult.toString()
+    );
+    return false;
+  } else {
+    return true;
+  }
 }
