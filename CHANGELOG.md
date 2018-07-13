@@ -1,3 +1,12 @@
+### v0.2.21: 13 Jul 2018
+
+- Print PATH to developer console if "elixir" command fails
+- Fix Dialyzer crash when some modules are undialyzable
+
+### v0.2.20: 13 Jul 2018
+
+- Skipped because I got my versions out of sync :/
+
 ### v0.2.19: 06 Jul 2018
 
 - Fix compatibility issues with recent Elixir versions (1.7.0-dev) and Erlang OTP 21
