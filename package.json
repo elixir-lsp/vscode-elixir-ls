@@ -87,6 +87,11 @@
           "type": "boolean",
           "description": "Automatically fetch project dependencies when compiling",
           "default": true
+        },
+        "elixirLS.suggestSpecs": {
+          "type": "boolean",
+          "description": "Suggest @spec annotations inline using Dialyzer's inferred success typings (Requires Dialyzer)",
+          "default": true
         }
       }
     },
