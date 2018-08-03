@@ -6,6 +6,7 @@ Features include:
 
 - Debugger support (requires Erlang >= OTP 19)
 - Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
+- Automatic suggestion for @spec annotations based on Dialyzer's inferred success typings
 - Inline reporting of build warnings and errors (requires Elixir >= 1.6)
 - Code completion **(suggestions are accepted using tab instead of enter, see below)**
 - Smart automatic closing of code blocks
