@@ -4,16 +4,16 @@ Provides Elixir language support and debugger. This extension is powered by the 
 
 Features include:
 
-* Debugger support (requires Erlang >= OTP 19)
-* Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
-* Inline reporting of build warnings and errors (requires Elixir >= 1.6)
-* Code completion **(suggestions are accepted using tab instead of enter, see below)**
-* Smart automatic closing of code blocks
-* Documentation lookup on hover
-* Go-to-definition
-* Code formatter (requires Elixir >= 1.6. Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
-* Find references to functions and modules (Thanks to @mattbaker)
-* Quick symbol lookup in file (Thanks to @mattbaker)
+- Debugger support (requires Erlang >= OTP 19)
+- Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
+- Inline reporting of build warnings and errors (requires Elixir >= 1.6)
+- Code completion **(suggestions are accepted using tab instead of enter, see below)**
+- Smart automatic closing of code blocks
+- Documentation lookup on hover
+- Go-to-definition
+- Code formatter (requires Elixir >= 1.6. Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
+- Find references to functions and modules (Thanks to @mattbaker)
+- Quick symbol lookup in file (Thanks to @mattbaker)
 
 ![Screenshot](https://raw.githubusercontent.com/JakeBecker/elixir-ls/master/images/screenshot.png)
 
@@ -49,13 +49,13 @@ It may take some getting used to, but I highly recommend leaving `acceptSuggesti
 
 Elixir:
 
-* 1.6.0 minimum
-* \>= 1.6.6 recommended
+- 1.6.0 minimum
+- \>= 1.6.6 recommended
 
 Erlang:
 
-* OTP 18 minimum
-* \>= OTP 20 recommended
+- OTP 18 minimum
+- \>= OTP 20 recommended
 
 ## Contributing
 
