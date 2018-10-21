@@ -106,6 +106,9 @@
           ".ex",
           ".exs"
         ],
+        "filenames": [
+          "mix.lock"
+        ],
         "configuration": "./elixir.configuration.json"
       },
       {
