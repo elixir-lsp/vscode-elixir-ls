@@ -4,6 +4,16 @@
   ],
   "foldingStartMarker": "(?x)\n\t\t(<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)\\b.*?>\n\t\t|<!--(?!.*-->)\n\t\t|\\{\\s*($|\\?>\\s*$|//|/\\*(.*\\*/\\s*$|(?!.*?\\*/)))\n\t\t)",
   "foldingStopMarker": "(?x)\n\t\t(</(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)>\n\t\t|^\\s*-->\n\t\t|(^|\\s)\\}\n\t\t)",
+  "injections": {
+    "R:text.html.elixir meta.tag meta.attribute string.quoted": {
+      "comment": "Uses R: to ensure this matches after any other injections.",
+      "patterns": [
+        {
+          "include": "text.elixir"
+        }
+      ]
+    }
+  },
   "name": "HTML (EEx)",
   "patterns": [
     {
