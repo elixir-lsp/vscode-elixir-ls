@@ -106,7 +106,7 @@
           ".ex",
           ".exs"
         ],
-        "configuration": "./elixir.configuration.json"
+        "configuration": "./elixir-language-configuration.json"
       },
       {
         "id": "Eex",
