@@ -116,7 +116,8 @@
         ],
         "extensions": [
           ".eex"
-        ]
+        ],
+        "configuration": "./eex-language-configuration.json"
       },
       {
         "id": "HTML (Eex)",
@@ -125,7 +126,8 @@
         ],
         "extensions": [
           ".html.eex"
-        ]
+        ],
+        "configuration": "./eex-language-configuration.json"
       }
     ],
     "grammars": [
