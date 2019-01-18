@@ -20,12 +20,12 @@ import {
 } from "vscode-languageclient";
 import { platform } from "os";
 
-import { startElixirLS } from "./elsp";
+import { configureElixirLS } from "./ex_ls";
 
 export function activate(context: ExtensionContext) {
   testElixir();
 
-  startElixirLS(context);
+  configureElixirLS(context);
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {

@@ -4,7 +4,7 @@ import { join as pathJoin } from "path";
 import { platform } from 'os';
 import { mkdirSync } from 'fs';
 
-export function startElixirLS(context: ExtensionContext) {
+export function configureElixirLS(context: ExtensionContext) {
   const cmd: string = 'language_server' + file_type();
   const path: string = pathJoin(context.extensionPath, 'elixir-ls-release');
   const fullCmd: string = pathJoin(path, cmd);
