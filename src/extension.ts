@@ -25,7 +25,7 @@ import { configureElixirLS } from "./ex_ls";
 export function activate(context: ExtensionContext) {
   testElixir();
 
-  const serverOpts: ServerOptions = configureElixirLS(context);
+  const serverOpts: Thenable<ServerOptions> = configureElixirLS(context);
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
@@ -47,20 +47,22 @@ export function activate(context: ExtensionContext) {
   };
 
   // Create the language client and start the client.
-  let disposable = new LanguageClient(
-    "ElixirLS",
-    "ElixirLS",
-    serverOpts,
-    clientOptions
-  ).start();
-
-  // Push the disposable to the context's subscriptions so that the
-  // client can be deactivated on extension deactivation
-  // context.subscriptions.push(disposable);
-
-  context.subscriptions.push(
-    vscode.languages.setLanguageConfiguration("elixir", configuration)
-  );
+  serverOpts.then((serverOpts) => {
+    let disposable = new LanguageClient(
+      "ElixirLS",
+      "ElixirLS",
+      serverOpts,
+      clientOptions
+    ).start();
+  
+    // Push the disposable to the context's subscriptions so that the
+    // client can be deactivated on extension deactivation
+    context.subscriptions.push(disposable);
+  
+    context.subscriptions.push(
+      vscode.languages.setLanguageConfiguration("elixir", configuration)
+    );
+  })
 }
 
 function testElixirCommand(command: String) {
