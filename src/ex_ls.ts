@@ -4,7 +4,7 @@ import { join as pathJoin } from "path";
 import { platform } from 'os';
 import { mkdirSync } from 'fs';
 
-export function configureElixirLS(context: ExtensionContext) {
+export function configureElixirLS(context: ExtensionContext): ServerOptions {
   const cmd: string = 'language_server' + file_type();
   const path: string = pathJoin(context.extensionPath, 'elixir-ls-release');
   const fullCmd: string = pathJoin(path, cmd);
@@ -20,6 +20,8 @@ export function configureElixirLS(context: ExtensionContext) {
   // Current typespecs do not know about the option object…
   // @ts-ignore
   mkdirSync(path, { recursive: true });
+
+  return serverOpts;
 }
 
 function file_type(): '.sh' | '.bat' {
