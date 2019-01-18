@@ -20,22 +20,12 @@ import {
 } from "vscode-languageclient";
 import { platform } from "os";
 
+import { startElixirLS } from "./elsp";
+
 export function activate(context: ExtensionContext) {
   testElixir();
 
-  const command =
-    platform() == "win32" ? "language_server.bat" : "language_server.sh";
-
-  const serverOpts = {
-    command: context.asAbsolutePath("./elixir-ls-release/" + command)
-  };
-
-  // If the extension is launched in debug mode then the debug server options are used
-  // Otherwise the run options are used
-  let serverOptions: ServerOptions = {
-    run: serverOpts,
-    debug: serverOpts
-  };
+  startElixirLS(context);
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
@@ -57,16 +47,16 @@ export function activate(context: ExtensionContext) {
   };
 
   // Create the language client and start the client.
-  let disposable = new LanguageClient(
-    "ElixirLS",
-    "ElixirLS",
-    serverOptions,
-    clientOptions
-  ).start();
+  // let disposable = new LanguageClient(
+  //   "ElixirLS",
+  //   "ElixirLS",
+  //   serverOptions,
+  //   clientOptions
+  // ).start();
 
   // Push the disposable to the context's subscriptions so that the
   // client can be deactivated on extension deactivation
-  context.subscriptions.push(disposable);
+  // context.subscriptions.push(disposable);
 
   context.subscriptions.push(
     vscode.languages.setLanguageConfiguration("elixir", configuration)
