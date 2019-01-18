@@ -17,6 +17,7 @@ export function configureElixirLS(context: ExtensionContext) {
 
   console.log(fullCmd);
 
+  // Current typespecs do not know about the option object…
   // @ts-ignore
   mkdirSync(path, { recursive: true });
 }
