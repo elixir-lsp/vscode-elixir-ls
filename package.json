@@ -328,6 +328,7 @@
   "scripts": {
     "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -p ./",
+    "lint": "tslint --project .",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
@@ -338,8 +339,9 @@
     "vscode": "^1.1.18"
   },
   "dependencies": {
+    "gitty": "^3.7.0",
     "shelljs": "^0.8.2",
-    "vscode-languageclient": "^4.4.0",
-    "gitty": "^3.7.0"
+    "tslint": "^5.12.1",
+    "vscode-languageclient": "^4.4.0"
   }
 }
