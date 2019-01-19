@@ -4,6 +4,7 @@ node_modules
 
 # We store the build artifacts from ElixirLS here
 /elixir-ls-release
+/elixir-ls-repo
 
 # We copy the CHANGELOG.md from ./elixir-ls/CHANGELOG.md in vscode:prepublish
 /CHANGELOG.md

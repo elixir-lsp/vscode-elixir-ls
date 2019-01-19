@@ -339,6 +339,7 @@
   },
   "dependencies": {
     "shelljs": "^0.8.2",
-    "vscode-languageclient": "^4.4.0"
+    "vscode-languageclient": "^4.4.0",
+    "gitty": "^3.7.0"
   }
 }

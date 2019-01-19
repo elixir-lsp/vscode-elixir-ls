@@ -48,17 +48,19 @@ export function activate(context: ExtensionContext) {
 
   // Create the language client and start the client.
   serverOpts.then((serverOpts) => {
+    if (serverOpts === null) { return }
+
     let disposable = new LanguageClient(
       "ElixirLS",
       "ElixirLS",
       serverOpts,
       clientOptions
     ).start();
-  
+
     // Push the disposable to the context's subscriptions so that the
     // client can be deactivated on extension deactivation
     context.subscriptions.push(disposable);
-  
+
     context.subscriptions.push(
       vscode.languages.setLanguageConfiguration("elixir", configuration)
     );
