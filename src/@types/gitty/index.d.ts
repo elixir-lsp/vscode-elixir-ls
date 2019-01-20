@@ -1,8 +1,8 @@
 declare module "gitty" {
   interface RepoConf {
-    gitpath?: string,
-    largeOperations?: string[],
-    largeOperationsMacBuffer?: number,
+    gitpath?: string;
+    largeOperations?: string[];
+    largeOperationsMacBuffer?: number;
   }
 
   export class Repository {

@@ -10,5 +10,6 @@
 	"elixirLS.projectDir": "elixir-ls",
 
 	"prettier.trailingComma": "all",
-	"prettier.arrowParens": "always"
+	"prettier.arrowParens": "always",
+	"prettier.printWidth": 120
 }

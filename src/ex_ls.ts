@@ -9,9 +9,7 @@ import { ServerOptions } from "vscode-languageclient";
 // This ZIP is directly specifying a commit at github
 const sourceRepo: string = "https://github.com/elixir-lsp/elixir-ls.git";
 
-export function configureElixirLS(
-  context: ExtensionContext,
-): Thenable<ServerOptions> {
+export function configureElixirLS(context: ExtensionContext): Thenable<ServerOptions> {
   const cmd: string = "language_server" + file_type();
   const repoPath: string = pathJoin(context.extensionPath, "elixir-ls-repo");
   const path: string = pathJoin(context.extensionPath, "elixir-ls-release");
@@ -23,19 +21,17 @@ export function configureElixirLS(
     run: opts,
   };
 
-  const result: Promise<ServerOptions> = new Promise<"update" | "cloned">(
-    (resolve, reject) => {
-      Repository.clone(repoPath, sourceRepo, (err: any) => {
-        if (!err) {
-          resolve("cloned");
-        } else if (err && /exists/.test(err)) {
-          resolve("update");
-        } else {
-          reject(err);
-        }
-      });
-    },
-  )
+  const result: Promise<ServerOptions> = new Promise<"update" | "cloned">((resolve, reject) => {
+    Repository.clone(repoPath, sourceRepo, (err: any) => {
+      if (!err) {
+        resolve("cloned");
+      } else if (err && /exists/.test(err)) {
+        resolve("update");
+      } else {
+        reject(err);
+      }
+    });
+  })
     .then((action) => {
       if (action === "update") {
         // TODO: check for updates
