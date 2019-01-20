@@ -5,9 +5,8 @@
 "use strict";
 
 import { execSync } from "child_process";
-import * as shell from "shelljs";
-import * as vscode from "vscode";
-import { ExtensionContext, workspace } from "vscode";
+import { which } from "shelljs";
+import { ExtensionContext, languages, window, workspace } from "vscode";
 import { LanguageClient, LanguageClientOptions, RevealOutputChannelOn, ServerOptions } from "vscode-languageclient";
 import { configuration } from "./configuration";
 import { configureElixirLS } from "./ex_ls";
@@ -54,7 +53,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(disposable);
 
     context.subscriptions.push(
-      vscode.languages.setLanguageConfiguration("elixir", configuration),
+      languages.setLanguageConfiguration("elixir", configuration),
     );
   });
 }
@@ -71,14 +70,14 @@ function testElixir() {
   let testResult = testElixirCommand("elixir");
   if (testResult === false) {
     // Try finding elixir in the path directly
-    const elixirPath = shell.which("elixir");
+    const elixirPath = which("elixir");
     if (elixirPath) {
       testResult = testElixirCommand(elixirPath);
     }
   }
 
   if (!testResult) {
-    vscode.window.showErrorMessage(
+    window.showErrorMessage(
       "Failed to run 'elixir' command. ElixirLS will probably fail to launch. Logged PATH to Development Console.",
     );
     console.warn(
@@ -88,7 +87,7 @@ function testElixir() {
     );
     return false;
   } else if (testResult.length > 0) {
-    vscode.window.showErrorMessage(
+    window.showErrorMessage(
       "Running 'elixir' command caused extraneous print to stdout. See VS Code's developer console for details.",
     );
     console.warn(

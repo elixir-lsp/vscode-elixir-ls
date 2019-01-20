@@ -335,6 +335,7 @@
   "devDependencies": {
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.0.52",
+    "@types/shelljs": "^0.8.1",
     "typescript": "^2.1.5",
     "vscode": "^1.1.18"
   },
