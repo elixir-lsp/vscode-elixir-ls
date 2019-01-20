@@ -9,6 +9,13 @@
 	"typescript.tsdk": "./node_modules/typescript/lib", // we want to use the TS server from our node_modules folder to control its version
 	"elixirLS.projectDir": "elixir-ls",
 
+    "[typescript]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true,
+        }
+    },
+
 	"prettier.trailingComma": "all",
 	"prettier.arrowParens": "always",
 	"prettier.printWidth": 120
