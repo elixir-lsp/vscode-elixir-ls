@@ -72,6 +72,16 @@
           },
           "default": []
         },
+        "elixirLS.dialyzerFormat": {
+          "description": "Formatter to use for Dialyzer warnings",
+          "type": "string",
+          "enum": [
+            "dialyzer",
+            "dialyxir_short",
+            "dialyxir_long"
+          ],
+          "default": "dialyzer"
+        },
         "elixirLS.mixEnv": {
           "type": "string",
           "description": "Mix environment to use for compilation",
