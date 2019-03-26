@@ -1421,6 +1421,222 @@
       "name": "string.quoted.double.literal.elixir"
     },
     {
+      "comment": "String Eex heredoc with double quotes",
+      "begin": "\\s?(~E\"\"\")$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*(\"\"\"[a-z]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "text.html.elixir",
+      "patterns": [
+        {
+          "include": "text.html.elixir"
+        }
+      ]
+    },
+    {
+      "comment": "String Eex heredoc with double quotes",
+      "begin": "\\s?(~e\"\"\")$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*(\"\"\"[a-z]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "text.html.elixir",
+      "patterns": [
+        {
+          "include": "text.html.elixir"
+        }
+      ]
+    },
+    {
+      "comment": "String Eex heredoc with single quotes",
+      "begin": "\\s?(~E''')$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*('''[a-z]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "text.html.elixir",
+      "patterns": [
+        {
+          "include": "text.html.elixir"
+        }
+      ]
+    },
+    {
+      "comment": "String Eex heredoc with single quotes",
+      "begin": "\\s?(~e''')$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*('''[a-z]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "text.html.elixir",
+      "patterns": [
+        {
+          "include": "text.html.elixir"
+        }
+      ]
+    },
+    {
+      "comment": "Embedded Liveview heredoc with double quotes",
+      "begin": "\\s?(~L\"\"\")$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*(\"\"\"[a-z]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "text.html.elixir",
+      "patterns": [
+        {
+          "include": "text.html.elixir"
+        }
+      ]
+    },
+    {
+      "comment": "Embededd Liveview heredoc with double quotes",
+      "begin": "\\s?(~l\"\"\")$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*(\"\"\"[a-z]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "text.html.elixir",
+      "patterns": [
+        {
+          "include": "text.html.elixir"
+        }
+      ]
+    },
+    {
+      "comment": "Embededd Liveview heredoc with single quotes",
+      "begin": "\\s?(~L''')$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*('''[a-z]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "text.html.elixir",
+      "patterns": [
+        {
+          "include": "text.html.elixir"
+        }
+      ]
+    },
+    {
+      "comment": "Embededd Liveview heredoc with single quotes",
+      "begin": "\\s?(~l''')$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*('''[a-z]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "text.html.elixir",
+      "patterns": [
+        {
+          "include": "text.html.elixir"
+        }
+      ]
+    },
+    {
       "begin": "~[a-z](?>\"\"\")",
       "beginCaptures": {
         "0": {
