@@ -119,9 +119,9 @@
         "configuration": "./elixir-language-configuration.json"
       },
       {
-        "id": "Eex",
+        "id": "EEx",
         "aliases": [
-          "Eex",
+          "EEx",
           "eex"
         ],
         "extensions": [
@@ -130,9 +130,9 @@
         "configuration": "./eex-language-configuration.json"
       },
       {
-        "id": "HTML (Eex)",
+        "id": "HTML (EEx)",
         "aliases": [
-          "HTML (Eex)"
+          "HTML (EEx)"
         ],
         "extensions": [
           ".html.eex"
@@ -147,12 +147,12 @@
         "path": "./syntaxes/elixir.json"
       },
       {
-        "language": "Eex",
+        "language": "EEx",
         "scopeName": "text.elixir",
         "path": "./syntaxes/eex.json"
       },
       {
-        "language": "HTML (Eex)",
+        "language": "HTML (EEx)",
         "scopeName": "text.html.elixir",
         "path": "./syntaxes/html (eex).json"
       }
