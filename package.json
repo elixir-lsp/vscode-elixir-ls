@@ -116,6 +116,9 @@
           ".ex",
           ".exs"
         ],
+        "filenames": [
+          "mix.lock"
+        ],
         "configuration": "./elixir-language-configuration.json"
       },
       {
