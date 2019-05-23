@@ -72,6 +72,16 @@
           },
           "default": []
         },
+        "elixirLS.dialyzerFormat": {
+          "description": "Formatter to use for Dialyzer warnings",
+          "type": "string",
+          "enum": [
+            "dialyzer",
+            "dialyxir_short",
+            "dialyxir_long"
+          ],
+          "default": "dialyzer"
+        },
         "elixirLS.mixEnv": {
           "type": "string",
           "description": "Mix environment to use for compilation",
@@ -109,26 +119,28 @@
         "filenames": [
           "mix.lock"
         ],
-        "configuration": "./elixir.configuration.json"
+        "configuration": "./elixir-language-configuration.json"
       },
       {
-        "id": "Eex",
+        "id": "EEx",
         "aliases": [
-          "Eex",
+          "EEx",
           "eex"
         ],
         "extensions": [
           ".eex"
-        ]
+        ],
+        "configuration": "./eex-language-configuration.json"
       },
       {
-        "id": "HTML (Eex)",
+        "id": "HTML (EEx)",
         "aliases": [
-          "HTML (Eex)"
+          "HTML (EEx)"
         ],
         "extensions": [
           ".html.eex"
-        ]
+        ],
+        "configuration": "./eex-language-configuration.json"
       }
     ],
     "grammars": [
@@ -138,12 +150,12 @@
         "path": "./syntaxes/elixir.json"
       },
       {
-        "language": "Eex",
+        "language": "EEx",
         "scopeName": "text.elixir",
         "path": "./syntaxes/eex.json"
       },
       {
-        "language": "HTML (Eex)",
+        "language": "HTML (EEx)",
         "scopeName": "text.html.elixir",
         "path": "./syntaxes/html (eex).json"
       }
@@ -336,12 +348,12 @@
   },
   "devDependencies": {
     "@types/mocha": "^2.2.33",
-    "@types/node": "^6.0.52",
-    "typescript": "^2.1.5",
-    "vscode": "^1.1.18"
+    "@types/node": "^6.14.4",
+    "typescript": "^2.9.2",
+    "vscode": "^1.1.30"
   },
   "dependencies": {
-    "shelljs": "^0.8.2",
-    "vscode-languageclient": "^4.4.0"
+    "shelljs": "^0.8.3",
+    "vscode-languageclient": "^4.4.2"
   }
 }

@@ -5,18 +5,15 @@
 "use strict";
 
 import * as vscode from "vscode";
-import { configuration } from "./configuration";
 import { execSync } from "child_process";
 import * as shell from "shelljs";
 
-import { workspace, Disposable, ExtensionContext } from "vscode";
+import { workspace, ExtensionContext } from "vscode";
 import {
   LanguageClient,
   LanguageClientOptions,
   RevealOutputChannelOn,
-  SettingMonitor,
   ServerOptions,
-  TransportKind
 } from "vscode-languageclient";
 import { platform } from "os";
 
@@ -67,10 +64,6 @@ export function activate(context: ExtensionContext) {
   // Push the disposable to the context's subscriptions so that the
   // client can be deactivated on extension deactivation
   context.subscriptions.push(disposable);
-
-  context.subscriptions.push(
-    vscode.languages.setLanguageConfiguration("elixir", configuration)
-  );
 }
 
 function testElixirCommand(command: String) {
