@@ -156,15 +156,15 @@
     },
     {
       "comment": "Function call without parenthesis",
-      "match": "([A-Z]\\w+)(\\s*)(\\.)(\\s*)([a-z_]\\w*[!?]?)",
+      "match": "([A-Z]\\w+)\\s*(\\.)\\s*([a-z_]\\w*[!?]?)",
       "captures": {
         "1": {
           "name": "variable.other.constant.elixir"
         },
-        "3": {
+        "2": {
           "name": "punctuation.separator.method.elixir"
         },
-        "5": {
+        "3": {
           "name": "entity.name.function.elixir"
         }
       }
