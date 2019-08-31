@@ -341,7 +341,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "tsc -p ./ && cp elixir-ls/CHANGELOG.md . && cd elixir-ls && mix elixir_ls.release -o ../elixir-ls-release",
+    "vscode:prepublish": "tsc -p ./ && cp elixir-ls/CHANGELOG.md . && cd elixir-ls && mix deps.get && mix elixir_ls.release -o ../elixir-ls-release",
     "compile": "tsc -p ./ && cd elixir-ls && mix elixir_ls.release -o ../elixir-ls-release",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install"
@@ -350,6 +350,7 @@
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.14.4",
     "typescript": "^2.9.2",
+    "vsce": "^1.66.0",
     "vscode": "^1.1.30"
   },
   "dependencies": {

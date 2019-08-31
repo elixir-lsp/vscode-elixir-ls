@@ -78,6 +78,23 @@ git commit ...
 git push my_fork my_new_branch
 ```
 
+You can build and install the extension locally using `vsce` command and `code` CLI.
+
+```
+# Install JS dependencies
+npm i
+
+# Build the extension
+vsce package
+
+# Install it locally
+code --install-extension *.vsix --force
+```
+
+Note that if you have the extension installed from the Visual Studio Marketplace and are also installing a locally
+built package, you may need to disable the `Extensions: Auto Check Updates` setting to prevent your
+local install from being replaced with the Marketplace version.
+
 ## Acknowledgements and related projects
 
 There is another VS Code extension for Elixir, [VSCode Elixir](https://github.com/fr1zle/vscode-elixir). It's powered by [Elixir Sense](https://github.com/msaraiva/elixir_sense), another language "smartness" server similar to ElixirLS. Much of this extension's client code (such as syntax highlighting) was copied directly from VSCode Elixir, for which they deserve all the credit.
