@@ -7,16 +7,20 @@ Features include:
 - Debugger support (requires Erlang >= OTP 19)
 - Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
 - Automatic suggestion for @spec annotations based on Dialyzer's inferred success typings
-- Inline reporting of build warnings and errors (requires Elixir >= 1.6)
+- Inline reporting of build warnings and errors (requires Elixir >= 1.7)
 - Code completion **(suggestions are accepted using tab instead of enter, see below)**
 - Smart automatic closing of code blocks
 - Documentation lookup on hover
 - Go-to-definition
-- Code formatter (requires Elixir >= 1.6. Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
+- Code formatter (requires Elixir >= 1.7. Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
 - Find references to functions and modules (Thanks to @mattbaker)
 - Quick symbol lookup in file (Thanks to @mattbaker)
 
 ![Screenshot](https://raw.githubusercontent.com/elixir-lsp/elixir-ls/master/images/screenshot.png)
+
+## The reason for this fork
+
+This fork started when [Jake Becker's repository](https://github.com/JakeBecker/vscode-elixir-ls) became inactive for an extended period of time.  So we decided to start an active fork to merge dormant PR's and fix issues where possible. We also believe in an open and shared governance model to share the work instead of relying on one person to shoulder the whole burden.
 
 ## Default settings
 
@@ -48,15 +52,7 @@ It may take some getting used to, but I highly recommend leaving `acceptSuggesti
 
 ## Supported versions
 
-Elixir:
-
-- 1.6.0 minimum
-- \>= 1.6.6 recommended
-
-Erlang:
-
-- OTP 18 minimum
-- \>= OTP 20 recommended
+See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the supported Elixir and Erlang versions.
 
 ## Contributing
 
