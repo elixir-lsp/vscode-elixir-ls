@@ -1,6 +1,6 @@
 {
   "name": "elixir-ls",
-  "displayName": "ElixirLS: Elixir support and debugger",
+  "displayName": "ElixirLS Fork: Elixir support and debugger",
   "homepage": "https://github.com/elixir-lsp/elixir-ls",
   "repository": {
     "type": "git",
