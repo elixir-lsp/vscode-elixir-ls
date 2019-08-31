@@ -37,7 +37,7 @@
       }
     },
     "configuration": {
-      "title": "ElixirLS configuration",
+      "title": "ElixirLS",
       "properties": {
         "elixirLS.dialyzerEnabled": {
           "type": "boolean",

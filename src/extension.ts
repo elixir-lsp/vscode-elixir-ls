@@ -56,7 +56,7 @@ export function activate(context: ExtensionContext) {
   // Create the language client and start the client.
   let disposable = new LanguageClient(
     "elixirLS", // langId
-    "ElixirLS Fork", // display name
+    "ElixirLS", // display name
     serverOptions,
     clientOptions
   ).start();
