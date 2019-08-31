@@ -55,8 +55,8 @@ export function activate(context: ExtensionContext) {
 
   // Create the language client and start the client.
   let disposable = new LanguageClient(
-    "ElixirLS",
-    "ElixirLS",
+    "elixirLS", // langId
+    "ElixirLS", // display name
     serverOptions,
     clientOptions
   ).start();
@@ -90,7 +90,7 @@ function testElixir() {
     );
     console.warn(
       `Failed to run 'elixir' command. Current process's PATH: ${
-        process.env["PATH"]
+      process.env["PATH"]
       }`
     );
     return false;
