@@ -11,7 +11,7 @@
   "author": "Jake Becker",
   "license": "MIT",
   "publisher": "elixir-lsp",
-  "version": "0.2.24",
+  "version": "0.3.0",
   "engines": {
     "vscode": "^1.25.1"
   },
@@ -102,6 +102,16 @@
           "type": "boolean",
           "description": "Suggest @spec annotations inline using Dialyzer's inferred success typings (Requires Dialyzer)",
           "default": true
+        },
+        "elixirLS.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VS Code and the Elixir language server."
         }
       }
     },
