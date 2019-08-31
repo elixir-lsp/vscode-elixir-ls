@@ -1,6 +1,6 @@
 # ElixirLS: Elixir support and debugger for VS Code
 
-Provides Elixir language support and debugger. This extension is powered by the [Elixir Language Server (ElixirLS)](https://github.com/JakeBecker/elixir-ls), an Elixir implementation of Microsoft's IDE-agnostic [Language Server Protocol](https://github.com/Microsoft/language-server-protocol) and [VS Code debug protocol](https://code.visualstudio.com/docs/extensionAPI/api-debugging). Visit its page for more information. For a guide to debugger usage in Elixir, read [this blog post](https://medium.com/@JakeBeckerCode/debugging-elixir-in-vs-code-400e21814614).
+Provides Elixir language support and debugger. This extension is powered by the [Elixir Language Server (ElixirLS)](https://github.com/elixir-lsp/elixir-ls), an Elixir implementation of Microsoft's IDE-agnostic [Language Server Protocol](https://github.com/Microsoft/language-server-protocol) and [VS Code debug protocol](https://code.visualstudio.com/docs/extensionAPI/api-debugging). Visit its page for more information. For a guide to debugger usage in Elixir, read [this blog post](https://medium.com/@JakeBeckerCode/debugging-elixir-in-vs-code-400e21814614).
 
 Features include:
 
@@ -16,7 +16,7 @@ Features include:
 - Find references to functions and modules (Thanks to @mattbaker)
 - Quick symbol lookup in file (Thanks to @mattbaker)
 
-![Screenshot](https://raw.githubusercontent.com/JakeBecker/elixir-ls/master/images/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/elixir-lsp/elixir-ls/master/images/screenshot.png)
 
 ## Default settings
 
@@ -62,11 +62,11 @@ Erlang:
 
 Most of the functionality of this extension comes from ElixirLS which is included as a Git submodule in the `elixir-ls` folder. Make sure you clone the repo using `git clone --recursive` or run `git submodule init && git submodule update` after cloning. To launch the extension from VS Code, run the "Launch Extension" launch config.
 
-Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to fork the [ElixirLS](https://github.com/JakeBecker/elixir-ls) repo on Github and push any changes you make to the ElixirLS submodule to your fork. An example of how that might look:
+Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to fork the [ElixirLS](https://github.com/elixir-lsp/elixir-ls) repo on Github and push any changes you make to the ElixirLS submodule to your fork. An example of how that might look:
 
 ```
 # Clone this repo recursively to ensure you get the elixir-ls submodule
-git clone --recursive git@github.com:JakeBecker/vscode-elixir-ls.git
+git clone --recursive git@github.com:elixir-lsp/vscode-elixir-ls.git
 
 # Enter the submodule directory. Now, if you run git commands, they run in the submodule
 cd vscode-elixir-ls/elixir-ls
