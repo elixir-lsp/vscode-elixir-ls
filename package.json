@@ -1,16 +1,16 @@
 {
   "name": "elixir-ls",
   "displayName": "ElixirLS: Elixir support and debugger",
-  "homepage": "https://github.com/JakeBecker/elixir-ls",
+  "homepage": "https://github.com/elixir-lsp/elixir-ls",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JakeBecker/vscode-elixir-ls.git"
+    "url": "https://github.com/elixir-lsp/vscode-elixir-ls.git"
   },
   "icon": "images/logo.png",
   "description": "Elixir support with debugger, autocomplete, and more. Powered by ElixirLS.",
   "author": "Jake Becker",
   "license": "MIT",
-  "publisher": "JakeBecker",
+  "publisher": "elixir-lsp",
   "version": "0.2.24",
   "engines": {
     "vscode": "^1.25.1"
@@ -341,7 +341,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "tsc -p ./ && cp elixir-ls/CHANGELOG.md . && cd elixir-ls && mix elixir_ls.release -o ../elixir-ls-release",
+    "vscode:prepublish": "tsc -p ./ && cp elixir-ls/CHANGELOG.md . && cd elixir-ls && mix deps.get && mix elixir_ls.release -o ../elixir-ls-release",
     "compile": "tsc -p ./ && cd elixir-ls && mix elixir_ls.release -o ../elixir-ls-release",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install"
@@ -350,6 +350,7 @@
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.14.4",
     "typescript": "^2.9.2",
+    "vsce": "^1.66.0",
     "vscode": "^1.1.30"
   },
   "dependencies": {
