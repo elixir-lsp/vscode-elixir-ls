@@ -201,10 +201,6 @@
       "name": "entity.name.function.elixir"
     },
     {
-      "match": "\\b[a-z_]\\w*[!?]?(?=\\s*?\\.?\\s*?\\()",
-      "name": "entity.name.function.elixir"
-    },
-    {
       "match": "\\b[A-Z]\\w*\\b",
       "name": "variable.other.constant.elixir"
     },
