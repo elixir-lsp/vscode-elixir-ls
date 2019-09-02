@@ -185,6 +185,18 @@
       }
     },
     {
+      "comment": "Pipe operator call without parenthesis",
+      "match": "(\\|\\>)\\s*([a-z_]\\w*[!?]?)",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.other.elixir"
+        },
+        "2": {
+          "name": "entity.name.function.elixir"
+        }
+      }
+    },
+    {
       "match": "\\b[a-z_]\\w*[!?]?(?=\\s*?\\.?\\s*?\\()",
       "name": "entity.name.function.elixir"
     },
