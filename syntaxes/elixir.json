@@ -170,6 +170,25 @@
       }
     },
     {
+      "comment": "Erlang Function call without parenthesis",
+      "match": "(\\:\\w+)\\s*(\\.)\\s*([_]?\\w*[!?]?)",
+      "captures": {
+        "1": {
+          "name": "constant.other.symbol.elixir"
+        },
+        "2": {
+          "name": "punctuation.separator.method.elixir"
+        },
+        "3": {
+          "name": "entity.name.function.elixir"
+        }
+      }
+    },
+    {
+      "match": "\\b[a-z_]\\w*[!?]?(?=\\s*?\\.?\\s*?\\()",
+      "name": "entity.name.function.elixir"
+    },
+    {
       "match": "\\b[a-z_]\\w*[!?]?(?=\\s*?\\.?\\s*?\\()",
       "name": "entity.name.function.elixir"
     },
