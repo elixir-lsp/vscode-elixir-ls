@@ -34,6 +34,11 @@
         "editor.trimAutoWhitespace": false,
         "files.trimTrailingWhitespace": true,
         "files.insertFinalNewline": true
+      },
+      "[HTML (EEx)]": {
+        "editor.trimAutoWhitespace": false,
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true
       }
     },
     "configuration": {
