@@ -356,7 +356,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "tsc -p ./ && cp elixir-ls/CHANGELOG.md . && cd elixir-ls && mix deps.get && mix elixir_ls.release -o ../elixir-ls-release",
+    "vscode:prepublish": "./prepublish.bash",
     "compile": "tsc -p ./ && cd elixir-ls && mix elixir_ls.release -o ../elixir-ls-release",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install"
