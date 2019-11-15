@@ -155,6 +155,52 @@
       "name": "variable.language.elixir"
     },
     {
+      "comment": "Function call without parenthesis",
+      "match": "([A-Z]\\w+)\\s*(\\.)\\s*([a-z_]\\w*[!?]?)",
+      "captures": {
+        "1": {
+          "name": "variable.other.constant.elixir"
+        },
+        "2": {
+          "name": "punctuation.separator.method.elixir"
+        },
+        "3": {
+          "name": "entity.name.function.elixir"
+        }
+      }
+    },
+    {
+      "comment": "Erlang Function call without parenthesis",
+      "match": "(\\:\\w+)\\s*(\\.)\\s*([_]?\\w*[!?]?)",
+      "captures": {
+        "1": {
+          "name": "constant.other.symbol.elixir"
+        },
+        "2": {
+          "name": "punctuation.separator.method.elixir"
+        },
+        "3": {
+          "name": "entity.name.function.elixir"
+        }
+      }
+    },
+    {
+      "comment": "Pipe operator call without parenthesis",
+      "match": "(\\|\\>)\\s*([a-z_]\\w*[!?]?)",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.other.elixir"
+        },
+        "2": {
+          "name": "entity.name.function.elixir"
+        }
+      }
+    },
+    {
+      "match": "\\b[a-z_]\\w*[!?]?(?=\\s*?\\.?\\s*?\\()",
+      "name": "entity.name.function.elixir"
+    },
+    {
       "match": "\\b[A-Z]\\w*\\b",
       "name": "variable.other.constant.elixir"
     },
