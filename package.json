@@ -365,8 +365,7 @@
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.14.4",
     "typescript": "^2.9.2",
-    "vsce": "^1.66.0",
-    "vscode": "^1.1.30"
+    "vsce": "^1.66.0"
   },
   "dependencies": {
     "shelljs": "^0.8.3",
