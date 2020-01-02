@@ -1,5 +1,6 @@
 out
 node_modules
+.vscode-test/
 *.vsix
 
 # We store the build artifacts from ElixirLS here
