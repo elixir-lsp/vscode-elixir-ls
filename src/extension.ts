@@ -29,13 +29,13 @@ export function activate(context: ExtensionContext) {
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
-  let serverOptions: ServerOptions = {
+  const serverOptions: ServerOptions = {
     run: serverOpts,
     debug: serverOpts
   };
 
   // Options to control the language client
-  let clientOptions: LanguageClientOptions = {
+  const clientOptions: LanguageClientOptions = {
     // Register the server for Elixir documents
     documentSelector: [
       { language: "elixir", scheme: "file" },
@@ -54,7 +54,7 @@ export function activate(context: ExtensionContext) {
   };
 
   // Create the language client and start the client.
-  let disposable = new LanguageClient(
+  const disposable = new LanguageClient(
     "elixirLS", // langId
     "ElixirLS", // display name
     serverOptions,
@@ -66,7 +66,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-function testElixirCommand(command: String) {
+function testElixirCommand(command: string) {
   try {
     return execSync(`${command} -e ""`);
   } catch {
@@ -75,7 +75,7 @@ function testElixirCommand(command: String) {
 }
 
 function testElixir() {
-  var testResult = testElixirCommand("elixir");
+  let testResult = testElixirCommand("elixir");
   if (testResult === false) {
     // Try finding elixir in the path directly
     const elixirPath = shell.which("elixir");
