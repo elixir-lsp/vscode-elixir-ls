@@ -13,7 +13,7 @@ import {
   LanguageClient,
   LanguageClientOptions,
   RevealOutputChannelOn,
-  ServerOptions,
+  ServerOptions
 } from "vscode-languageclient";
 import { platform } from "os";
 
@@ -89,9 +89,7 @@ function testElixir() {
       "Failed to run 'elixir' command. ElixirLS will probably fail to launch. Logged PATH to Development Console."
     );
     console.warn(
-      `Failed to run 'elixir' command. Current process's PATH: ${
-      process.env["PATH"]
-      }`
+      `Failed to run 'elixir' command. Current process's PATH: ${process.env["PATH"]}`
     );
     return false;
   } else if (testResult.length > 0) {

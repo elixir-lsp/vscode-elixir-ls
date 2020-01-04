@@ -1,7 +1,5 @@
 {
-  "fileTypes": [
-    "eex"
-  ],
+  "fileTypes": ["eex"],
   "name": "EEx",
   "patterns": [
     {
