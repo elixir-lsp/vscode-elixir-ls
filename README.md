@@ -95,6 +95,16 @@ Note that if you have the extension installed from the Visual Studio Marketplace
 built package, you may need to disable the `Extensions: Auto Check Updates` setting to prevent your
 local install from being replaced with the Marketplace version.
 
+### Running the tests locally
+
+You should ensure that the tests run locally before submitting a PR, and if relevant add automated tests in the PR.
+
+```
+npm install
+npm run compile
+npm test
+```
+
 ## Acknowledgements and related projects
 
 There is another VS Code extension for Elixir, [VSCode Elixir](https://github.com/fr1zle/vscode-elixir). It's powered by [Elixir Sense](https://github.com/msaraiva/elixir_sense), another language "smartness" server similar to ElixirLS. Much of this extension's client code (such as syntax highlighting) was copied directly from VSCode Elixir, for which they deserve all the credit.
