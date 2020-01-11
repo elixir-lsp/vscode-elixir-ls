@@ -22,7 +22,7 @@
   "activationEvents": [
     "onLanguage:elixir"
   ],
-  "main": "./out/src/extension",
+  "main": "./out/extension",
   "contributes": {
     "configurationDefaults": {
       "[elixir]": {
