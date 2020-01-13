@@ -56,6 +56,8 @@ function testElixir(): boolean {
   }
 }
 
+export let languageClient: LanguageClient;
+
 export function activate(context: ExtensionContext): void {
   testElixir();
 
@@ -93,14 +95,22 @@ export function activate(context: ExtensionContext): void {
   };
 
   // Create the language client and start the client.
-  const disposable = new LanguageClient(
+  languageClient = new LanguageClient(
     "elixirLS", // langId
     "ElixirLS", // display name
     serverOptions,
     clientOptions
-  ).start();
+  );
+  const disposable = languageClient.start();
 
   // Push the disposable to the context's subscriptions so that the
   // client can be deactivated on extension deactivation
   context.subscriptions.push(disposable);
+}
+
+export function deactivate(): Thenable<void> | undefined {
+  if (!languageClient) {
+    return undefined;
+  }
+  return languageClient.stop();
 }
