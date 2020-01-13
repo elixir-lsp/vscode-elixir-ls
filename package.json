@@ -13,7 +13,7 @@
   "publisher": "elixir-lsp",
   "version": "0.2.28",
   "engines": {
-    "vscode": "^1.25.1"
+    "vscode": "^1.41.1"
   },
   "categories": [
     "Programming Languages",
@@ -22,7 +22,7 @@
   "activationEvents": [
     "onLanguage:elixir"
   ],
-  "main": "./out/src/extension",
+  "main": "./out/extension",
   "contributes": {
     "configurationDefaults": {
       "[elixir]": {
@@ -364,16 +364,39 @@
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^6.14.4",
-    "@types/vscode": "^1.25.1",
+    "@types/node": "^13.1.2",
+    "@types/shelljs": "^0.8.6",
+    "@types/vscode": "^1.41.0",
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
     "glob": "^7.1.6",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
     "mocha": "^6.2.2",
-    "typescript": "^2.9.2",
-    "vsce": "^1.66.0",
+    "prettier": "1.19.1",
+    "typescript": "^3.7.4",
+    "vsce": "^1.71.0",
     "vscode-test": "^1.3.0"
   },
   "dependencies": {
     "shelljs": "^0.8.3",
-    "vscode-languageclient": "^4.4.2"
+    "vscode-languageclient": "^5.2.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,json,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

@@ -13,11 +13,52 @@ import {
   LanguageClient,
   LanguageClientOptions,
   RevealOutputChannelOn,
-  ServerOptions,
+  ServerOptions
 } from "vscode-languageclient";
 import { platform } from "os";
 
-export function activate(context: ExtensionContext) {
+function testElixirCommand(command: string): false | Buffer {
+  try {
+    return execSync(`${command} -e ""`);
+  } catch {
+    return false;
+  }
+}
+
+function testElixir(): boolean {
+  let testResult = testElixirCommand("elixir");
+  if (testResult === false) {
+    // Try finding elixir in the path directly
+    const elixirPath = shell.which("elixir");
+    if (elixirPath) {
+      testResult = testElixirCommand(elixirPath);
+    }
+  }
+
+  if (!testResult) {
+    vscode.window.showErrorMessage(
+      "Failed to run 'elixir' command. ElixirLS will probably fail to launch. Logged PATH to Development Console."
+    );
+    console.warn(
+      `Failed to run 'elixir' command. Current process's PATH: ${process.env["PATH"]}`
+    );
+    return false;
+  } else if (testResult.length > 0) {
+    vscode.window.showErrorMessage(
+      "Running 'elixir' command caused extraneous print to stdout. See VS Code's developer console for details."
+    );
+    console.warn(
+      "Running 'elixir -e \"\"' printed to stdout:\n" + testResult.toString()
+    );
+    return false;
+  } else {
+    return true;
+  }
+}
+
+export let languageClient: LanguageClient;
+
+export function activate(context: ExtensionContext): void {
   testElixir();
 
   const command =
@@ -29,13 +70,13 @@ export function activate(context: ExtensionContext) {
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
-  let serverOptions: ServerOptions = {
+  const serverOptions: ServerOptions = {
     run: serverOpts,
     debug: serverOpts
   };
 
   // Options to control the language client
-  let clientOptions: LanguageClientOptions = {
+  const clientOptions: LanguageClientOptions = {
     // Register the server for Elixir documents
     documentSelector: [
       { language: "elixir", scheme: "file" },
@@ -54,55 +95,22 @@ export function activate(context: ExtensionContext) {
   };
 
   // Create the language client and start the client.
-  let disposable = new LanguageClient(
+  languageClient = new LanguageClient(
     "elixirLS", // langId
     "ElixirLS", // display name
     serverOptions,
     clientOptions
-  ).start();
+  );
+  const disposable = languageClient.start();
 
   // Push the disposable to the context's subscriptions so that the
   // client can be deactivated on extension deactivation
   context.subscriptions.push(disposable);
 }
 
-function testElixirCommand(command: String) {
-  try {
-    return execSync(`${command} -e ""`);
-  } catch {
-    return false;
+export function deactivate(): Thenable<void> | undefined {
+  if (!languageClient) {
+    return undefined;
   }
-}
-
-function testElixir() {
-  var testResult = testElixirCommand("elixir");
-  if (testResult === false) {
-    // Try finding elixir in the path directly
-    const elixirPath = shell.which("elixir");
-    if (elixirPath) {
-      testResult = testElixirCommand(elixirPath);
-    }
-  }
-
-  if (!testResult) {
-    vscode.window.showErrorMessage(
-      "Failed to run 'elixir' command. ElixirLS will probably fail to launch. Logged PATH to Development Console."
-    );
-    console.warn(
-      `Failed to run 'elixir' command. Current process's PATH: ${
-      process.env["PATH"]
-      }`
-    );
-    return false;
-  } else if (testResult.length > 0) {
-    vscode.window.showErrorMessage(
-      "Running 'elixir' command caused extraneous print to stdout. See VS Code's developer console for details."
-    );
-    console.warn(
-      "Running 'elixir -e \"\"' printed to stdout:\n" + testResult.toString()
-    );
-    return false;
-  } else {
-    return true;
-  }
+  return languageClient.stop();
 }
