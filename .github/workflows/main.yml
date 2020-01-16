@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  build:
+  build-on-ubuntu-latest:
     runs-on: ubuntu-latest
 
     steps:
@@ -42,3 +42,36 @@ jobs:
           npm test
         env:
           DISPLAY: :99.0
+
+  build-on-macos-latest:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+      - name: Checkout submodules
+        run: |
+          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+          git submodule sync --recursive
+          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "8.x"
+      - name: Install Elixir
+        run: |
+          brew update
+          brew install elixir
+          mix local.rebar --force
+          mix local.hex --force
+      - name: Resolve elixir-ls dependencies
+        run: |
+          cd elixir-ls
+          mix deps.get
+      - name: Resolve vscode-elixir-ls dependencies
+        run: |
+          npm install
+          npm run compile
+      - name: Run tests
+        run: |
+          npm test
