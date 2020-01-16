@@ -107,6 +107,7 @@
     },
     {
       "comment": "Function with parameters",
+      "name": "meta.definition.function.elixir",
       "begin": "\\b(defp?|defmacrop?)\\b\\s*([_$a-z][$\\w]*[!?]?)\\s*\\(",
       "beginCaptures": {
         "1": {
@@ -128,6 +129,7 @@
     },
     {
       "comment": "Function without parameters",
+      "name": "meta.definition.function.elixir",
       "match": "\\b(defp?|defmacrop?)\\b\\s*([_$a-z][$\\w]*[!?]?)",
       "captures": {
         "1": {
