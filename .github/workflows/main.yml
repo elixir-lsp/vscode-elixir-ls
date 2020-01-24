@@ -1,0 +1,44 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+      - name: Checkout submodules
+        run: |
+          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+          git submodule sync --recursive
+          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "8.x"
+      - name: Setup Elixir
+        uses: actions/setup-elixir@v1
+        with:
+          elixir-version: 1.9.4
+          otp-version: 22.2
+      - name: Install Xvfb
+        run: |
+          sudo apt-get install xvfb
+      - name: Start Xvfb
+        run: |
+          /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+      - name: Resolve elixir-ls dependencies
+        run: |
+          cd elixir-ls
+          mix deps.get
+      - name: Resolve vscode-elixir-ls dependencies
+        run: |
+          npm install
+          npm run compile
+      - name: Run tests
+        run: |
+          npm test
+        env:
+          DISPLAY: :99.0
