@@ -78,11 +78,11 @@ git commit ...
 git push my_fork my_new_branch
 ```
 
-You can build and install the extension locally using `vsce` command and `code` CLI.
+You can build and install the extension locally using `vsce` command and `code` CLI. From the vscode-elixir-ls project root run the following commands:
 
 ```
 # Install JS dependencies
-npm i
+npm install
 
 # Build the extension
 vsce package
