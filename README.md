@@ -1,4 +1,4 @@
-# ElixirLS: Elixir support and debugger for VS Code [![Actions Status](https://github.com/elixir-lsp/vscode-elixir-ls/workflows/CI/badge.svg)](https://github.com/elixir-lsp/vscode-elixir-ls/actions)
+# ElixirLS: Elixir support and debugger for VS Code [![Actions Status](https://img.shields.io/github/workflow/status/elixir-lsp/vscode-elixir-ls/CI.svg)](https://github.com/elixir-lsp/vscode-elixir-ls/actions)
 
 Provides Elixir language support and debugger. This extension is powered by the [Elixir Language Server (ElixirLS)](https://github.com/elixir-lsp/elixir-ls), an Elixir implementation of Microsoft's IDE-agnostic [Language Server Protocol](https://github.com/Microsoft/language-server-protocol) and [VS Code debug protocol](https://code.visualstudio.com/docs/extensionAPI/api-debugging). Visit its page for more information. For a guide to debugger usage in Elixir, read [this blog post](https://medium.com/@JakeBeckerCode/debugging-elixir-in-vs-code-400e21814614).
 
