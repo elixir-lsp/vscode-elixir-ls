@@ -162,7 +162,7 @@
           "name": "punctuation.separator.method.elixir"
         },
         "3": {
-          "name": "entity.name.function.elixir"
+          "name": "meta.function-call"
         }
       }
     },
@@ -177,7 +177,7 @@
           "name": "punctuation.separator.method.elixir"
         },
         "3": {
-          "name": "entity.name.function.elixir"
+          "name": "meta.function-call"
         }
       }
     },
@@ -189,13 +189,13 @@
           "name": "keyword.operator.other.elixir"
         },
         "2": {
-          "name": "entity.name.function.elixir"
+          "name": "meta.function-call"
         }
       }
     },
     {
       "match": "\\b[a-z_]\\w*[!?]?(?=\\s*?\\.?\\s*?\\()",
-      "name": "entity.name.function.elixir"
+      "name": "meta.function-call"
     },
     {
       "match": "\\b[A-Z]\\w*\\b",
