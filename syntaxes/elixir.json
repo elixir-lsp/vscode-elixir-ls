@@ -108,6 +108,7 @@
     {
       "comment": "Function with parameters",
       "begin": "\\b(defp?|defmacrop?)\\b\\s*([_$a-z][$\\w]*[!?]?)\\s*\\(",
+      "name": "meta.function.definition.elixir",
       "beginCaptures": {
         "1": {
           "name": "keyword.control.elixir"
@@ -129,6 +130,7 @@
     {
       "comment": "Function without parameters",
       "match": "\\b(defp?|defmacrop?)\\b\\s*([_$a-z][$\\w]*[!?]?)",
+      "name": "meta.function.definition.elixir",
       "captures": {
         "1": {
           "name": "keyword.control.elixir"
@@ -162,7 +164,7 @@
           "name": "punctuation.separator.method.elixir"
         },
         "3": {
-          "name": "entity.name.function.elixir"
+          "name": "entity.name.function-call.elixir"
         }
       }
     },
@@ -177,7 +179,7 @@
           "name": "punctuation.separator.method.elixir"
         },
         "3": {
-          "name": "entity.name.function.elixir"
+          "name": "entity.name.function-call.elixir"
         }
       }
     },
@@ -189,13 +191,13 @@
           "name": "keyword.operator.other.elixir"
         },
         "2": {
-          "name": "entity.name.function.elixir"
+          "name": "entity.name.function-call.elixir"
         }
       }
     },
     {
       "match": "\\b[a-z_]\\w*[!?]?(?=\\s*?\\.?\\s*?\\()",
-      "name": "entity.name.function.elixir"
+      "name": "entity.name.function-call.elixir"
     },
     {
       "match": "\\b[A-Z]\\w*\\b",
