@@ -15,7 +15,7 @@ import {
   RevealOutputChannelOn,
   ServerOptions
 } from "vscode-languageclient";
-import { platform } from "os";
+import * as os from "os";
 
 function testElixirCommand(command: string): false | Buffer {
   try {
@@ -63,8 +63,10 @@ export function activate(context: ExtensionContext): void {
   detectConflictingExtension("mjmcloug.vscode-elixir");
   detectConflictingExtension("jakebecker.elixir-ls");
 
+  vscode.commands.registerCommand('extension.copyDebugInfo', copyDebugInfo);
+
   const command =
-    platform() == "win32" ? "language_server.bat" : "language_server.sh";
+    os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
 
   const serverOpts = {
     command: context.asAbsolutePath("./elixir-ls-release/" + command)
@@ -122,4 +124,18 @@ function detectConflictingExtension(extensionId: string) {
   if (extension) {
     vscode.window.showErrorMessage('Warning: ' + extensionId + ' is not compatible with ElixirLS Fork, please uninstall ' + extensionId);
   }
+}
+
+function copyDebugInfo() {
+  const elixirVersion = execSync(`elixir --version`);
+  const extension = vscode.extensions.getExtension('elixir-lsp.elixir-ls');
+
+  const message = `
+  * Elixir & Erlang versions (elixir --version): ${elixirVersion}
+  * VSCode ElixirLS Fork version: ${extension.packageJSON.version}
+  * Operating System Version: ${os.platform()} ${os.release()}
+  `
+
+  vscode.window.showInformationMessage(`Copied to clipboard: ${message}`);
+  vscode.env.clipboard.writeText(message);
 }
