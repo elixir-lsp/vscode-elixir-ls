@@ -60,6 +60,8 @@ export let languageClient: LanguageClient;
 
 export function activate(context: ExtensionContext): void {
   testElixir();
+  detectConflictingExtension("mjmcloug.vscode-elixir");
+  detectConflictingExtension("jakebecker.elixir-ls");
 
   const command =
     platform() == "win32" ? "language_server.bat" : "language_server.sh";
@@ -113,4 +115,11 @@ export function deactivate(): Thenable<void> | undefined {
     return undefined;
   }
   return languageClient.stop();
+}
+
+function detectConflictingExtension(extensionId: string) {
+  const extension = vscode.extensions.getExtension(extensionId);
+  if (extension) {
+    vscode.window.showErrorMessage('Warning: ' + extensionId + ' is not compatible with ElixirLS Fork, please uninstall ' + extensionId);
+  }
 }
