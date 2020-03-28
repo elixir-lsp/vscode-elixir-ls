@@ -352,6 +352,12 @@
           }
         ]
       }
+    ],
+    "commands": [
+      {
+        "command": "extension.copyDebugInfo",
+        "title": "ElixirLS Fork: Copy Debug Info"
+      }
     ]
   },
   "scripts": {
