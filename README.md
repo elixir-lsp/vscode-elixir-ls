@@ -4,6 +4,7 @@ Provides Elixir language support and debugger. This extension is powered by the 
 
 Features include:
 
+- Auto-completion (note that it is not possible to get autocomplete on a variable since we don't have that type of type info)
 - Debugger support (requires Erlang >= OTP 19)
 - Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
 - Automatic suggestion for @spec annotations based on Dialyzer's inferred success typings
