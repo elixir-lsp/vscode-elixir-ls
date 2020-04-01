@@ -1,6 +1,6 @@
 {
   "name": "elixir-ls",
-  "displayName": "ElixirLS Fork: Elixir support and debugger",
+  "displayName": "ElixirLS: Elixir support and debugger",
   "homepage": "https://github.com/elixir-lsp/elixir-ls",
   "repository": {
     "type": "git",
@@ -8,9 +8,9 @@
   },
   "icon": "images/logo.png",
   "description": "Elixir support with debugger, autocomplete, and more. Powered by ElixirLS.",
-  "author": "Jake Becker",
+  "author": "The Elixir community",
   "license": "MIT",
-  "publisher": "elixir-lsp",
+  "publisher": "JakeBecker",
   "version": "0.3.2",
   "engines": {
     "vscode": "^1.41.1"
