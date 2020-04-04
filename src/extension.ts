@@ -61,7 +61,7 @@ export let languageClient: LanguageClient;
 export function activate(context: ExtensionContext): void {
   testElixir();
   detectConflictingExtension("mjmcloug.vscode-elixir");
-  detectConflictingExtension("jakebecker.elixir-ls");
+  detectConflictingExtension("elixir-lsp.elixir-ls");
 
   vscode.commands.registerCommand('extension.copyDebugInfo', copyDebugInfo);
 
