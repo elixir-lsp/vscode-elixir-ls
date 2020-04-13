@@ -3,7 +3,7 @@ import * as assert from "assert";
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from "vscode";
-import { languageClient } from "../../extension";
+import { defaultClient } from "../../extension";
 
 let extension: vscode.Extension<void>;
 
@@ -17,6 +17,6 @@ suite("Extension Test Suite", () => {
 
   test("extention is available", async () => {
     assert.ok(extension.isActive);
-    assert.ok(languageClient);
+    assert.ok(defaultClient);
   });
 });

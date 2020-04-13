@@ -8,7 +8,7 @@ import * as vscode from "vscode";
 import { execSync } from "child_process";
 import * as shell from "shelljs";
 
-import { workspace, ExtensionContext } from "vscode";
+import { workspace, ExtensionContext, WorkspaceFolder, Uri } from "vscode";
 import {
   LanguageClient,
   LanguageClientOptions,
@@ -16,6 +16,10 @@ import {
   ServerOptions
 } from "vscode-languageclient";
 import * as os from "os";
+
+export let defaultClient: LanguageClient;
+const clients: Map<string, LanguageClient> = new Map();
+let _sortedWorkspaceFolders: string[] | undefined;
 
 function testElixirCommand(command: string): false | Buffer {
   try {
@@ -56,7 +60,58 @@ function testElixir(): boolean {
   }
 }
 
-export let languageClient: LanguageClient;
+function detectConflictingExtension(extensionId: string): void {
+  const extension = vscode.extensions.getExtension(extensionId);
+  if (extension) {
+    vscode.window.showErrorMessage('Warning: ' + extensionId + ' is not compatible with ElixirLS, please uninstall ' + extensionId);
+  }
+}
+
+function copyDebugInfo(): void {
+  const elixirVersion = execSync(`elixir --version`);
+  const extension = vscode.extensions.getExtension('jakebecker.elixir-ls');
+
+  const message = `
+  * Elixir & Erlang versions (elixir --version): ${elixirVersion}
+  * VSCode ElixirLS version: ${extension.packageJSON.version}
+  * Operating System Version: ${os.platform()} ${os.release()}
+  `
+
+  vscode.window.showInformationMessage(`Copied to clipboard: ${message}`);
+  vscode.env.clipboard.writeText(message);
+}
+
+function sortedWorkspaceFolders(): string[] {
+	if (_sortedWorkspaceFolders === void 0) {
+		_sortedWorkspaceFolders = workspace.workspaceFolders ? workspace.workspaceFolders.map(folder => {
+			let result = folder.uri.toString();
+			if (result.charAt(result.length - 1) !== '/') {
+				result = result + '/';
+			}
+			return result;
+		}).sort(
+			(a, b) => {
+				return a.length - b.length;
+			}
+		) : [];
+	}
+	return _sortedWorkspaceFolders;
+}
+workspace.onDidChangeWorkspaceFolders(() => _sortedWorkspaceFolders = undefined);
+
+function getOuterMostWorkspaceFolder(folder: WorkspaceFolder): WorkspaceFolder {
+	const sorted = sortedWorkspaceFolders();
+	for (const element of sorted) {
+		let uri = folder.uri.toString();
+		if (uri.charAt(uri.length - 1) !== '/') {
+			uri = uri + '/';
+		}
+		if (uri.startsWith(element)) {
+			return workspace.getWorkspaceFolder(Uri.parse(element))!;
+		}
+	}
+	return folder;
+}
 
 export function activate(context: ExtensionContext): void {
   testElixir();
@@ -104,44 +159,81 @@ export function activate(context: ExtensionContext): void {
     }
   };
 
-  // Create the language client and start the client.
-  languageClient = new LanguageClient(
-    "elixirLS", // langId
-    "ElixirLS", // display name
-    serverOptions,
-    clientOptions
-  );
-  const disposable = languageClient.start();
+  function didOpenTextDocument(document: vscode.TextDocument): void {
+    // We are only interested in elixir files
+    if (document.languageId !== 'elixir') {
+      return;
+    }
 
-  // Push the disposable to the context's subscriptions so that the
-  // client can be deactivated on extension deactivation
-  context.subscriptions.push(disposable);
-}
+    const uri = document.uri;
+    // Untitled files go to a default client.
+    if (uri.scheme === 'untitled' && !defaultClient) {
+      // Create the language client and start the client.
+      defaultClient = new LanguageClient(
+        "elixirLS", // langId
+        "ElixirLS", // display name
+        serverOptions,
+        clientOptions
+      );
+      const disposable = defaultClient.start();
 
-export function deactivate(): Thenable<void> | undefined {
-  if (!languageClient) {
-    return undefined;
+      // Push the disposable to the context's subscriptions so that the
+      // client can be deactivated on extension deactivation
+      context.subscriptions.push(disposable);
+      return;
+    }
+
+    let folder = workspace.getWorkspaceFolder(uri);
+    // Files outside a folder can't be handled. This might depend on the language.
+    // Single file languages like JSON might handle files outside the workspace folders.
+    if (!folder) {
+      return;
+    }
+
+    // If we have nested workspace folders we only start a server on the outer most workspace folder.
+    folder = getOuterMostWorkspaceFolder(folder);
+
+    if (!clients.has(folder.uri.toString())) {
+      const workspaceClientOptions: LanguageClientOptions = Object.assign({}, clientOptions, {
+        documentSelector: [
+          { language: "elixir", scheme: "file", pattern: `${folder.uri.fsPath}/**/*` },
+          { language: "elixir", scheme: "untitled", pattern: `${folder.uri.fsPath}/**/*` }
+        ],
+        workspaceFolder: folder
+      });
+
+      const client = new LanguageClient(
+        "elixirLS", // langId
+        "ElixirLS", // display name
+        serverOptions,
+        workspaceClientOptions
+      );
+      const disposable = client.start();
+      context.subscriptions.push(disposable);
+      clients.set(folder.uri.toString(), client);
+    }
   }
-  return languageClient.stop();
+
+  workspace.onDidOpenTextDocument(didOpenTextDocument);
+  workspace.textDocuments.forEach(didOpenTextDocument);
+  workspace.onDidChangeWorkspaceFolders((event) => {
+    for (const folder of event.removed) {
+      const client = clients.get(folder.uri.toString());
+      if (client) {
+        clients.delete(folder.uri.toString());
+        client.stop();
+      }
+    }
+  });
 }
 
-function detectConflictingExtension(extensionId: string) {
-  const extension = vscode.extensions.getExtension(extensionId);
-  if (extension) {
-    vscode.window.showErrorMessage('Warning: ' + extensionId + ' is not compatible with ElixirLS, please uninstall ' + extensionId);
+export function deactivate(): Thenable<void> {
+  const promises: Thenable<void>[] = [];
+  if (defaultClient) {
+    promises.push(defaultClient.stop());
   }
-}
-
-function copyDebugInfo() {
-  const elixirVersion = execSync(`elixir --version`);
-  const extension = vscode.extensions.getExtension('jakebecker.elixir-ls');
-
-  const message = `
-  * Elixir & Erlang versions (elixir --version): ${elixirVersion}
-  * VSCode ElixirLS version: ${extension.packageJSON.version}
-  * Operating System Version: ${os.platform()} ${os.release()}
-  `
-
-  vscode.window.showInformationMessage(`Copied to clipboard: ${message}`);
-  vscode.env.clipboard.writeText(message);
+  for (const client of clients.values()) {
+    promises.push(client.stop());
+  }
+  return Promise.all(promises).then(() => undefined);
 }
