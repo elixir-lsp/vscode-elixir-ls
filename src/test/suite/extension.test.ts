@@ -11,7 +11,7 @@ suite("Extension Test Suite", () => {
   vscode.window.showInformationMessage("Start all tests.");
 
   suiteSetup(async () => {
-    extension = vscode.extensions.getExtension("elixir-lsp.elixir-ls");
+    extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
     await extension.activate();
   });
 

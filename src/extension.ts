@@ -128,7 +128,7 @@ function detectConflictingExtension(extensionId: string) {
 
 function copyDebugInfo() {
   const elixirVersion = execSync(`elixir --version`);
-  const extension = vscode.extensions.getExtension('elixir-lsp.elixir-ls');
+  const extension = vscode.extensions.getExtension('jakebecker.elixir-ls');
 
   const message = `
   * Elixir & Erlang versions (elixir --version): ${elixirVersion}
