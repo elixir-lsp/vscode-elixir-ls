@@ -172,6 +172,16 @@
         "language": "HTML (EEx)",
         "scopeName": "text.html.elixir",
         "path": "./syntaxes/html (eex).json"
+      },
+      {
+        "scopeName": "markdown.elixir.codeblock",
+        "path": "./syntaxes/codeblock.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.elixir": "source.elixir"
+        }
       }
     ],
     "breakpoints": [
