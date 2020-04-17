@@ -32,12 +32,14 @@
         "editor.formatOnType": true,
         "editor.trimAutoWhitespace": false,
         "files.trimTrailingWhitespace": true,
-        "files.insertFinalNewline": true
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true
       },
       "[HTML (EEx)]": {
         "editor.trimAutoWhitespace": false,
         "files.trimTrailingWhitespace": true,
-        "files.insertFinalNewline": true
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true
       }
     },
     "configuration": {
