@@ -124,7 +124,7 @@ export function deactivate(): Thenable<void> | undefined {
 function detectConflictingExtension(extensionId: string) {
   const extension = vscode.extensions.getExtension(extensionId);
   if (extension) {
-    vscode.window.showErrorMessage('Warning: ' + extensionId + ' is not compatible with ElixirLS Fork, please uninstall ' + extensionId);
+    vscode.window.showErrorMessage('Warning: ' + extensionId + ' is not compatible with ElixirLS, please uninstall ' + extensionId);
   }
 }
 
@@ -134,7 +134,7 @@ function copyDebugInfo() {
 
   const message = `
   * Elixir & Erlang versions (elixir --version): ${elixirVersion}
-  * VSCode ElixirLS Fork version: ${extension.packageJSON.version}
+  * VSCode ElixirLS version: ${extension.packageJSON.version}
   * Operating System Version: ${os.platform()} ${os.release()}
   `
 
