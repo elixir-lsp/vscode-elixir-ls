@@ -8,12 +8,11 @@ If the language server fails to launch, the problem is most likely in ElixirLS, 
 
 ### Environment
 
-Most of this can be filled out by running the VSCode command (by default bound to Ctrl+Shift+P) "ElixirLS Fork: Copy Debug Info"
+Most of this can be filled out by running the VSCode command (by default bound to Ctrl+Shift+P) "ElixirLS: Copy Debug Info"
 
 - Elixir & Erlang versions (elixir --version):
-- VSCode ElixirLS Fork version:
+- VSCode ElixirLS version:
 - Operating System Version:
-- If using VSCode, are you using "ElixirLS Fork: Elixir support and debugger" (note that it has "Fork" in the name)?
 
 ### Troubleshooting
 
