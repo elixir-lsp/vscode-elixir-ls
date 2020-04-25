@@ -22,3 +22,7 @@ code --install-extension ./elixir-ls-0.2.44.vsix  --force
 https://code.visualstudio.com/api/working-with-extensions/publishing-extension
 
 Personal Access Token (PAT) direct link: https://dev.azure.com/elixir-lsp/_usersSettings/tokens
+
+### VSCode
+
+Run "Developer: Inspect Editor Tokens and Scopes" when you want to debug the textmate grammar
