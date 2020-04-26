@@ -152,7 +152,8 @@
           "HTML (EEx)"
         ],
         "extensions": [
-          ".html.eex"
+          ".html.eex",
+          ".html.leex"
         ],
         "configuration": "./eex-language-configuration.json"
       }
