@@ -12,7 +12,7 @@
       ]
     }
   },
-  "name": "HTML (EEx)",
+  "name": "HTML (Embedded Elixir)",
   "patterns": [
     {
       "include": "text.elixir"

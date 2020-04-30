@@ -34,7 +34,7 @@
         "files.trimTrailingWhitespace": true,
         "files.insertFinalNewline": true
       },
-      "[HTML (EEx)]": {
+      "[html-eex]": {
         "editor.trimAutoWhitespace": false,
         "files.trimTrailingWhitespace": true,
         "files.insertFinalNewline": true
@@ -136,8 +136,9 @@
         "configuration": "./elixir-language-configuration.json"
       },
       {
-        "id": "EEx",
+        "id": "eex",
         "aliases": [
+          "Embedded Elixir",
           "EEx",
           "eex"
         ],
@@ -147,8 +148,9 @@
         "configuration": "./eex-language-configuration.json"
       },
       {
-        "id": "HTML (EEx)",
+        "id": "html-eex",
         "aliases": [
+          "HTML (Embedded Elixir)",
           "HTML (EEx)"
         ],
         "extensions": [
@@ -165,14 +167,14 @@
         "path": "./syntaxes/elixir.json"
       },
       {
-        "language": "EEx",
+        "language": "eex",
         "scopeName": "text.elixir",
         "path": "./syntaxes/eex.json"
       },
       {
-        "language": "HTML (EEx)",
+        "language": "html-eex",
         "scopeName": "text.html.elixir",
-        "path": "./syntaxes/html (eex).json"
+        "path": "./syntaxes/html-eex.json"
       }
     ],
     "breakpoints": [
