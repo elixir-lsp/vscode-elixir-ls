@@ -17,12 +17,14 @@ code --install-extension ./elixir-ls-0.2.44.vsix  --force
 - Update the release on github with the elixir-ls.zip file
 - Update forum announcement post: https://elixirforum.com/t/introducing-elixirls-the-elixir-language-server/5857
 
-### References
+## References
 
 https://code.visualstudio.com/api/working-with-extensions/publishing-extension
 
 Personal Access Token (PAT) direct link: https://dev.azure.com/elixir-lsp/_usersSettings/tokens
 
-### VSCode
+https://code.visualstudio.com/api/language-extensions/embedded-languages
+
+## VSCode
 
 Run "Developer: Inspect Editor Tokens and Scopes" when you want to debug the textmate grammar
