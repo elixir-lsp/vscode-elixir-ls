@@ -86,7 +86,11 @@ export function activate(context: ExtensionContext): void {
     // Register the server for Elixir documents
     documentSelector: [
       { language: "elixir", scheme: "file" },
-      { language: "elixir", scheme: "untitled" }
+      { language: "elixir", scheme: "untitled" },
+      { language: "eex", scheme: "file" },
+      { language: "eex", scheme: "untitled" },
+      { language: "html-eex", scheme: "file" },
+      { language: "html-eex", scheme: "untitled" }
     ],
     // Don't focus the Output pane on errors because request handler errors are no big deal
     revealOutputChannelOn: RevealOutputChannelOn.Never,

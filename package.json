@@ -20,7 +20,9 @@
     "Debuggers"
   ],
   "activationEvents": [
-    "onLanguage:elixir"
+    "onLanguage:elixir",
+    "onLanguage:eex",
+    "onLanguage:html-eex"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -143,7 +145,8 @@
           "eex"
         ],
         "extensions": [
-          ".eex"
+          ".eex",
+          ".leex"
         ],
         "configuration": "./eex-language-configuration.json"
       },
