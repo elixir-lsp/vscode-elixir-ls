@@ -1,17 +1,17 @@
 {
   "name": "elixir-ls",
-  "displayName": "ElixirLS: Elixir support and debugger",
+  "displayName": "ElixirLS Fork: DEPRECATED (use original extension)",
   "homepage": "https://github.com/elixir-lsp/elixir-ls",
   "repository": {
     "type": "git",
     "url": "https://github.com/elixir-lsp/vscode-elixir-ls.git"
   },
   "icon": "images/logo.png",
-  "description": "Elixir support with debugger, autocomplete, and more. Powered by ElixirLS.",
+  "description": "Deprecated. Use this instead: https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls",
   "author": "The Elixir community",
   "license": "MIT",
   "publisher": "elixir-lsp",
-  "version": "0.3.999",
+  "version": "0.3.9999",
   "engines": {
     "vscode": "^1.41.1"
   },
