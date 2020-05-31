@@ -57,6 +57,16 @@ It may take some getting used to, but I highly recommend leaving `acceptSuggesti
 
 See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the supported Elixir and Erlang versions.
 
+## Debugging
+
+### Check ElixirLS Output
+
+Check the output log by opening `View > Output` and selecting "ElixirLS" in the dropdown.
+
+### Check the Developer Tools
+
+Check the developer console by opening `Help > Toggle Developer Tools` and include any errors that look relevant.
+
 ## Contributing
 
 Most of the functionality of this extension comes from ElixirLS which is included as a Git submodule in the `elixir-ls` folder. Make sure you clone the repo using `git clone --recursive` or run `git submodule init && git submodule update` after cloning. To launch the extension from VS Code, run the "Launch Extension" launch config.
