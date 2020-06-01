@@ -29,7 +29,7 @@ The original repository has now been deprecated in favor of this one. Future upd
 
 ElixirLS is opinionated and sets the following default settings for Elixir files:
 
-```json
+```jsonc
 {
   // Based on Elixir formatter's style
   "editor.insertSpaces": true,
