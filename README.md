@@ -29,7 +29,7 @@ The original repository has now been deprecated in favor of this one. Future upd
 
 ElixirLS is opinionated and sets the following default settings for Elixir files:
 
-```
+```json
 {
   // Based on Elixir formatter's style
   "editor.insertSpaces": true,
@@ -69,14 +69,48 @@ Check the developer console by opening `Help > Toggle Developer Tools` and inclu
 
 ## Contributing
 
-Most of the functionality of this extension comes from ElixirLS which is included as a Git submodule in the `elixir-ls` folder. Make sure you clone the repo using `git clone --recursive` or run `git submodule init && git submodule update` after cloning. To launch the extension from VS Code, run the "Launch Extension" launch config.
+### Installation
 
-Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to fork the [ElixirLS](https://github.com/elixir-lsp/elixir-ls) repo on Github and push any changes you make to the ElixirLS submodule to your fork. An example of how that might look:
-
-```
+```shell
 # Clone this repo recursively to ensure you get the elixir-ls submodule
 git clone --recursive git@github.com:elixir-lsp/vscode-elixir-ls.git
 
+# Fetch vscode-elixir-ls dependencies
+cd vscode-elixir-ls
+npm install
+
+# Fetch elixir-ls dependencies
+cd elixir-ls
+asdf install # required for asdf users, or remove .tool-versions to use global asdf settings
+mix deps.get
+```
+
+To launch the extension from VS Code, run the "Launch Extension" launch configuration from [Run view](https://code.visualstudio.com/docs/editor/debugging#_run-view) or press F5.
+
+Alternatively, you can build and install the extension locally using `vsce` command and `code` CLI.
+
+```
+# Navigate to vscode-elixir-ls project root
+cd ..
+
+# Build the extension
+npx vsce package
+
+# Install it locally
+code --install-extension *.vsix --force
+```
+
+Note that if you have the extension installed from the Visual Studio Marketplace and are also installing a locally
+built package, you may need to disable the [Extensions: Auto Check Updates](https://code.visualstudio.com/docs/editor/extension-gallery#_extension-autoupdate) setting to prevent your
+local install from being replaced with the Marketplace version.
+
+### `elixir-ls` submodule
+
+Most of the functionality of this extension comes from ElixirLS which is included as a Git submodule in the `elixir-ls` folder. Make sure you clone the repo using `git clone --recursive` or run `git submodule init && git submodule update` after cloning.
+
+Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to fork the [ElixirLS](https://github.com/elixir-lsp/elixir-ls) repo on Github and push any changes you make to the ElixirLS submodule to your fork. An example of how that might look:
+
+```shell
 # Enter the submodule directory. Now, if you run git commands, they run in the submodule
 cd vscode-elixir-ls/elixir-ls
 
@@ -91,28 +125,11 @@ git commit ...
 git push my_fork my_new_branch
 ```
 
-You can build and install the extension locally using `vsce` command and `code` CLI. From the vscode-elixir-ls project root run the following commands:
-
-```
-# Install JS dependencies
-npm install
-
-# Build the extension
-vsce package
-
-# Install it locally
-code --install-extension *.vsix --force
-```
-
-Note that if you have the extension installed from the Visual Studio Marketplace and are also installing a locally
-built package, you may need to disable the `Extensions: Auto Check Updates` setting to prevent your
-local install from being replaced with the Marketplace version.
-
 ### Running the tests locally
 
 You should ensure that the tests run locally before submitting a PR, and if relevant add automated tests in the PR.
 
-```
+```shell
 npm install
 npm run compile
 npm test
