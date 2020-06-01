@@ -81,27 +81,27 @@ npm install
 
 # Fetch elixir-ls dependencies
 cd elixir-ls
-asdf install # required for asdf users
+asdf install # required for asdf users, or remove .tool-versions to use global asdf settings
 mix deps.get
 ```
 
-To launch the extension from VS Code, run the "Launch Extension" launch configuration from the [Run view](https://code.visualstudio.com/docs/editor/debugging#_run-view) or press F5.
+To launch the extension from VS Code, run the "Launch Extension" launch configuration from [Run view](https://code.visualstudio.com/docs/editor/debugging#_run-view) or press F5.
 
-Alternatively, you can build and install the extension locally using `vsce` command and `code` CLI. In `vscode-elixir-ls` project root, run the following commands:
+Alternatively, you can build and install the extension locally using `vsce` command and `code` CLI.
 
 ```
-# Navigate to project root
+# Navigate to vscode-elixir-ls project root
 cd ..
 
 # Build the extension
-vsce package
+npx vsce package
 
 # Install it locally
 code --install-extension *.vsix --force
 ```
 
 Note that if you have the extension installed from the Visual Studio Marketplace and are also installing a locally
-built package, you may need to disable the `Extensions: Auto Check Updates` setting to prevent your
+built package, you may need to disable the [Extensions: Auto Check Updates](https://code.visualstudio.com/docs/editor/extension-gallery#_extension-autoupdate) setting to prevent your
 local install from being replaced with the Marketplace version.
 
 ### `elixir-ls` submodule
