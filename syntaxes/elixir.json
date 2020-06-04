@@ -2335,6 +2335,10 @@
       "name": "punctuation.separator.method.elixir"
     },
     {
+      "match": "%",
+      "name": "punctuation.definition.map.elixir"
+    },
+    {
       "match": "\\{|\\}",
       "name": "punctuation.section.scope.elixir"
     },
