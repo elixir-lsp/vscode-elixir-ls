@@ -70,6 +70,9 @@ function detectConflictingExtension(extensionId: string): void {
 function copyDebugInfo(): void {
   const elixirVersion = execSync(`elixir --version`);
   const extension = vscode.extensions.getExtension('jakebecker.elixir-ls');
+  if (!extension) {
+    return;
+  }
 
   const message = `
   * Elixir & Erlang versions (elixir --version): ${elixirVersion}
@@ -107,6 +110,7 @@ function getOuterMostWorkspaceFolder(folder: WorkspaceFolder): WorkspaceFolder {
 			uri = uri + '/';
 		}
 		if (uri.startsWith(element)) {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			return workspace.getWorkspaceFolder(Uri.parse(element))!;
 		}
 	}

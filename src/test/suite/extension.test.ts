@@ -11,7 +11,10 @@ suite("Extension Test Suite", () => {
   vscode.window.showInformationMessage("Start all tests.");
 
   suiteSetup(async () => {
-    extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    const ext = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    assert(ext);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    extension = ext!;
     await extension.activate();
   });
 

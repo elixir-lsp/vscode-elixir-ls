@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2019",
     "module": "commonjs",
-    "moduleResolution": "node",
+    "lib": ["ES2019"],
     "outDir": "out",
-    "lib": ["es2016"],
-    "sourceMap": true
+    "sourceMap": true,
+    "strict": true
   },
-  "exclude": ["node_modules", "server"]
+  "exclude": ["node_modules", ".vscode-test", "elixir-ls", "elixir-ls-release"]
 }
