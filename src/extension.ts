@@ -13,7 +13,7 @@ import {
   LanguageClient,
   LanguageClientOptions,
   RevealOutputChannelOn,
-  ServerOptions
+  ServerOptions,
 } from "vscode-languageclient";
 import * as os from "os";
 
@@ -63,54 +63,66 @@ function testElixir(): boolean {
 function detectConflictingExtension(extensionId: string): void {
   const extension = vscode.extensions.getExtension(extensionId);
   if (extension) {
-    vscode.window.showErrorMessage('Warning: ' + extensionId + ' is not compatible with ElixirLS, please uninstall ' + extensionId);
+    vscode.window.showErrorMessage(
+      "Warning: " +
+        extensionId +
+        " is not compatible with ElixirLS, please uninstall " +
+        extensionId
+    );
   }
 }
 
 function copyDebugInfo(): void {
   const elixirVersion = execSync(`elixir --version`);
-  const extension = vscode.extensions.getExtension('jakebecker.elixir-ls');
+  const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
+  if (!extension) {
+    return;
+  }
 
   const message = `
   * Elixir & Erlang versions (elixir --version): ${elixirVersion}
   * VSCode ElixirLS version: ${extension.packageJSON.version}
   * Operating System Version: ${os.platform()} ${os.release()}
-  `
+  `;
 
   vscode.window.showInformationMessage(`Copied to clipboard: ${message}`);
   vscode.env.clipboard.writeText(message);
 }
 
 function sortedWorkspaceFolders(): string[] {
-	if (_sortedWorkspaceFolders === void 0) {
-		_sortedWorkspaceFolders = workspace.workspaceFolders ? workspace.workspaceFolders.map(folder => {
-			let result = folder.uri.toString();
-			if (result.charAt(result.length - 1) !== '/') {
-				result = result + '/';
-			}
-			return result;
-		}).sort(
-			(a, b) => {
-				return a.length - b.length;
-			}
-		) : [];
-	}
-	return _sortedWorkspaceFolders;
+  if (_sortedWorkspaceFolders === void 0) {
+    _sortedWorkspaceFolders = workspace.workspaceFolders
+      ? workspace.workspaceFolders
+          .map((folder) => {
+            let result = folder.uri.toString();
+            if (result.charAt(result.length - 1) !== "/") {
+              result = result + "/";
+            }
+            return result;
+          })
+          .sort((a, b) => {
+            return a.length - b.length;
+          })
+      : [];
+  }
+  return _sortedWorkspaceFolders;
 }
-workspace.onDidChangeWorkspaceFolders(() => _sortedWorkspaceFolders = undefined);
+workspace.onDidChangeWorkspaceFolders(
+  () => (_sortedWorkspaceFolders = undefined)
+);
 
 function getOuterMostWorkspaceFolder(folder: WorkspaceFolder): WorkspaceFolder {
-	const sorted = sortedWorkspaceFolders();
-	for (const element of sorted) {
-		let uri = folder.uri.toString();
-		if (uri.charAt(uri.length - 1) !== '/') {
-			uri = uri + '/';
-		}
-		if (uri.startsWith(element)) {
-			return workspace.getWorkspaceFolder(Uri.parse(element))!;
-		}
-	}
-	return folder;
+  const sorted = sortedWorkspaceFolders();
+  for (const element of sorted) {
+    let uri = folder.uri.toString();
+    if (uri.charAt(uri.length - 1) !== "/") {
+      uri = uri + "/";
+    }
+    if (uri.startsWith(element)) {
+      return workspace.getWorkspaceFolder(Uri.parse(element))!;
+    }
+  }
+  return folder;
 }
 
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
@@ -151,14 +163,14 @@ export function activate(context: ExtensionContext): void {
     os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
 
   const serverOpts = {
-    command: context.asAbsolutePath("./elixir-ls-release/" + command)
+    command: context.asAbsolutePath("./elixir-ls-release/" + command),
   };
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
   const serverOptions: ServerOptions = {
     run: serverOpts,
-    debug: serverOpts
+    debug: serverOpts,
   };
 
   // Options to control the language client
@@ -170,7 +182,7 @@ export function activate(context: ExtensionContext): void {
       { language: "eex", scheme: "file" },
       { language: "eex", scheme: "untitled" },
       { language: "html-eex", scheme: "file" },
-      { language: "html-eex", scheme: "untitled" }
+      { language: "html-eex", scheme: "untitled" },
     ],
     // Don't focus the Output pane on errors because request handler errors are no big deal
     revealOutputChannelOn: RevealOutputChannelOn.Never,
@@ -179,20 +191,20 @@ export function activate(context: ExtensionContext): void {
       configurationSection: "elixirLS",
       // Notify the server about file changes to Elixir files contained in the workspace
       fileEvents: [
-        workspace.createFileSystemWatcher("**/*.{ex,exs,erl,yrl,xrl,eex,leex}")
-      ]
-    }
+        workspace.createFileSystemWatcher("**/*.{ex,exs,erl,yrl,xrl,eex,leex}"),
+      ],
+    },
   };
 
   function didOpenTextDocument(document: vscode.TextDocument): void {
     // We are only interested in elixir files
-    if (document.languageId !== 'elixir') {
+    if (document.languageId !== "elixir") {
       return;
     }
 
     const uri = document.uri;
     // Untitled files go to a default client.
-    if (uri.scheme === 'untitled' && !defaultClient) {
+    if (uri.scheme === "untitled" && !defaultClient) {
       // Create the language client and start the client.
       defaultClient = new LanguageClient(
         "elixirLS", // langId
@@ -219,13 +231,25 @@ export function activate(context: ExtensionContext): void {
     folder = getOuterMostWorkspaceFolder(folder);
 
     if (!clients.has(folder.uri.toString())) {
-      const workspaceClientOptions: LanguageClientOptions = Object.assign({}, clientOptions, {
-        documentSelector: [
-          { language: "elixir", scheme: "file", pattern: `${folder.uri.fsPath}/**/*` },
-          { language: "elixir", scheme: "untitled", pattern: `${folder.uri.fsPath}/**/*` }
-        ],
-        workspaceFolder: folder
-      });
+      const workspaceClientOptions: LanguageClientOptions = Object.assign(
+        {},
+        clientOptions,
+        {
+          documentSelector: [
+            {
+              language: "elixir",
+              scheme: "file",
+              pattern: `${folder.uri.fsPath}/**/*`,
+            },
+            {
+              language: "elixir",
+              scheme: "untitled",
+              pattern: `${folder.uri.fsPath}/**/*`,
+            },
+          ],
+          workspaceFolder: folder,
+        }
+      );
 
       const client = new LanguageClient(
         "elixirLS", // langId

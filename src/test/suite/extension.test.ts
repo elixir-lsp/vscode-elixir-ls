@@ -11,13 +11,15 @@ suite("Extension Test Suite", () => {
   vscode.window.showInformationMessage("Start all tests.");
 
   suiteSetup(async () => {
-    extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    const ext = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    assert(ext);
+    extension = ext!;
     await extension.activate();
   });
 
   test("extention is available", async () => {
     assert.ok(extension.isActive);
-    const sampleFileUri = vscode.Uri.parse('untitled:sample.ex');
+    const sampleFileUri = vscode.Uri.parse("untitled:sample.ex");
     const document = await vscode.workspace.openTextDocument(sampleFileUri);
     await vscode.window.showTextDocument(document);
     assert.ok(defaultClient);

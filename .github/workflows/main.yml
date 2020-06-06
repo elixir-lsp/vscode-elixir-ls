@@ -17,12 +17,12 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: "8.x"
+          node-version: "12.x"
       - name: Setup Elixir
         uses: actions/setup-elixir@v1
         with:
-          elixir-version: 1.9.4
-          otp-version: 22.2
+          elixir-version: 1.10.3
+          otp-version: 22.3
       - name: Install Xvfb
         run: |
           sudo apt-get install xvfb
@@ -36,6 +36,8 @@ jobs:
       - name: Resolve vscode-elixir-ls dependencies
         run: |
           npm install
+          npm run lint
+          npm run check-formatting
           npm run compile
       - name: Run tests
         run: |
