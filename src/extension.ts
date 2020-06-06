@@ -125,6 +125,30 @@ function getOuterMostWorkspaceFolder(folder: WorkspaceFolder): WorkspaceFolder {
   return folder;
 }
 
+class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
+  createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable | undefined): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
+    const cwd: String = session.workspaceFolder.uri.toString().replace("file://", "");
+
+    let options;
+    if (executable.options) {
+      options = { ...executable.options, cwd };
+    } else {
+      options = { cwd };
+    }
+
+    return new vscode.DebugAdapterExecutable(executable.command, executable.args, options);
+  }
+}
+
+function configureDebugger(context: ExtensionContext) {
+  // Use custom DebugAdaptureExecutableFactory that launches the debugger with
+  // the current working directory set to the workspace root so asdf can load
+  // the correct environment properly.
+  const factory = new DebugAdapterExecutableFactory();
+  const disposable = vscode.debug.registerDebugAdapterDescriptorFactory("mix_task", factory);
+  context.subscriptions.push(disposable);
+}
+
 export function activate(context: ExtensionContext): void {
   testElixir();
   detectConflictingExtension("mjmcloug.vscode-elixir");
@@ -133,6 +157,7 @@ export function activate(context: ExtensionContext): void {
   detectConflictingExtension("sammkj.vscode-elixir-formatter");
 
   vscode.commands.registerCommand("extension.copyDebugInfo", copyDebugInfo);
+  configureDebugger(context);
 
   const command =
     os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
