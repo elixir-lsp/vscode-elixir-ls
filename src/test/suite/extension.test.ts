@@ -19,7 +19,7 @@ suite("Extension Test Suite", () => {
 
   test("extention is available", async () => {
     assert.ok(extension.isActive);
-    const sampleFileUri = vscode.Uri.parse('untitled:sample.ex');
+    const sampleFileUri = vscode.Uri.parse("untitled:sample.ex");
     const document = await vscode.workspace.openTextDocument(sampleFileUri);
     await vscode.window.showTextDocument(document);
     assert.ok(defaultClient);
