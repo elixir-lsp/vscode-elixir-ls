@@ -9,4 +9,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "prettier/@typescript-eslint",
   ],
+  rules: {
+    "@typescript-eslint/no-non-null-assertion": 0,
+  },
 };

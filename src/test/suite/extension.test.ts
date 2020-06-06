@@ -13,7 +13,6 @@ suite("Extension Test Suite", () => {
   suiteSetup(async () => {
     const ext = vscode.extensions.getExtension("jakebecker.elixir-ls");
     assert(ext);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     extension = ext!;
     await extension.activate();
   });

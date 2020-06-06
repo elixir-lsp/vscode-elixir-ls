@@ -110,7 +110,6 @@ function getOuterMostWorkspaceFolder(folder: WorkspaceFolder): WorkspaceFolder {
 			uri = uri + '/';
 		}
 		if (uri.startsWith(element)) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			return workspace.getWorkspaceFolder(Uri.parse(element))!;
 		}
 	}
