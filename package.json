@@ -86,7 +86,12 @@
             "dialyxir_short",
             "dialyxir_long"
           ],
-          "default": "dialyzer"
+          "markdownEnumDescriptions": [
+            "Original Dialyzer format",
+            "Same as `mix dialyzer --format short`",
+            "Same as `mix dialyzer --format long`"
+          ],
+          "default": "dialyxir_long"
         },
         "elixirLS.mixEnv": {
           "type": "string",
