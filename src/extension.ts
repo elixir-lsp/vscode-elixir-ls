@@ -126,17 +126,21 @@ function getOuterMostWorkspaceFolder(folder: WorkspaceFolder): WorkspaceFolder {
 }
 
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
-  createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable | undefined): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
-    const cwd: String = session.workspaceFolder.uri.toString().replace("file://", "");
+  createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
+    if (session.workspaceFolder) {
+      const cwd: string = session.workspaceFolder.uri.toString().replace("file://", "");
 
-    let options;
-    if (executable.options) {
-      options = { ...executable.options, cwd };
-    } else {
-      options = { cwd };
+      let options;
+      if (executable.options) {
+        options = { ...executable.options, cwd };
+      } else {
+        options = { cwd };
+      }
+
+      return new vscode.DebugAdapterExecutable(executable.command, executable.args, options);
     }
 
-    return new vscode.DebugAdapterExecutable(executable.command, executable.args, options);
+    return executable;
   }
 }
 
