@@ -103,6 +103,12 @@
           "default": "test",
           "minLength": 1
         },
+        "elixirLS.mixTarget": {
+          "scope": "resource",
+          "type": "string",
+          "description": "Mix target to use for compilation (requires Elixir >= 1.8)",
+          "minLength": 0
+        },
         "elixirLS.projectDir": {
           "type": "string",
           "description": "Subdirectory containing Mix project if not in the project root",
