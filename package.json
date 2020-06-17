@@ -50,11 +50,13 @@
       "title": "ElixirLS",
       "properties": {
         "elixirLS.dialyzerEnabled": {
+          "scope": "resource",
           "type": "boolean",
           "default": true,
           "description": "Run ElixirLS's rapid Dialyzer when code is saved"
         },
         "elixirLS.dialyzerWarnOpts": {
+          "scope": "resource",
           "description": "Dialyzer options to enable or disable warnings. See Dialyzer's documentation for options. Note that the \"race_conditions\" option is unsupported",
           "type": "array",
           "uniqueItems": true,
@@ -83,6 +85,7 @@
           "default": []
         },
         "elixirLS.dialyzerFormat": {
+          "scope": "resource",
           "description": "Formatter to use for Dialyzer warnings",
           "type": "string",
           "enum": [
@@ -98,22 +101,26 @@
           "default": "dialyxir_long"
         },
         "elixirLS.mixEnv": {
+          "scope": "resource",
           "type": "string",
           "description": "Mix environment to use for compilation",
           "default": "test",
           "minLength": 1
         },
         "elixirLS.projectDir": {
+          "scope": "resource",
           "type": "string",
           "description": "Subdirectory containing Mix project if not in the project root",
           "minLength": 1
         },
         "elixirLS.fetchDeps": {
+          "scope": "resource",
           "type": "boolean",
           "description": "Automatically fetch project dependencies when compiling",
           "default": true
         },
         "elixirLS.suggestSpecs": {
+          "scope": "resource",
           "type": "boolean",
           "description": "Suggest @spec annotations inline using Dialyzer's inferred success typings (Requires Dialyzer)",
           "default": true
