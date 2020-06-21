@@ -18,7 +18,6 @@ Most of this can be filled out by running the VSCode command (by default bound t
 
 - [ ] Restart your editor (which will restart ElixirLS) sometimes fixes issues
 - [ ] Stop your editor, remove the entire `.elixir_ls` directory, then restart your editor
-  - NOTE: This will cause you to have to re-run the entire dialyzer build
 
 ### Crash report template
 

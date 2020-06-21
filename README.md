@@ -59,6 +59,12 @@ See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the suppo
 
 ## Debugging
 
+If you run into issues with the extension then try these debugging steps:
+
+- Restart your editor (which will restart ElixirLS) sometimes fixes issues
+- Stop your editor, remove the entire `.elixir_ls` directory, then restart your editor
+  - NOTE: This will cause you to have to re-run the entire dialyzer build
+
 ### Check ElixirLS Output
 
 Check the output log by opening `View > Output` and selecting "ElixirLS" in the dropdown.
