@@ -117,7 +117,8 @@
           "scope": "resource",
           "type": "string",
           "description": "Subdirectory containing Mix project if not in the project root",
-          "minLength": 1
+          "minLength": 0,
+          "default": ""
         },
         "elixirLS.fetchDeps": {
           "scope": "resource",
