@@ -20,8 +20,6 @@
     "Debuggers"
   ],
   "activationEvents": [
-    "workspaceContains:**/*.ex",
-    "workspaceContains:**/*.exs",
     "onLanguage:elixir",
     "onLanguage:eex",
     "onLanguage:html-eex"
