@@ -393,7 +393,12 @@
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
         }
       ]
-    }
+    },
+    "taskDefinitions": [
+      {
+        "type": "ElixirLS"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "./prepublish.bash",
