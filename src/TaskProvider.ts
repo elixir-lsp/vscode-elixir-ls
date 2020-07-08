@@ -12,16 +12,30 @@ export class TaskProvider implements vscode.TaskProvider {
         }
 
         const kind: vscode.TaskDefinition = { type: TaskProvider.TaskType }
-        const task = new vscode.Task(
+
+        const testUnderCursorTask = new vscode.Task(
             kind,
             wsFolders[0],
             'Run test at cursor',
             TaskProvider.TaskType,
-            new vscode.ShellExecution("mix test ${relativeFile}:${lineNumber}")
+            new vscode.ShellExecution("mix test ${relativeFile}:${lineNumber}"),
+            ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"]
         );
 
-        task.group = vscode.TaskGroup.Test;
-        return [task];
+        testUnderCursorTask.group = vscode.TaskGroup.Test;
+
+        const testsInFileTask = new vscode.Task(
+            kind,
+            wsFolders[0],
+            'Run tests in current file',
+            TaskProvider.TaskType,
+            new vscode.ShellExecution("mix test ${relativeFile}"),
+            ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"]
+        );
+
+        testsInFileTask.group = vscode.TaskGroup.Test;
+
+        return [testUnderCursorTask, testsInFileTask];
     }
 
     public resolveTask(_task: vscode.Task): vscode.Task | undefined {
