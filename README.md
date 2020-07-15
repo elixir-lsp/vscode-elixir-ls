@@ -114,7 +114,24 @@ local install from being replaced with the Marketplace version.
 
 Most of the functionality of this extension comes from ElixirLS which is included as a Git submodule in the `elixir-ls` folder. Make sure you clone the repo using `git clone --recursive` or run `git submodule init && git submodule update` after cloning.
 
-Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to fork the [ElixirLS](https://github.com/elixir-lsp/elixir-ls) repo on Github and push any changes you make to the ElixirLS submodule to your fork. An example of how that might look:
+Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to change the code in the `elixir-ls` subdirectory.
+
+Here are the basic steps to make changes to ElixirLS locally:
+
+```shell
+cd vscode-elixir-ls/elixir-ls
+
+# Make your changes in your editor of choice (fair warning, depending on your changes, ElixirLS may act up since your changes will be immediately reflected)
+
+# Update the ElixirLS version in VSCode
+# Make sure to substitute 0.5.0 with the current version before running this command
+mix elixir_ls.release -o ~/.vscode-oss/extensions/jakebecker.elixir-ls-0.5.0/elixir-ls-release/
+
+# Restart VSCode
+# Now you can test your changes on a project
+```
+
+When you're ready to contribute your changes back to ElixirLS then you need to fork the [ElixirLS](https://github.com/elixir-lsp/elixir-ls) repo on Github and push any changes you make to the ElixirLS submodule to your fork. An example of how that might look:
 
 ```shell
 # Enter the submodule directory. Now, if you run git commands, they run in the submodule
@@ -129,6 +146,8 @@ git remote add my_fork git@github.com:<your_github_username>/elixir-ls.git
 # Make changes in the elixir-ls folder, commit them, and push to your forked repo
 git commit ...
 git push my_fork my_new_branch
+
+# Visit https://github.com/elixir-lsp/elixir-ls/compare to start a new Pull Request
 ```
 
 ### Running the tests locally
