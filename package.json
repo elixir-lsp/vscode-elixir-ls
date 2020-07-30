@@ -139,6 +139,11 @@
           ],
           "default": "off",
           "description": "Traces the communication between VS Code and the Elixir language server."
+        },
+        "elixirLS.signatureAfterComplete": {
+          "type": "boolean",
+          "description": "Show signature help after confirming autocomplete",
+          "default": true
         }
       }
     },
