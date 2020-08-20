@@ -156,7 +156,6 @@ function configureDebugger(context: ExtensionContext) {
 export function activate(context: ExtensionContext): void {
   testElixir();
   detectConflictingExtension("mjmcloug.vscode-elixir");
-  detectConflictingExtension("elixir-lsp.elixir-ls");
   // https://github.com/elixir-lsp/vscode-elixir-ls/issues/34
   detectConflictingExtension("sammkj.vscode-elixir-formatter");
 
