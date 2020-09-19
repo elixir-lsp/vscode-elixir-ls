@@ -53,6 +53,21 @@ You can, of course, change them in your user settings, or on a per project basis
 
 It may take some getting used to, but I highly recommend leaving `acceptSuggestionOnEnter` off and using using `tab` instead of `enter` for autocomplete. In Elixir, it's very common to end a line with an identifier (such as `:error`, for example), and ElixirLS will sometimes try to autocomplete that (into `:error_handler` or `:error_logger`, for example). If you're typing quickly, you may hit enter before even noticing the suggestion and insert it by mistake. Automatic completion of `do` blocks is handled separately and does not require you to accept an autocomplete suggestion.
 
+## Advanced Configuration
+
+### Add support for emmet
+
+emmet is a plugin that makes it easier to write html: https://code.visualstudio.com/docs/editor/emmet
+
+Open VSCode and hit Ctrl+Shift+P (or Cmd+Shift+P) and type "Preference: Open Settings (JSON)"
+Add or edit your `emmet.includedLanguages` to include the new Language Id:
+
+```json
+"emmet.includeLanguages": {
+  "html-eex": "html"
+}
+```
+
 ## Supported versions
 
 See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the supported Elixir and Erlang versions.
