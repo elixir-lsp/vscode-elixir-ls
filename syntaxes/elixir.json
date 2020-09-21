@@ -173,7 +173,7 @@
       "match": "(\\:\\w+)\\s*(\\.)\\s*([_]?\\w*[!?]?)",
       "captures": {
         "1": {
-          "name": "constant.other.symbol.elixir"
+          "name": "constant.language.symbol.elixir"
         },
         "2": {
           "name": "punctuation.separator.method.elixir"
@@ -2104,7 +2104,7 @@
         }
       },
       "end": "'",
-      "name": "constant.other.symbol.single-quoted.elixir",
+      "name": "constant.language.symbol.single-quoted.elixir",
       "patterns": [
         {
           "include": "#interpolated_elixir"
@@ -2117,7 +2117,7 @@
     {
       "comment": "symbols with single-quoted string, used as keys in Keyword lists.",
       "match": "(')((?:[^'\\\\]*(?:\\\\.[^'\\\\]*)*))(':)(?!:)",
-      "name": "constant.other.symbol.single-quoted.elixir",
+      "name": "constant.language.symbol.single-quoted.elixir",
       "captures": {
         "1": {
           "name": "punctuation.definition.constant.elixir"
@@ -2145,7 +2145,7 @@
         }
       },
       "end": "\"",
-      "name": "constant.other.symbol.double-quoted.elixir",
+      "name": "constant.language.symbol.double-quoted.elixir",
       "patterns": [
         {
           "include": "#interpolated_elixir"
@@ -2230,7 +2230,7 @@
     {
       "comment": "symbols defined by double-quoted string, used as keys in Keyword lists.",
       "match": "(\")((?:[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*))(\":)(?!:)",
-      "name": "constant.other.symbol.double-quoted.elixir",
+      "name": "constant.language.symbol.double-quoted.elixir",
       "captures": {
         "1": {
           "name": "punctuation.definition.constant.elixir"
@@ -2376,7 +2376,7 @@
       },
       "comment": "symbols",
       "match": "(?<!:)(:)(?>[a-zA-Z_][\\w@]*(?>[?!]|=(?![>=]))?|\\<\\>|===?|!==?|<<>>|<<<|>>>|~~~|::|<\\-|\\|>|=>|~|~=|=|/|\\\\\\\\|\\*\\*?|\\.\\.?\\.?|>=?|<=?|&&?&?|\\+\\+?|\\-\\-?|\\|\\|?\\|?|\\!|@|\\%?\\{\\}|%|\\[\\]|\\^(\\^\\^)?)",
-      "name": "constant.other.symbol.elixir"
+      "name": "constant.language.symbol.elixir"
     },
     {
       "match": ":",
