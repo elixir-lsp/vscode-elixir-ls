@@ -7,6 +7,7 @@ Test the new vscode-elixir-ls version with:
 
 ```
 npm install -g vsce@latest
+cp elixir-ls/.release-tool-versions .tool-versions
 vsce package
 code --install-extension ./elixir-ls-0.2.44.vsix  --force
 ```
