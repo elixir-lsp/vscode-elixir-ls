@@ -18,6 +18,13 @@ code --install-extension ./elixir-ls-0.2.44.vsix  --force
 - Update the release on github with the elixir-ls.zip file
 - Update forum announcement post: https://elixirforum.com/t/introducing-elixirls-the-elixir-language-server/5857
 
+Also publish to https://open-vsx.org/
+
+- `git checkout openvsx`
+- `git rebase -i upstream/master`
+- `ovsx publish -p <TOKEN>`
+- `git push -f`
+
 ## References
 
 https://code.visualstudio.com/api/working-with-extensions/publishing-extension
