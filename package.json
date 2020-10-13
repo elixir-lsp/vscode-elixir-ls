@@ -389,6 +389,10 @@
       {
         "command": "extension.copyDebugInfo",
         "title": "ElixirLS: Copy Debug Info"
+      },
+      {
+        "command": "elixir.test.run",
+        "title": "ElixirLS: Run test"
       }
     ],
     "menus": {

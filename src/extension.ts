@@ -14,8 +14,13 @@ import {
   LanguageClientOptions,
   RevealOutputChannelOn,
   ServerOptions,
+  ExecuteCommandParams,
+  ExecuteCommandRequest,
 } from "vscode-languageclient";
 import * as os from "os";
+import TestCodeLensProvider from "./codelens/testCodeLensProvider";
+import Commands from "./constants/commands";
+import runFromCodeLens from "./commands/runFromCodeLens";
 
 export let defaultClient: LanguageClient;
 const clients: Map<string, LanguageClient> = new Map();
@@ -65,9 +70,9 @@ function detectConflictingExtension(extensionId: string): void {
   if (extension) {
     vscode.window.showErrorMessage(
       "Warning: " +
-        extensionId +
-        " is not compatible with ElixirLS, please uninstall " +
-        extensionId
+      extensionId +
+      " is not compatible with ElixirLS, please uninstall " +
+      extensionId
     );
   }
 }
@@ -93,16 +98,16 @@ function sortedWorkspaceFolders(): string[] {
   if (_sortedWorkspaceFolders === void 0) {
     _sortedWorkspaceFolders = workspace.workspaceFolders
       ? workspace.workspaceFolders
-          .map((folder) => {
-            let result = folder.uri.toString();
-            if (result.charAt(result.length - 1) !== "/") {
-              result = result + "/";
-            }
-            return result;
-          })
-          .sort((a, b) => {
-            return a.length - b.length;
-          })
+        .map((folder) => {
+          let result = folder.uri.toString();
+          if (result.charAt(result.length - 1) !== "/") {
+            result = result + "/";
+          }
+          return result;
+        })
+        .sort((a, b) => {
+          return a.length - b.length;
+        })
       : [];
   }
   return _sortedWorkspaceFolders;
@@ -160,6 +165,14 @@ export function activate(context: ExtensionContext): void {
   detectConflictingExtension("sammkj.vscode-elixir-formatter");
 
   vscode.commands.registerCommand("extension.copyDebugInfo", copyDebugInfo);
+  vscode.commands.registerCommand(Commands.RUN_TEST_FROM_CODELENS, runFromCodeLens);
+  vscode.commands.registerCommand(Commands.EXECUTE_WORKSPACE_COMMAND, (command, ...rest) => {
+    const params: ExecuteCommandParams = {
+      command,
+      arguments: rest
+    };
+    return defaultClient.sendRequest(ExecuteCommandRequest.type, params);
+  })
   configureDebugger(context);
 
   const command =
@@ -277,6 +290,8 @@ export function activate(context: ExtensionContext): void {
       }
     }
   });
+
+  new TestCodeLensProvider().register();
 }
 
 export function deactivate(): Thenable<void> {
