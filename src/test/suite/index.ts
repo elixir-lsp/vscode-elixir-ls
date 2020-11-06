@@ -7,7 +7,8 @@ export function run(): Promise<void> {
   const mocha = new Mocha({
     ui: "tdd",
   });
-  mocha.useColors(true);
+  // TODO remove cast to any when color is included in typings
+  (mocha as any).color(true);
 
   const testsRoot = path.resolve(__dirname, "..");
 
