@@ -72,23 +72,6 @@ function detectConflictingExtension(extensionId: string): void {
   }
 }
 
-function copyDebugInfo(): void {
-  const elixirVersion = execSync(`elixir --version`);
-  const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
-  if (!extension) {
-    return;
-  }
-
-  const message = `
-  * Elixir & Erlang versions (elixir --version): ${elixirVersion}
-  * VSCode ElixirLS version: ${extension.packageJSON.version}
-  * Operating System Version: ${os.platform()} ${os.release()}
-  `;
-
-  vscode.window.showInformationMessage(`Copied to clipboard: ${message}`);
-  vscode.env.clipboard.writeText(message);
-}
-
 function sortedWorkspaceFolders(): string[] {
   if (_sortedWorkspaceFolders === void 0) {
     _sortedWorkspaceFolders = workspace.workspaceFolders
@@ -125,6 +108,26 @@ function getOuterMostWorkspaceFolder(folder: WorkspaceFolder): WorkspaceFolder {
   return folder;
 }
 
+function configureCopyDebugInfo(context: ExtensionContext) {
+  const disposable = vscode.commands.registerCommand("extension.copyDebugInfo", () => {
+    const elixirVersion = execSync(`elixir --version`);
+    const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    if (!extension) {
+      return;
+    }
+
+    const message = `
+* Elixir & Erlang versions (elixir --version): ${elixirVersion}
+* VSCode ElixirLS version: ${extension.packageJSON.version}
+* Operating System Version: ${os.platform()} ${os.release()}
+`;
+
+    vscode.window.showInformationMessage(`Copied to clipboard: ${message}`);
+    vscode.env.clipboard.writeText(message);
+  });
+  context.subscriptions.push(disposable);
+}
+
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
   createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
     if (session.workspaceFolder) {
@@ -159,7 +162,7 @@ export function activate(context: ExtensionContext): void {
   // https://github.com/elixir-lsp/vscode-elixir-ls/issues/34
   detectConflictingExtension("sammkj.vscode-elixir-formatter");
 
-  vscode.commands.registerCommand("extension.copyDebugInfo", copyDebugInfo);
+  configureCopyDebugInfo(context);
   configureDebugger(context);
 
   const command =
