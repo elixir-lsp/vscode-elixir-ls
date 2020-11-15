@@ -131,7 +131,7 @@ function configureCopyDebugInfo(context: ExtensionContext) {
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
   createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
     if (session.workspaceFolder) {
-      const cwd: string = session.workspaceFolder.uri.toString().replace("file://", "");
+      const cwd: string = session.workspaceFolder.uri.fsPath;
 
       let options;
       if (executable.options) {
