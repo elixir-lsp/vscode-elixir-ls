@@ -7,6 +7,7 @@
 import * as vscode from "vscode";
 import { execSync } from "child_process";
 import * as shell from "shelljs";
+import * as path from "path";
 
 import { workspace, ExtensionContext, WorkspaceFolder, Uri } from "vscode";
 import {
@@ -156,6 +157,60 @@ function configureDebugger(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
+function configureTerminalLinkProvider(context: ExtensionContext) {
+  function openUri(uri: Uri, line: number) {
+    vscode.workspace.openTextDocument(uri).then(document => {
+      vscode.window.showTextDocument(document).then(editor => {
+        const position = new vscode.Position(line - 1, 0);
+        const selection = new vscode.Selection(position, position);
+        editor.revealRange(selection);
+        editor.selection = selection;
+      });
+    });
+  }
+
+  const disposable = vscode.window.registerTerminalLinkProvider({
+    provideTerminalLinks: (context: vscode.TerminalLinkContext, token: vscode.CancellationToken) => {
+      const regex = /(?:\((?<app>[_a-z]+) \d+.\d+.\d+\) )(?<file>[_a-z\/]*[_a-z]+.ex):(?<line>\d+)/;
+      const matches = context.line.match(regex);
+      if (matches === null) {
+        return [];
+      }
+
+      return [
+        {
+          startIndex: matches.index!,
+          length: matches[0].length,
+          data: {
+            app: matches.groups!.app,
+            file: matches.groups!.file,
+            line: parseInt(matches.groups!.line),
+          },
+        },
+      ];
+    },
+    handleTerminalLink: ({ data: { app, file, line } }: any) => {
+      let umbrellaFile = path.join("apps", app, file);
+      vscode.workspace.findFiles(`{${umbrellaFile},${file}}`).then(uris => {
+        if (uris.length === 1) {
+          openUri(uris[0], line);
+        } else if (uris.length > 1) {
+          const items = uris.map(uri => ({ label: uri.toString(), uri }));
+          vscode.window.showQuickPick(items).then(selection => {
+            if (!selection) {
+              return;
+            }
+  
+            openUri(selection.uri, line);
+          });
+        }
+      });
+    }
+  });
+  
+  context.subscriptions.push(disposable);
+}
+
 export function activate(context: ExtensionContext): void {
   testElixir();
   detectConflictingExtension("mjmcloug.vscode-elixir");
@@ -164,6 +219,7 @@ export function activate(context: ExtensionContext): void {
 
   configureCopyDebugInfo(context);
   configureDebugger(context);
+  configureTerminalLinkProvider(context);
 
   const command =
     os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
