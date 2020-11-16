@@ -6,6 +6,7 @@ Update the elixir-ls submodule `git submodule foreach git pull origin master`
 Test the new vscode-elixir-ls version with:
 
 ```
+npm install
 npm install -g vsce@latest
 cp elixir-ls/.release-tool-versions .tool-versions
 vsce package
