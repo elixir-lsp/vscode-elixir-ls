@@ -18,7 +18,7 @@ import {
 } from "vscode-languageclient";
 import * as os from "os";
 import Commands from "./constants/commands";
-import runFromCodeLens from "./commands/runFromCodeLens";
+import runFromCodeLens from "./commands/runTestFromCodeLens";
 
 export let defaultClient: LanguageClient;
 const clients: Map<string, LanguageClient> = new Map();
@@ -68,9 +68,9 @@ function detectConflictingExtension(extensionId: string): void {
   if (extension) {
     vscode.window.showErrorMessage(
       "Warning: " +
-      extensionId +
-      " is not compatible with ElixirLS, please uninstall " +
-      extensionId
+        extensionId +
+        " is not compatible with ElixirLS, please uninstall " +
+        extensionId
     );
   }
 }
@@ -213,13 +213,17 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
+function configureRunTestFromCodeLens() {
+  vscode.commands.registerCommand(Commands.RUN_TEST_FROM_CODELENS, runFromCodeLens);
+}
+
 export function activate(context: ExtensionContext): void {
   testElixir();
   detectConflictingExtension("mjmcloug.vscode-elixir");
   // https://github.com/elixir-lsp/vscode-elixir-ls/issues/34
   detectConflictingExtension("sammkj.vscode-elixir-formatter");
 
-  vscode.commands.registerCommand(Commands.RUN_TEST_FROM_CODELENS, runFromCodeLens);
+  configureRunTestFromCodeLens()
   configureCopyDebugInfo(context);
   configureDebugger(context);
   configureTerminalLinkProvider(context);

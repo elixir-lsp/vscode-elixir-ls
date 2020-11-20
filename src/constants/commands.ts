@@ -1,3 +1,3 @@
 export default {
-  RUN_TEST_FROM_CODELENS: 'elixir.test.run'
+  RUN_TEST_FROM_CODELENS: 'elixir.lens.test.run'
 }
