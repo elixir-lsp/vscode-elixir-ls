@@ -14,11 +14,8 @@ import {
   LanguageClientOptions,
   RevealOutputChannelOn,
   ServerOptions,
-  ExecuteCommandParams,
-  ExecuteCommandRequest,
 } from "vscode-languageclient";
 import * as os from "os";
-import TestCodeLensProvider from "./codelens/testCodeLensProvider";
 import Commands from "./constants/commands";
 import runFromCodeLens from "./commands/runFromCodeLens";
 
@@ -166,13 +163,6 @@ export function activate(context: ExtensionContext): void {
 
   vscode.commands.registerCommand("extension.copyDebugInfo", copyDebugInfo);
   vscode.commands.registerCommand(Commands.RUN_TEST_FROM_CODELENS, runFromCodeLens);
-  vscode.commands.registerCommand(Commands.EXECUTE_WORKSPACE_COMMAND, (command, ...rest) => {
-    const params: ExecuteCommandParams = {
-      command,
-      arguments: rest
-    };
-    return defaultClient.sendRequest(ExecuteCommandRequest.type, params);
-  })
   configureDebugger(context);
 
   const command =
@@ -290,8 +280,6 @@ export function activate(context: ExtensionContext): void {
       }
     }
   });
-
-  new TestCodeLensProvider().register();
 }
 
 export function deactivate(): Thenable<void> {
