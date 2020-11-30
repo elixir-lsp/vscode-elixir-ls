@@ -24,7 +24,7 @@ let _sortedWorkspaceFolders: string[] | undefined;
 
 function testElixirCommand(command: string): false | Buffer {
   try {
-    return execSync(`${command} -e ""`);
+    return execSync(`${command} -e " "`);
   } catch {
     return false;
   }
@@ -132,7 +132,7 @@ function configureCopyDebugInfo(context: ExtensionContext) {
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
   createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
     if (session.workspaceFolder) {
-      const cwd: string = session.workspaceFolder.uri.toString().replace("file://", "");
+      const cwd: string = session.workspaceFolder.uri.fsPath;
 
       let options;
       if (executable.options) {
