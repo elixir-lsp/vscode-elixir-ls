@@ -19,7 +19,7 @@ export default function runFromCodeLens(args: RunArgs): void {
 function buildTestCommand(args: RunArgs): string {
   const testFilter = buildTestInclude(args.describe, args.testName, args.module)
 
-  return `mix test --exclude test --include "${testFilter}" ${args.filePath} --trace`
+  return `mix test --exclude test --include "${testFilter}" ${args.filePath}`
 }
 
 function buildTestInclude(describe: string | null, testName?: string, module?: string) {
