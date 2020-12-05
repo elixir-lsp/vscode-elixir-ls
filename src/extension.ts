@@ -17,6 +17,8 @@ import {
   ServerOptions,
 } from "vscode-languageclient";
 import * as os from "os";
+import Commands from "./constants/commands";
+import runFromCodeLens from "./commands/runTestFromCodeLens";
 
 export let defaultClient: LanguageClient;
 const clients: Map<string, LanguageClient> = new Map();
@@ -77,16 +79,16 @@ function sortedWorkspaceFolders(): string[] {
   if (_sortedWorkspaceFolders === void 0) {
     _sortedWorkspaceFolders = workspace.workspaceFolders
       ? workspace.workspaceFolders
-          .map((folder) => {
-            let result = folder.uri.toString();
-            if (result.charAt(result.length - 1) !== "/") {
-              result = result + "/";
-            }
-            return result;
-          })
-          .sort((a, b) => {
-            return a.length - b.length;
-          })
+        .map((folder) => {
+          let result = folder.uri.toString();
+          if (result.charAt(result.length - 1) !== "/") {
+            result = result + "/";
+          }
+          return result;
+        })
+        .sort((a, b) => {
+          return a.length - b.length;
+        })
       : [];
   }
   return _sortedWorkspaceFolders;
@@ -200,15 +202,19 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
             if (!selection) {
               return;
             }
-  
+
             openUri(selection.uri, line);
           });
         }
       });
     }
   });
-  
+
   context.subscriptions.push(disposable);
+}
+
+function configureRunTestFromCodeLens() {
+  vscode.commands.registerCommand(Commands.RUN_TEST_FROM_CODELENS, runFromCodeLens);
 }
 
 export function activate(context: ExtensionContext): void {
@@ -217,6 +223,7 @@ export function activate(context: ExtensionContext): void {
   // https://github.com/elixir-lsp/vscode-elixir-ls/issues/34
   detectConflictingExtension("sammkj.vscode-elixir-formatter");
 
+  configureRunTestFromCodeLens()
   configureCopyDebugInfo(context);
   configureDebugger(context);
   configureTerminalLinkProvider(context);

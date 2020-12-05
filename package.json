@@ -144,6 +144,11 @@
           "type": "boolean",
           "description": "Show signature help after confirming autocomplete",
           "default": true
+        },
+        "elixirLS.enableTestLenses": {
+          "type": "boolean",
+          "description": "Show code lenses to run tests in terminal",
+          "default": false
         }
       }
     },
