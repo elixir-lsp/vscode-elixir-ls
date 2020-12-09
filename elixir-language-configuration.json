@@ -59,5 +59,11 @@
   "indentationRules": {
     "increaseIndentPattern": "(after|else|catch|rescue|fn|^.*(do|<\\-|\\->|\\{|\\[|\\=))\\s*$",
     "decreaseIndentPattern": "^\\s*((\\}|\\])\\s*$|(after|else|catch|rescue|end)\\b)"
+  },
+  "folding": {
+    "markers": {
+      "start": "^\\s*(@(moduledoc|doc)\\b\\s+\"\"\")|(#\\s*region\\b)",
+      "end": "^\\s+(\"\"\")|(#\\s*endregion\\b)",
+    }
   }
 }
