@@ -9,7 +9,7 @@ Features include:
 - Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
 - Automatic suggestion for @spec annotations based on Dialyzer's inferred success typings
 - Inline reporting of build warnings and errors (requires Elixir >= 1.7)
-- Code completion **(suggestions are accepted using tab instead of enter, see below)**
+- Code completion
 - Smart automatic closing of code blocks
 - Documentation lookup on hover
 - Go-to-definition
@@ -36,22 +36,18 @@ ElixirLS is opinionated and sets the following default settings for Elixir files
   "editor.tabSize": 2,
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
 
   // Provides smart completion for "do" and "fn ->" blocks. Does not run the Elixir formatter.
   "editor.formatOnType": true,
 
   // Misc
   "editor.wordBasedSuggestions": false,
-  "editor.trimAutoWhitespace": false,
-
-  // See below
-  "editor.acceptSuggestionOnEnter": "off"
+  "editor.trimAutoWhitespace": false
 }
 ```
 
 You can, of course, change them in your user settings, or on a per project basis in `.vscode/settings.json`.
-
-It may take some getting used to, but I highly recommend leaving `acceptSuggestionOnEnter` off and using using `tab` instead of `enter` for autocomplete. In Elixir, it's very common to end a line with an identifier (such as `:error`, for example), and ElixirLS will sometimes try to autocomplete that (into `:error_handler` or `:error_logger`, for example). If you're typing quickly, you may hit enter before even noticing the suggestion and insert it by mistake. Automatic completion of `do` blocks is handled separately and does not require you to accept an autocomplete suggestion.
 
 ## Advanced Configuration
 
