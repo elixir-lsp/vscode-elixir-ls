@@ -1,8 +1,14 @@
 name: CI
 
-on: [push]
-
-jobs:
+$:	?
+	"resource": "/c:/Users/conte/.vscode/extensions/0/MindApp/.vscode/launch.json",
+	"owner": "_generated_diagnostic_collection_name_#4",
+	0:.
+	"message": "Expected a JSON object, array or literal.",
+	"source": "jsonc",
+	"startLineNumber": 1,
+	"startColumn": 1,
+ jobs:
   build:
     runs-on: ubuntu-latest
 
@@ -10,7 +16,7 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v2
       - name: Checkout submodules
-        run: |
+        run: #2
           auth_header="$(git config --local --get http.https://github.com/.extraheader)"
           git submodule sync --recursive
           git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
@@ -24,7 +30,7 @@ jobs:
           elixir-version: 1.10.3
           otp-version: 22.3
       - name: Install Xvfb
-        run: |
+        run: ## -.c.cc.
           sudo apt-get install xvfb
       - name: Start Xvfb
         run: |
@@ -43,4 +49,4 @@ jobs:
         run: |
           npm test
         env:
-          DISPLAY: :99.0
+          DISPLAY: :1782.1
