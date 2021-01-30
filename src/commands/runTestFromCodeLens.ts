@@ -7,13 +7,27 @@ type RunArgs = {
   module?: string
 }
 
-export default function runFromCodeLens(args: RunArgs): void {
+export default async function runFromCodeLens(args: RunArgs): Promise<void> {
+  const { activeTextEditor, terminals } = window
+
+  if (!activeTextEditor) {
+    return
+  }
+
+  if (activeTextEditor.document.isDirty) {
+    const saved = await activeTextEditor.document.save()
+
+    if (!saved) {
+      return
+    }
+  }
+
   const elixirLsTerminal =
-    window.terminals.find(terminal => terminal.name == "ElixirLS") || window.createTerminal("ElixirLS");
+    terminals.find(terminal => terminal.name == "ElixirLS") || window.createTerminal("ElixirLS")
 
   elixirLsTerminal.show()
   elixirLsTerminal.sendText('clear')
-  elixirLsTerminal.sendText(buildTestCommand(args));
+  elixirLsTerminal.sendText(buildTestCommand(args))
 }
 
 function buildTestCommand(args: RunArgs): string {
