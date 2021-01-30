@@ -394,6 +394,10 @@
       {
         "command": "extension.copyDebugInfo",
         "title": "ElixirLS: Copy Debug Info"
+      },
+      {
+        "command": "extension.expandMacro",
+        "title": "ElixirLS: Expand macro"
       }
     ],
     "menus": {
@@ -401,6 +405,10 @@
         {
           "command": "extension.copyDebugInfo",
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
+        },
+        {
+          "command": "extension.expandMacro",
+          "title": "editorLangId == elixir"
         }
       ]
     }

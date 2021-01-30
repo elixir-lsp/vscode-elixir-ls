@@ -1,3 +1,4 @@
+import { window } from 'vscode';
 /* --------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11,10 +12,11 @@ import * as path from "path";
 
 import { workspace, ExtensionContext, WorkspaceFolder, Uri } from "vscode";
 import {
+  ExecuteCommandParams,
   LanguageClient,
   LanguageClientOptions,
   RevealOutputChannelOn,
-  ServerOptions,
+  ServerOptions
 } from "vscode-languageclient";
 import * as os from "os";
 import Commands from "./constants/commands";
@@ -27,6 +29,8 @@ interface TerminalLinkWithData extends vscode.TerminalLink {
     line: number
   }
 }
+
+const ExpandMacroTitle = 'Expand macro result'
 
 export let defaultClient: LanguageClient;
 const clients: Map<string, LanguageClient> = new Map();
@@ -139,6 +143,76 @@ function configureCopyDebugInfo(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
+function getExpandMacroWebviewContent(content: Record<string, string>) {
+  let body = "";
+  for (const [key, value] of Object.entries(content)) {
+    body += `<div>
+      <h4>${key}</h4>
+      <code><pre>${value}</pre></code>
+    </div>`
+  }
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${ExpandMacroTitle}</title>
+</head>
+<body>
+  ${body}
+</body>
+</html>`;
+}
+
+function configureExpandMacro(context: ExtensionContext) {
+  const disposable = vscode.commands.registerCommand("extension.expandMacro", async () => {
+    const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    const editor = vscode.window.activeTextEditor;
+    if (!extension || !editor) {
+      return;
+    }
+
+    const uri = editor.document.uri;
+    let client = null;
+    if (uri.scheme === "untitled") {
+      client = defaultClient;
+    } else {
+      let folder = workspace.getWorkspaceFolder(uri);
+      
+      if (folder) {
+        folder = getOuterMostWorkspaceFolder(folder);
+        client = clients.get(folder.uri.toString())
+      }
+    }
+
+    if (!client) {
+      return;
+    }
+
+    if (editor.selection.isEmpty) {
+      return;
+    }
+
+    const params: ExecuteCommandParams = {
+      command: "expandMacro",
+      arguments: [uri.toString(), editor.document.getText(editor.selection), editor.selection.start.line]
+    };
+
+    const res: Record<string, string> = await client.sendRequest("workspace/executeCommand", params);
+
+    const panel = vscode.window.createWebviewPanel(
+      'expandMacro',
+      ExpandMacroTitle,
+      vscode.ViewColumn.One,
+      {}
+    );
+    panel.webview.html = getExpandMacroWebviewContent(res);
+  });
+  
+  context.subscriptions.push(disposable);
+}
+
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
   createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
     if (session.workspaceFolder) {
@@ -233,6 +307,7 @@ export function activate(context: ExtensionContext): void {
 
   configureRunTestFromCodeLens()
   configureCopyDebugInfo(context);
+  configureExpandMacro(context);
   configureDebugger(context);
   configureTerminalLinkProvider(context);
 
