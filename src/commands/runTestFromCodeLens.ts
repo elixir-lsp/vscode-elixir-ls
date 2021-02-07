@@ -1,6 +1,7 @@
 import { window } from "vscode";
 
 type RunArgs = {
+  projectDir: string,
   filePath: string,
   describe: string | null,
   testName?: string,
@@ -13,7 +14,8 @@ export default function runFromCodeLens(args: RunArgs): void {
 
   elixirLsTerminal.show()
   elixirLsTerminal.sendText('clear')
-  elixirLsTerminal.sendText(buildTestCommand(args));
+  elixirLsTerminal.sendText(`cd ${args.projectDir}`)
+  elixirLsTerminal.sendText(buildTestCommand(args))
 }
 
 function buildTestCommand(args: RunArgs): string {
