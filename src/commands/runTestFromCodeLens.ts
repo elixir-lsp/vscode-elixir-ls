@@ -19,6 +19,19 @@ export default function runFromCodeLens(args: RunArgs): void {
   elixirLsTerminal.sendText(buildTestCommand(args));
 }
 
+function escapeSingleQuotes(s: string): string {
+  return isWindows() ? s : s.replace(/'/g, "'\\''");
+}
+
+function quote(s: string): string {
+  const q = isWindows() ? '"' : `'`;
+  return [q, s, q].join('');
+}
+
+function isWindows(): boolean {
+  return process.platform.includes('win32');
+}
+
 function buildTestCommand(args: RunArgs): string {
   const testFilter = buildTestInclude(
     args.describe,
@@ -26,7 +39,7 @@ function buildTestCommand(args: RunArgs): string {
     args.module
   );
 
-  return `mix test --exclude test --include "${testFilter}" ${args.filePath}`;
+  return `mix test --exclude test --include ${quote(escapeSingleQuotes(testFilter))} ${args.filePath}`;
 }
 
 function buildTestInclude(
