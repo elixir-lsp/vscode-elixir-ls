@@ -25,11 +25,11 @@ function escapeSingleQuotes(s: string): string {
 
 function quote(s: string): string {
   const q = isWindows() ? '"' : `'`;
-  return [q, s, q].join('');
+  return [q, s, q].join("");
 }
 
 function isWindows(): boolean {
-  return process.platform.includes('win32');
+  return process.platform.includes("win32");
 }
 
 function buildTestCommand(args: RunArgs): string {
@@ -39,7 +39,9 @@ function buildTestCommand(args: RunArgs): string {
     args.module
   );
 
-  return `mix test --exclude test --include ${quote(escapeSingleQuotes(testFilter))} ${args.filePath}`;
+  return `mix test --exclude test --include ${quote(
+    escapeSingleQuotes(testFilter)
+  )} ${args.filePath}`;
 }
 
 function buildTestInclude(
