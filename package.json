@@ -410,8 +410,8 @@
     "compile": "tsc -p ./ && cd elixir-ls && mix elixir_ls.release -o ../elixir-ls-release",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "test": "node ./out/test/runTest.js",
-    "lint": "eslint src/**/*.ts .*.js",
-    "check-formatting": "prettier --check src/**/*.ts .*.js "
+    "lint": "eslint . --ext .js,.ts",
+    "check-formatting": "prettier --check ./src/**/*.ts .*.js "
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
