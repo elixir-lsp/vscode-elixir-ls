@@ -20,6 +20,14 @@ import * as os from "os";
 import Commands from "./constants/commands";
 import runFromCodeLens from "./commands/runTestFromCodeLens";
 
+interface TerminalLinkWithData extends vscode.TerminalLink {
+  data: {
+    app: string,
+    file: string,
+    line: number
+  }
+}
+
 export let defaultClient: LanguageClient;
 const clients: Map<string, LanguageClient> = new Map();
 let _sortedWorkspaceFolders: string[] | undefined;
@@ -172,13 +180,13 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
   }
 
   const disposable = vscode.window.registerTerminalLinkProvider({
-    provideTerminalLinks: (context: vscode.TerminalLinkContext, token: vscode.CancellationToken) => {
-      const regex = /(?:\((?<app>[_a-z]+) \d+.\d+.\d+\) )(?<file>[_a-z\/]*[_a-z]+.ex):(?<line>\d+)/;
+    provideTerminalLinks: (context: vscode.TerminalLinkContext, _token: vscode.CancellationToken): vscode.ProviderResult<TerminalLinkWithData[]> => {
+      const regex = /(?:\((?<app>[_a-z]+) \d+.\d+.\d+\) )(?<file>[_a-z/]*[_a-z]+.ex):(?<line>\d+)/;
       const matches = context.line.match(regex);
       if (matches === null) {
         return [];
       }
-
+  
       return [
         {
           startIndex: matches.index!,
@@ -191,8 +199,8 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
         },
       ];
     },
-    handleTerminalLink: ({ data: { app, file, line } }: any) => {
-      let umbrellaFile = path.join("apps", app, file);
+    handleTerminalLink: ({ data: { app, file, line } }: TerminalLinkWithData): vscode.ProviderResult<void> => {
+      const umbrellaFile = path.join("apps", app, file);
       vscode.workspace.findFiles(`{${umbrellaFile},${file}}`).then(uris => {
         if (uris.length === 1) {
           openUri(uris[0], line);
@@ -202,7 +210,7 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
             if (!selection) {
               return;
             }
-
+  
             openUri(selection.uri, line);
           });
         }
