@@ -260,7 +260,7 @@ export function activate(context: ExtensionContext): void {
       configurationSection: "elixirLS",
       // Notify the server about file changes to Elixir files contained in the workspace
       fileEvents: [
-        workspace.createFileSystemWatcher("**/*.{ex,exs,erl,yrl,xrl,eex,leex}"),
+        workspace.createFileSystemWatcher("**/*.{ex,exs,erl,hrl,yrl,xrl,eex,leex}"),
       ],
     },
   };
