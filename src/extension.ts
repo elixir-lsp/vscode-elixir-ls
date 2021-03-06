@@ -193,8 +193,11 @@ function configureExpandMacro(context: ExtensionContext) {
       return;
     }
 
+    const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
+      .find(c => c.startsWith("expandMacro:"))!;
+
     const params: ExecuteCommandParams = {
-      command: "expandMacro",
+      command: command,
       arguments: [uri.toString(), editor.document.getText(editor.selection), editor.selection.start.line]
     };
 
