@@ -62,7 +62,7 @@
   },
   "folding": {
     "markers": {
-      "start": "^\\s*(@(moduledoc|typedoc|doc)\\b\\s+\"\"\")|(#\\s*region\\b)",
+      "start": "^\\s*(@(moduledoc|typedoc|doc)\\b\\s+(~S)?\"\"\")|(#\\s*region\\b)",
       "end": "^\\s+(\"\"\")|(#\\s*endregion\\b)",
     }
   }
