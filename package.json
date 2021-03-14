@@ -118,6 +118,13 @@
           "minLength": 0,
           "default": ""
         },
+        "elixirLS.envFile": {
+          "scope": "resource",
+          "type": "string",
+          "minLength": 0,
+          "default": "",
+          "description": "Path to a dotenv compatible environment variable file"
+        },
         "elixirLS.fetchDeps": {
           "scope": "resource",
           "type": "boolean",
@@ -254,6 +261,10 @@
               "env": {
                 "type": "object",
                 "description": "Environment variables to set before debugging. You may want to set MIX_ENV in here."
+              },
+              "envFile": {
+                "type": "string",
+                "description": "Path to a dotenv compatible environment variable file"
               },
               "projectDir": {
                 "type": "string",
