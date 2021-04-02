@@ -79,9 +79,9 @@ function detectConflictingExtension(extensionId: string): void {
   if (extension) {
     vscode.window.showErrorMessage(
       "Warning: " +
-      extensionId +
-      " is not compatible with ElixirLS, please uninstall " +
-      extensionId
+        extensionId +
+        " is not compatible with ElixirLS, please uninstall " +
+        extensionId
     );
   }
 }
