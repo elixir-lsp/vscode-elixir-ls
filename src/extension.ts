@@ -257,10 +257,6 @@ function configureManipulatePipes(context: ExtensionContext, operation: "toPipe"
       return;
     }
 
-    if (editor.selection.isEmpty) {
-      return;
-    }
-
     const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
       .find((c: string) => c.startsWith('manipulatePipes:'))!;
 

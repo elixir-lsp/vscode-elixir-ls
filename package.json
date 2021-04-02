@@ -405,7 +405,7 @@
       },
       {
         "command": "extension.fromPipe",
-        "title": "ElixirLS: Convert pipe operator to function call"
+        "title": "ElixirLS: Convert from pipe operator to function call"
       }
     ],
     "menus": {
