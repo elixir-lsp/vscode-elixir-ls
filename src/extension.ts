@@ -79,9 +79,9 @@ function detectConflictingExtension(extensionId: string): void {
   if (extension) {
     vscode.window.showErrorMessage(
       "Warning: " +
-        extensionId +
-        " is not compatible with ElixirLS, please uninstall " +
-        extensionId
+      extensionId +
+      " is not compatible with ElixirLS, please uninstall " +
+      extensionId
     );
   }
 }
@@ -178,7 +178,7 @@ function configureExpandMacro(context: ExtensionContext) {
       client = defaultClient;
     } else {
       let folder = workspace.getWorkspaceFolder(uri);
-      
+
       if (folder) {
         folder = getOuterMostWorkspaceFolder(folder);
         client = clients.get(folder.uri.toString())
@@ -211,7 +211,79 @@ function configureExpandMacro(context: ExtensionContext) {
     );
     panel.webview.html = getExpandMacroWebviewContent(res);
   });
-  
+
+  context.subscriptions.push(disposable);
+}
+
+interface ManipulatePipesResponseEdit {
+  newText: string,
+  range: {
+    start: {line: number, character: number},
+    end: {line: number, character: number}
+  }
+}
+
+interface ManipulatePipesResponse {
+  label: string
+  edit: {
+    changes: Record<string, ManipulatePipesResponseEdit[]>
+  }
+}
+
+function configureManipulatePipes(context: ExtensionContext, operation: "toPipe" | "fromPipe") {
+  const commandName = `extension.${operation}`;
+
+  const disposable = vscode.commands.registerCommand(commandName, async () => {
+    const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    const editor = vscode.window.activeTextEditor;
+    if (!extension || !editor) {
+      return;
+    }
+
+    const uri = editor.document.uri;
+    let client = null;
+    if (uri.scheme === "untitled") {
+      client = defaultClient;
+    } else {
+      let folder = workspace.getWorkspaceFolder(uri);
+
+      if (folder) {
+        folder = getOuterMostWorkspaceFolder(folder);
+        client = clients.get(folder.uri.toString())
+      }
+    }
+
+    if (!client) {
+      return;
+    }
+
+    if (editor.selection.isEmpty) {
+      return;
+    }
+
+    const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
+      .find((c: string) => c.startsWith('manipulatePipes:'))!;
+
+    const uriStr = uri.toString();
+    const args = [
+      operation,
+      uriStr,
+      editor.selection.start.line,
+      editor.selection.start.character,
+    ];
+
+    const params: ExecuteCommandParams = { command, arguments: args };
+
+    const response: ManipulatePipesResponse = await client.sendRequest("workspace/executeCommand", params);
+
+    const edits = response.edit.changes
+    const { range, newText } = edits[uriStr][0];
+
+    const editRange = new vscode.Range(range.start.line, range.start.character, range.end.line, range.end.character)
+
+    return editor.edit((editBuilder: vscode.TextEditorEdit) => editBuilder.replace(editRange, newText))
+  });
+
   context.subscriptions.push(disposable);
 }
 
@@ -262,7 +334,7 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
       if (matches === null) {
         return [];
       }
-  
+
       return [
         {
           startIndex: matches.index!,
@@ -286,7 +358,7 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
             if (!selection) {
               return;
             }
-  
+
             openUri(selection.uri, line);
           });
         }
@@ -310,6 +382,8 @@ export function activate(context: ExtensionContext): void {
   configureRunTestFromCodeLens()
   configureCopyDebugInfo(context);
   configureExpandMacro(context);
+  configureManipulatePipes(context, "fromPipe");
+  configureManipulatePipes(context, "toPipe");
   configureDebugger(context);
   configureTerminalLinkProvider(context);
 
