@@ -270,14 +270,7 @@ function configureManipulatePipes(context: ExtensionContext, operation: "toPipe"
 
     const params: ExecuteCommandParams = { command, arguments: args };
 
-    const response: ManipulatePipesResponse = await client.sendRequest("workspace/executeCommand", params);
-
-    const edits = response.edit.changes
-    const { range, newText } = edits[uriStr][0];
-
-    const editRange = new vscode.Range(range.start.line, range.start.character, range.end.line, range.end.character)
-
-    return editor.edit((editBuilder: vscode.TextEditorEdit) => editBuilder.replace(editRange, newText))
+    client.sendRequest("workspace/executeCommand", params);
   });
 
   context.subscriptions.push(disposable);
