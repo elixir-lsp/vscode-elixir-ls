@@ -11,14 +11,25 @@ import * as path from "path";
 
 import { workspace, ExtensionContext, WorkspaceFolder, Uri } from "vscode";
 import {
+  ExecuteCommandParams,
   LanguageClient,
   LanguageClientOptions,
   RevealOutputChannelOn,
-  ServerOptions,
+  ServerOptions
 } from "vscode-languageclient";
 import * as os from "os";
 import Commands from "./constants/commands";
 import runFromCodeLens from "./commands/runTestFromCodeLens";
+
+interface TerminalLinkWithData extends vscode.TerminalLink {
+  data: {
+    app: string,
+    file: string,
+    line: number
+  }
+}
+
+const ExpandMacroTitle = 'Expand macro result'
 
 export let defaultClient: LanguageClient;
 const clients: Map<string, LanguageClient> = new Map();
@@ -131,6 +142,79 @@ function configureCopyDebugInfo(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
+function getExpandMacroWebviewContent(content: Record<string, string>) {
+  let body = "";
+  for (const [key, value] of Object.entries(content)) {
+    body += `<div>
+      <h4>${key}</h4>
+      <code><pre>${value}</pre></code>
+    </div>`
+  }
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${ExpandMacroTitle}</title>
+</head>
+<body>
+  ${body}
+</body>
+</html>`;
+}
+
+function configureExpandMacro(context: ExtensionContext) {
+  const disposable = vscode.commands.registerCommand("extension.expandMacro", async () => {
+    const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    const editor = vscode.window.activeTextEditor;
+    if (!extension || !editor) {
+      return;
+    }
+
+    const uri = editor.document.uri;
+    let client = null;
+    if (uri.scheme === "untitled") {
+      client = defaultClient;
+    } else {
+      let folder = workspace.getWorkspaceFolder(uri);
+      
+      if (folder) {
+        folder = getOuterMostWorkspaceFolder(folder);
+        client = clients.get(folder.uri.toString())
+      }
+    }
+
+    if (!client) {
+      return;
+    }
+
+    if (editor.selection.isEmpty) {
+      return;
+    }
+
+    const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
+      .find(c => c.startsWith("expandMacro:"))!;
+
+    const params: ExecuteCommandParams = {
+      command: command,
+      arguments: [uri.toString(), editor.document.getText(editor.selection), editor.selection.start.line]
+    };
+
+    const res: Record<string, string> = await client.sendRequest("workspace/executeCommand", params);
+
+    const panel = vscode.window.createWebviewPanel(
+      'expandMacro',
+      ExpandMacroTitle,
+      vscode.ViewColumn.One,
+      {}
+    );
+    panel.webview.html = getExpandMacroWebviewContent(res);
+  });
+  
+  context.subscriptions.push(disposable);
+}
+
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
   createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
     if (session.workspaceFolder) {
@@ -172,13 +256,13 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
   }
 
   const disposable = vscode.window.registerTerminalLinkProvider({
-    provideTerminalLinks: (context: vscode.TerminalLinkContext, token: vscode.CancellationToken) => {
-      const regex = /(?:\((?<app>[_a-z]+) \d+.\d+.\d+\) )(?<file>[_a-z\/]*[_a-z]+.ex):(?<line>\d+)/;
+    provideTerminalLinks: (context: vscode.TerminalLinkContext, _token: vscode.CancellationToken): vscode.ProviderResult<TerminalLinkWithData[]> => {
+      const regex = /(?:\((?<app>[_a-z]+) \d+.\d+.\d+\) )(?<file>[_a-z/]*[_a-z]+.ex):(?<line>\d+)/;
       const matches = context.line.match(regex);
       if (matches === null) {
         return [];
       }
-
+  
       return [
         {
           startIndex: matches.index!,
@@ -191,8 +275,8 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
         },
       ];
     },
-    handleTerminalLink: ({ data: { app, file, line } }: any) => {
-      let umbrellaFile = path.join("apps", app, file);
+    handleTerminalLink: ({ data: { app, file, line } }: TerminalLinkWithData): vscode.ProviderResult<void> => {
+      const umbrellaFile = path.join("apps", app, file);
       vscode.workspace.findFiles(`{${umbrellaFile},${file}}`).then(uris => {
         if (uris.length === 1) {
           openUri(uris[0], line);
@@ -202,7 +286,7 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
             if (!selection) {
               return;
             }
-
+  
             openUri(selection.uri, line);
           });
         }
@@ -225,6 +309,7 @@ export function activate(context: ExtensionContext): void {
 
   configureRunTestFromCodeLens()
   configureCopyDebugInfo(context);
+  configureExpandMacro(context);
   configureDebugger(context);
   configureTerminalLinkProvider(context);
 
@@ -260,7 +345,7 @@ export function activate(context: ExtensionContext): void {
       configurationSection: "elixirLS",
       // Notify the server about file changes to Elixir files contained in the workspace
       fileEvents: [
-        workspace.createFileSystemWatcher("**/*.{ex,exs,erl,yrl,xrl,eex,leex}"),
+        workspace.createFileSystemWatcher("**/*.{ex,exs,erl,hrl,yrl,xrl,eex,leex}"),
       ],
     },
   };

@@ -8,6 +8,7 @@ export function run(): Promise<void> {
     ui: "tdd",
   });
   // TODO remove cast to any when color is included in typings
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (mocha as any).color(true);
 
   const testsRoot = path.resolve(__dirname, "..");

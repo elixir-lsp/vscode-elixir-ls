@@ -1,6 +1,12 @@
 name: CI
 
-on: [push]
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -19,10 +25,10 @@ jobs:
         with:
           node-version: "12.x"
       - name: Setup Elixir
-        uses: actions/setup-elixir@v1
+        uses: erlef/setup-elixir@v1
         with:
-          elixir-version: 1.10.3
-          otp-version: 22.3
+          elixir-version: 1.11.x
+          otp-version: 23.2.x
       - name: Install Xvfb
         run: |
           sudo apt-get install xvfb

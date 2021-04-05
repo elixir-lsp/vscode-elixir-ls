@@ -11,7 +11,7 @@
   "author": "The Elixir community",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.6.2",
+  "version": "0.6.5",
   "engines": {
     "vscode": "^1.49.0"
   },
@@ -394,6 +394,10 @@
       {
         "command": "extension.copyDebugInfo",
         "title": "ElixirLS: Copy Debug Info"
+      },
+      {
+        "command": "extension.expandMacro",
+        "title": "ElixirLS: Expand macro"
       }
     ],
     "menus": {
@@ -401,6 +405,10 @@
         {
           "command": "extension.copyDebugInfo",
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
+        },
+        {
+          "command": "extension.expandMacro",
+          "title": "editorLangId == elixir"
         }
       ]
     }
@@ -410,8 +418,9 @@
     "compile": "tsc -p ./ && cd elixir-ls && mix elixir_ls.release -o ../elixir-ls-release",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "test": "node ./out/test/runTest.js",
-    "lint": "eslint src/**/*.ts .*.js",
-    "check-formatting": "prettier --check src/**/*.ts .*.js "
+    "lint": "eslint . --ext .js,.ts",
+    "check-formatting": "prettier --check ./src/**/*.ts .*.js ",
+    "fix-formatting": "prettier --write ./src/**/*.ts .*.js "
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
