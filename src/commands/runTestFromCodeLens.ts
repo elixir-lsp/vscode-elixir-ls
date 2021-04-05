@@ -9,22 +9,22 @@ type RunArgs = {
 };
 
 export default async function runFromCodeLens(args: RunArgs): Promise<void> {
-  const { activeTextEditor, terminals, createTerminal } = window
+  const { activeTextEditor, terminals, createTerminal } = window;
 
   if (!activeTextEditor) {
-    return
+    return;
   }
 
   if (activeTextEditor.document.isDirty) {
-    const saved = await activeTextEditor.document.save()
+    const saved = await activeTextEditor.document.save();
 
     if (!saved) {
-      return
+      return;
     }
   }
 
   const elixirLsTerminal =
-    terminals.find(terminal => terminal.name == "ElixirLS") ||
+    terminals.find((terminal) => terminal.name == "ElixirLS") ||
     createTerminal("ElixirLS");
 
   elixirLsTerminal.show();
