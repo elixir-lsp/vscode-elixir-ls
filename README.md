@@ -76,6 +76,28 @@ If you run into issues with the extension then try these debugging steps:
 - Stop your editor, remove the entire `.elixir_ls` directory, then restart your editor
   - NOTE: This will cause you to have to re-run the entire dialyzer build
 
+If you are seeing the message "Invalid beam file or no abstract code", you need to make sure that your Mix project is set to use the `elixrc` compiler option `--debug-info`, which can be done by adding the following line to your `mix.exs` `project` section:
+
+```
+elixirc_options: [debug_info: Mix.env() == :dev]
+```
+
+For example:
+
+```
+defmodule MyApp.MixProject do
+  use Mix.Project
+
+  def project do
+    [
+      app: :my_app,
+      version: "0.1.0",
+      elixir: "~> 1.7",
+      elixirc_paths: elixirc_paths(Mix.env()),
+      elixirc_options: [debug_info: Mix.env() == :dev],
+    ...
+```
+
 ### Check ElixirLS Output
 
 Check the output log by opening `View > Output` and selecting "ElixirLS" in the dropdown.
