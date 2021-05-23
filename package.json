@@ -122,7 +122,7 @@
           "scope": "resource",
           "type": "boolean",
           "description": "Automatically fetch project dependencies when compiling",
-          "default": true
+          "default": false
         },
         "elixirLS.suggestSpecs": {
           "scope": "resource",
