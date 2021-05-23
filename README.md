@@ -68,7 +68,7 @@ Add or edit your `emmet.includedLanguages` to include the new Language Id:
 
 See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the supported Elixir and Erlang versions.
 
-## Debugging
+## Troubleshooting
 
 If you run into issues with the extension then try these debugging steps:
 
