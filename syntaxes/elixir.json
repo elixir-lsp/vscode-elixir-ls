@@ -1563,7 +1563,7 @@
     },
     {
       "comment": "Embedded Liveview heredoc with double quotes",
-      "begin": "\\s?(~L\"\"\")$",
+      "begin": "\\s?(~(L|H)\"\"\")$",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -1617,7 +1617,7 @@
     },
     {
       "comment": "Embededd Liveview heredoc with single quotes",
-      "begin": "\\s?(~L''')$",
+      "begin": "\\s?(~(L|H)''')$",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
