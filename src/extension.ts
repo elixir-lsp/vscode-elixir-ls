@@ -320,8 +320,6 @@ export function activate(context: ExtensionContext): void {
     command: context.asAbsolutePath("./elixir-ls-release/" + command),
   };
 
-  // If the extension is launched in debug mode then the debug server options are used
-  // Otherwise the run options are used
   const serverOptions: ServerOptions = {
     run: serverOpts,
     debug: serverOpts,
