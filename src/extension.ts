@@ -385,21 +385,18 @@ export function activate(context: ExtensionContext): void {
     folder = getOuterMostWorkspaceFolder(folder);
 
     if (!clients.has(folder.uri.toString())) {
+      const pattern = `${folder.uri.fsPath}/**/*`
       const workspaceClientOptions: LanguageClientOptions = Object.assign(
         {},
         clientOptions,
         {
           documentSelector: [
-            {
-              language: "elixir",
-              scheme: "file",
-              pattern: `${folder.uri.fsPath}/**/*`,
-            },
-            {
-              language: "elixir",
-              scheme: "untitled",
-              pattern: `${folder.uri.fsPath}/**/*`,
-            },
+            { language: "elixir", scheme: "file", pattern: pattern },
+            { language: "elixir", scheme: "untitled", pattern: pattern },
+            { language: "eex", scheme: "file", pattern: pattern },
+            { language: "eex", scheme: "untitled", pattern: pattern },
+            { language: "html-eex", scheme: "file", pattern: pattern },
+            { language: "html-eex", scheme: "untitled", pattern: pattern },
           ],
           workspaceFolder: folder,
         }
