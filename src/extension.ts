@@ -382,9 +382,8 @@ export function activate(context: ExtensionContext): void {
     const uri = document.uri;
     let folder = workspace.getWorkspaceFolder(uri);
 
-    // Untitled files and single files go to a default client.
-    // TODO this seem broken
-    if (document.isUntitled || !folder) {
+    // Files outside of workspace go to default client
+    if (!folder) {
       if (!defaultClient) {
         // Create the language client and start the client.
         defaultClient = startServer(context, clientOptions);
