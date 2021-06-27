@@ -372,31 +372,43 @@ export function activate(context: ExtensionContext): void {
     const uri = document.uri;
     let folder = workspace.getWorkspaceFolder(uri);
 
-    // Files outside of workspace go to default client
+    // Files outside of workspace go to default client when no directory is open
+    // otherwise they go to first workspace
+    // (even if we pass undefined in clientOptions vs will pass first workspace as rootUri/rootPath)
     if (!folder) {
-      if (!defaultClient) {
-        // Create the language client and start the client.
-        defaultClient = startClient(context, clientOptions);
+      if (workspace.workspaceFolders && workspace.workspaceFolders.length !== 0) {
+        // untitled file assigned to first workspace
+        folder = workspace.getWorkspaceFolder(workspace.workspaceFolders[0].uri)!;
+      } else {
+        // no workspace folders - use default client
+        if (!defaultClient) {
+          // Create the language client and start the client.
+          defaultClient = startClient(context, clientOptions);
+        }
+        return;
       }
-      return;
     }
     
     // If we have nested workspace folders we only start a server on the outer most workspace folder.
     folder = getOuterMostWorkspaceFolder(folder);
-
+    
     if (!clients.has(folder.uri.toString())) {
       const pattern = `${folder.uri.fsPath}/**/*`
+      // untitled files to first workspace
+      const unttled = folder.index === 0 ? [
+        { language: "elixir", scheme: "untitled" },
+        { language: "eex", scheme: "untitled" },
+        { language: "html-eex", scheme: "untitled"}
+      ] : [];
       const workspaceClientOptions: LanguageClientOptions = Object.assign(
         {},
         clientOptions,
         {
           documentSelector: [
             { language: "elixir", scheme: "file", pattern: pattern },
-            { language: "elixir", scheme: "untitled", pattern: pattern },
             { language: "eex", scheme: "file", pattern: pattern },
-            { language: "eex", scheme: "untitled", pattern: pattern },
             { language: "html-eex", scheme: "file", pattern: pattern },
-            { language: "html-eex", scheme: "untitled", pattern: pattern },
+            ...unttled
           ],
           workspaceFolder: folder,
         }
@@ -433,15 +445,27 @@ export function deactivate(): Thenable<void> {
 }
 
 function getClient(document: vscode.TextDocument): LanguageClient | null {
+  // We are only interested in elixir files
   if (document.languageId !== "elixir") {
     return null;
   }
 
+  // Files outside of workspace go to default client when no directory is open
+  // otherwise they go to first workspace
+  // (even if we pass undefined in clientOptions vs will pass first workspace as rootUri/rootPath)
   let folder = workspace.getWorkspaceFolder(document.uri);
   if (!folder) {
-    return defaultClient!;
+    if (workspace.workspaceFolders && workspace.workspaceFolders.length !== 0) {
+      // untitled file assigned to first workspace
+      folder = workspace.getWorkspaceFolder(workspace.workspaceFolders[0].uri)!;
+    } else {
+      // no workspace folders - use default client
+      return defaultClient!;
+    }
   }
-  
+
+  // If we have nested workspace folders we only start a server on the outer most workspace folder.
   folder = getOuterMostWorkspaceFolder(folder);
+  
   return clients.get(folder.uri.toString())!;
 }
