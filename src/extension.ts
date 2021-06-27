@@ -31,7 +31,7 @@ interface TerminalLinkWithData extends vscode.TerminalLink {
 
 const ExpandMacroTitle = 'Expand macro result'
 
-export let defaultClient: LanguageClient;
+export let defaultClient: LanguageClient | null;
 const clients: Map<string, LanguageClient> = new Map();
 let _sortedWorkspaceFolders: string[] | undefined;
 
