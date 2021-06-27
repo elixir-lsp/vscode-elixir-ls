@@ -436,9 +436,11 @@ export function deactivate(): Thenable<void> {
   const promises: Thenable<void>[] = [];
   if (defaultClient) {
     promises.push(defaultClient.stop());
+    defaultClient = null;
   }
   for (const client of clients.values()) {
     promises.push(client.stop());
   }
+  clients.clear();
   return Promise.all(promises).then(() => undefined);
 }
