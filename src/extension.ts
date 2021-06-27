@@ -314,9 +314,18 @@ function startServer(context: ExtensionContext, clientOptions: LanguageClientOpt
     debug: serverOpts,
   };
 
+  let displayName;
+  if (clientOptions.workspaceFolder) {
+    console.log(`starting for ${clientOptions.workspaceFolder!.name} with options`, clientOptions)
+    displayName = `ElixirLS - ${clientOptions.workspaceFolder!.name}`;
+  } else {
+    console.log(`starting for (default) with options`, clientOptions)
+    displayName = "ElixirLS - (default)"
+  }
+
   const client = new LanguageClient(
     "elixirLS", // langId
-    "ElixirLS", // display name
+    displayName, // display name
     serverOptions,
     clientOptions
   );
