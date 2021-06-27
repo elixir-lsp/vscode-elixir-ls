@@ -291,7 +291,7 @@ function configureRunTestFromCodeLens() {
   vscode.commands.registerCommand(Commands.RUN_TEST_FROM_CODELENS, runFromCodeLens);
 }
 
-function startServer(context: ExtensionContext, clientOptions: LanguageClientOptions): LanguageClient {
+function startClient(context: ExtensionContext, clientOptions: LanguageClientOptions): LanguageClient {
   const command =
     os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
 
@@ -376,7 +376,7 @@ export function activate(context: ExtensionContext): void {
     if (!folder) {
       if (!defaultClient) {
         // Create the language client and start the client.
-        defaultClient = startServer(context, clientOptions);
+        defaultClient = startClient(context, clientOptions);
       }
       return;
     }
@@ -402,7 +402,7 @@ export function activate(context: ExtensionContext): void {
         }
       );
 
-      clients.set(folder.uri.toString(), startServer(context, workspaceClientOptions));
+      clients.set(folder.uri.toString(), startClient(context, workspaceClientOptions));
     }
   }
 
