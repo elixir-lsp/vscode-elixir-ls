@@ -301,18 +301,7 @@ function configureRunTestFromCodeLens() {
   vscode.commands.registerCommand(Commands.RUN_TEST_FROM_CODELENS, runFromCodeLens);
 }
 
-export function activate(context: ExtensionContext): void {
-  testElixir();
-  detectConflictingExtension("mjmcloug.vscode-elixir");
-  // https://github.com/elixir-lsp/vscode-elixir-ls/issues/34
-  detectConflictingExtension("sammkj.vscode-elixir-formatter");
-
-  configureRunTestFromCodeLens()
-  configureCopyDebugInfo(context);
-  configureExpandMacro(context);
-  configureDebugger(context);
-  configureTerminalLinkProvider(context);
-
+function startServer(context: ExtensionContext, clientOptions: LanguageClientOptions): LanguageClient {
   const command =
     os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
 
@@ -324,6 +313,33 @@ export function activate(context: ExtensionContext): void {
     run: serverOpts,
     debug: serverOpts,
   };
+
+  const client = new LanguageClient(
+    "elixirLS", // langId
+    "ElixirLS", // display name
+    serverOptions,
+    clientOptions
+  );
+  const disposable = client.start();
+
+  // Push the disposable to the context's subscriptions so that the
+  // client can be deactivated on extension deactivation
+  context.subscriptions.push(disposable);
+  return client;
+}
+
+export function activate(context: ExtensionContext): void {
+  console.warn("activate called");
+  testElixir();
+  detectConflictingExtension("mjmcloug.vscode-elixir");
+  // https://github.com/elixir-lsp/vscode-elixir-ls/issues/34
+  detectConflictingExtension("sammkj.vscode-elixir-formatter");
+
+  configureRunTestFromCodeLens()
+  configureCopyDebugInfo(context);
+  configureExpandMacro(context);
+  configureDebugger(context);
+  configureTerminalLinkProvider(context);
 
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
@@ -355,30 +371,18 @@ export function activate(context: ExtensionContext): void {
     }
 
     const uri = document.uri;
-    // Untitled files go to a default client.
-    if (uri.scheme === "untitled" && !defaultClient) {
-      // Create the language client and start the client.
-      defaultClient = new LanguageClient(
-        "elixirLS", // langId
-        "ElixirLS", // display name
-        serverOptions,
-        clientOptions
-      );
-      const disposable = defaultClient.start();
-
-      // Push the disposable to the context's subscriptions so that the
-      // client can be deactivated on extension deactivation
-      context.subscriptions.push(disposable);
-      return;
-    }
-
     let folder = workspace.getWorkspaceFolder(uri);
-    // Files outside a folder can't be handled. This might depend on the language.
-    // Single file languages like JSON might handle files outside the workspace folders.
-    if (!folder) {
+
+    // Untitled files and single files go to a default client.
+    // TODO this seem broken
+    if (document.isUntitled || !folder) {
+      if (!defaultClient) {
+        // Create the language client and start the client.
+        defaultClient = startServer(context, clientOptions);
+      }
       return;
     }
-
+    
     // If we have nested workspace folders we only start a server on the outer most workspace folder.
     folder = getOuterMostWorkspaceFolder(folder);
 
@@ -403,15 +407,7 @@ export function activate(context: ExtensionContext): void {
         }
       );
 
-      const client = new LanguageClient(
-        "elixirLS", // langId
-        "ElixirLS", // display name
-        serverOptions,
-        workspaceClientOptions
-      );
-      const disposable = client.start();
-      context.subscriptions.push(disposable);
-      clients.set(folder.uri.toString(), client);
+      clients.set(folder.uri.toString(), startServer(context, workspaceClientOptions));
     }
   }
 
