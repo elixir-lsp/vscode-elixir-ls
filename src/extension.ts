@@ -173,17 +173,7 @@ function configureExpandMacro(context: ExtensionContext) {
     }
 
     const uri = editor.document.uri;
-    let client = null;
-    if (uri.scheme === "untitled") {
-      client = defaultClient;
-    } else {
-      let folder = workspace.getWorkspaceFolder(uri);
-      
-      if (folder) {
-        folder = getOuterMostWorkspaceFolder(folder);
-        client = clients.get(folder.uri.toString())
-      }
-    }
+    const client = getClient(editor.document);
 
     if (!client) {
       return;
@@ -443,4 +433,18 @@ export function deactivate(): Thenable<void> {
   }
   clients.clear();
   return Promise.all(promises).then(() => undefined);
+}
+
+function getClient(document: vscode.TextDocument): LanguageClient | null {
+  if (document.languageId !== "elixir") {
+    return null;
+  }
+
+  let folder = workspace.getWorkspaceFolder(document.uri);
+  if (!folder) {
+    return defaultClient!;
+  }
+  
+  folder = getOuterMostWorkspaceFolder(folder);
+  return clients.get(folder.uri.toString())!;
 }
