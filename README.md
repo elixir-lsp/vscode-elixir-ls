@@ -106,6 +106,30 @@ Check the output log by opening `View > Output` and selecting "ElixirLS" in the 
 
 Check the developer console by opening `Help > Toggle Developer Tools` and include any errors that look relevant.
 
+## Experimental features
+
+### Test code lenses
+
+This feature allows ElixirLS to provide code lenses that help developers easily execute tests. This feature is currently
+experimental because of a few known issues as well as a lack of large scale testing.
+
+#### Example
+
+![Test Lenses Example](https://raw.githubusercontent.com/elixir-lsp/elixir-ls/master/images/test_lens_example.gif)
+
+#### Configuration
+
+```jsonc
+{
+  // Enable or disable test lenses. Defaults to false.
+  "elixirLS.enableTestLenses": true
+}
+```
+
+#### Known issues
+
+- The generated command sometimes fails to properly execute tests in umbrella apps. See [this comment](https://github.com/elixir-lsp/elixir-ls/issues/438#issuecomment-871861880) for more details.
+
 ## Contributing
 
 ### Installation
