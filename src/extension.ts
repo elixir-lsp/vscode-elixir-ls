@@ -434,10 +434,12 @@ export function activate(context: ExtensionContext): void {
 export function deactivate(): Thenable<void> {
   const promises: Thenable<void>[] = [];
   if (defaultClient) {
+    console.log("ElixirLS: stopping default client");
     promises.push(defaultClient.stop());
     defaultClient = null;
   }
-  for (const client of clients.values()) {
+  for (const [uri, client] of clients.entries()) {
+    console.log(`ElixirLS: stopping client for ${uri}`);
     promises.push(client.stop());
   }
   clients.clear();
