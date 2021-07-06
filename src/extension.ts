@@ -388,14 +388,14 @@ export function activate(context: ExtensionContext): void {
         return;
       }
     }
-    
+
     // If we have nested workspace folders we only start a server on the outer most workspace folder.
     folder = getOuterMostWorkspaceFolder(folder);
     
     if (!clients.has(folder.uri.toString())) {
       const pattern = `${folder.uri.fsPath}/**/*`
       // untitled files to first workspace
-      const unttled = folder.index === 0 ? [
+      const untitled = folder.index === 0 ? [
         { language: "elixir", scheme: "untitled" },
         { language: "eex", scheme: "untitled" },
         { language: "html-eex", scheme: "untitled"}
@@ -408,7 +408,7 @@ export function activate(context: ExtensionContext): void {
             { language: "elixir", scheme: "file", pattern: pattern },
             { language: "eex", scheme: "file", pattern: pattern },
             { language: "html-eex", scheme: "file", pattern: pattern },
-            ...unttled
+            ...untitled
           ],
           workspaceFolder: folder,
         }
