@@ -306,10 +306,10 @@ function startClient(context: ExtensionContext, clientOptions: LanguageClientOpt
 
   let displayName;
   if (clientOptions.workspaceFolder) {
-    console.log(`starting for ${clientOptions.workspaceFolder!.name} with options`, clientOptions)
+    console.log(`ElixirLS: starting client for ${clientOptions.workspaceFolder!.uri.toString()} with server options`, serverOptions, "client options", clientOptions)
     displayName = `ElixirLS - ${clientOptions.workspaceFolder!.name}`;
   } else {
-    console.log(`starting for (default) with options`, clientOptions)
+    console.log(`ElixirLS: starting default client with server options`, serverOptions, "client options", clientOptions)
     displayName = "ElixirLS - (default)"
   }
 
