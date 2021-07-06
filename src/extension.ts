@@ -394,7 +394,7 @@ export function activate(context: ExtensionContext): void {
     
     if (!clients.has(folder.uri.toString())) {
       const pattern = `${folder.uri.fsPath}/**/*`
-      // untitled files to first workspace
+      // open untitled files go to the first workspace
       const untitled = folder.index === 0 ? [
         { language: "elixir", scheme: "untitled" },
         { language: "eex", scheme: "untitled" },
