@@ -299,6 +299,8 @@ function startClient(context: ExtensionContext, clientOptions: LanguageClientOpt
     command: context.asAbsolutePath("./elixir-ls-release/" + command),
   };
 
+  // If the extension is launched in debug mode then the `debug` server options are used instead of `run`
+  // currently we pass the same options regardless of the mode
   const serverOptions: ServerOptions = {
     run: serverOpts,
     debug: serverOpts,
