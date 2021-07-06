@@ -345,6 +345,7 @@ export function activate(context: ExtensionContext): void {
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
     // Register the server for Elixir documents
+    // the client will iterate through this list and chose the first matching element
     documentSelector: [
       { language: "elixir", scheme: "file" },
       { language: "elixir", scheme: "untitled" },
@@ -406,6 +407,7 @@ export function activate(context: ExtensionContext): void {
         {},
         clientOptions,
         {
+          // the client will iterate through this list and chose the first matching element
           documentSelector: [
             { language: "elixir", scheme: "file", pattern: pattern },
             { language: "eex", scheme: "file", pattern: pattern },
