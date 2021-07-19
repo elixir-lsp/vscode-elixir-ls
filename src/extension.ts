@@ -31,7 +31,7 @@ interface TerminalLinkWithData extends vscode.TerminalLink {
 
 const ExpandMacroTitle = 'Expand macro result'
 
-export let defaultClient: LanguageClient;
+export let defaultClient: LanguageClient | null;
 const clients: Map<string, LanguageClient> = new Map();
 let _sortedWorkspaceFolders: string[] | undefined;
 
@@ -173,17 +173,7 @@ function configureExpandMacro(context: ExtensionContext) {
     }
 
     const uri = editor.document.uri;
-    let client = null;
-    if (uri.scheme === "untitled") {
-      client = defaultClient;
-    } else {
-      let folder = workspace.getWorkspaceFolder(uri);
-      
-      if (folder) {
-        folder = getOuterMostWorkspaceFolder(folder);
-        client = clients.get(folder.uri.toString())
-      }
-    }
+    const client = getClient(editor.document);
 
     if (!client) {
       return;
@@ -301,7 +291,46 @@ function configureRunTestFromCodeLens() {
   vscode.commands.registerCommand(Commands.RUN_TEST_FROM_CODELENS, runFromCodeLens);
 }
 
+function startClient(context: ExtensionContext, clientOptions: LanguageClientOptions): LanguageClient {
+  const command =
+    os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
+
+  const serverOpts = {
+    command: context.asAbsolutePath("./elixir-ls-release/" + command),
+  };
+
+  // If the extension is launched in debug mode then the `debug` server options are used instead of `run`
+  // currently we pass the same options regardless of the mode
+  const serverOptions: ServerOptions = {
+    run: serverOpts,
+    debug: serverOpts,
+  };
+
+  let displayName;
+  if (clientOptions.workspaceFolder) {
+    console.log(`ElixirLS: starting client for ${clientOptions.workspaceFolder!.uri.toString()} with server options`, serverOptions, "client options", clientOptions)
+    displayName = `ElixirLS - ${clientOptions.workspaceFolder!.name}`;
+  } else {
+    console.log(`ElixirLS: starting default client with server options`, serverOptions, "client options", clientOptions)
+    displayName = "ElixirLS - (default)"
+  }
+
+  const client = new LanguageClient(
+    "elixirLS", // langId
+    displayName, // display name
+    serverOptions,
+    clientOptions
+  );
+  const disposable = client.start();
+
+  // Push the disposable to the context's subscriptions so that the
+  // client can be deactivated on extension deactivation
+  context.subscriptions.push(disposable);
+  return client;
+}
+
 export function activate(context: ExtensionContext): void {
+  console.warn("activate called");
   testElixir();
   detectConflictingExtension("mjmcloug.vscode-elixir");
   // https://github.com/elixir-lsp/vscode-elixir-ls/issues/34
@@ -313,23 +342,10 @@ export function activate(context: ExtensionContext): void {
   configureDebugger(context);
   configureTerminalLinkProvider(context);
 
-  const command =
-    os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
-
-  const serverOpts = {
-    command: context.asAbsolutePath("./elixir-ls-release/" + command),
-  };
-
-  // If the extension is launched in debug mode then the debug server options are used
-  // Otherwise the run options are used
-  const serverOptions: ServerOptions = {
-    run: serverOpts,
-    debug: serverOpts,
-  };
-
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
     // Register the server for Elixir documents
+    // the client will iterate through this list and chose the first matching element
     documentSelector: [
       { language: "elixir", scheme: "file" },
       { language: "elixir", scheme: "untitled" },
@@ -357,63 +373,52 @@ export function activate(context: ExtensionContext): void {
     }
 
     const uri = document.uri;
-    // Untitled files go to a default client.
-    if (uri.scheme === "untitled" && !defaultClient) {
-      // Create the language client and start the client.
-      defaultClient = new LanguageClient(
-        "elixirLS", // langId
-        "ElixirLS", // display name
-        serverOptions,
-        clientOptions
-      );
-      const disposable = defaultClient.start();
-
-      // Push the disposable to the context's subscriptions so that the
-      // client can be deactivated on extension deactivation
-      context.subscriptions.push(disposable);
-      return;
-    }
-
     let folder = workspace.getWorkspaceFolder(uri);
-    // Files outside a folder can't be handled. This might depend on the language.
-    // Single file languages like JSON might handle files outside the workspace folders.
+
+    // Files outside of workspace go to default client when no directory is open
+    // otherwise they go to first workspace
+    // (even if we pass undefined in clientOptions vs will pass first workspace as rootUri/rootPath)
     if (!folder) {
-      return;
+      if (workspace.workspaceFolders && workspace.workspaceFolders.length !== 0) {
+        // untitled file assigned to first workspace
+        folder = workspace.getWorkspaceFolder(workspace.workspaceFolders[0].uri)!;
+      } else {
+        // no workspace folders - use default client
+        if (!defaultClient) {
+          // Create the language client and start the client.
+          defaultClient = startClient(context, clientOptions);
+        }
+        return;
+      }
     }
 
     // If we have nested workspace folders we only start a server on the outer most workspace folder.
     folder = getOuterMostWorkspaceFolder(folder);
-
+    
     if (!clients.has(folder.uri.toString())) {
+      const pattern = `${folder.uri.fsPath}/**/*`
+      // open untitled files go to the first workspace
+      const untitled = folder.index === 0 ? [
+        { language: "elixir", scheme: "untitled" },
+        { language: "eex", scheme: "untitled" },
+        { language: "html-eex", scheme: "untitled"}
+      ] : [];
       const workspaceClientOptions: LanguageClientOptions = Object.assign(
         {},
         clientOptions,
         {
+          // the client will iterate through this list and chose the first matching element
           documentSelector: [
-            {
-              language: "elixir",
-              scheme: "file",
-              pattern: `${folder.uri.fsPath}/**/*`,
-            },
-            {
-              language: "elixir",
-              scheme: "untitled",
-              pattern: `${folder.uri.fsPath}/**/*`,
-            },
+            { language: "elixir", scheme: "file", pattern: pattern },
+            { language: "eex", scheme: "file", pattern: pattern },
+            { language: "html-eex", scheme: "file", pattern: pattern },
+            ...untitled
           ],
           workspaceFolder: folder,
         }
       );
 
-      const client = new LanguageClient(
-        "elixirLS", // langId
-        "ElixirLS", // display name
-        serverOptions,
-        workspaceClientOptions
-      );
-      const disposable = client.start();
-      context.subscriptions.push(disposable);
-      clients.set(folder.uri.toString(), client);
+      clients.set(folder.uri.toString(), startClient(context, workspaceClientOptions));
     }
   }
 
@@ -433,10 +438,40 @@ export function activate(context: ExtensionContext): void {
 export function deactivate(): Thenable<void> {
   const promises: Thenable<void>[] = [];
   if (defaultClient) {
+    console.log("ElixirLS: stopping default client");
     promises.push(defaultClient.stop());
+    defaultClient = null;
   }
-  for (const client of clients.values()) {
+  for (const [uri, client] of clients.entries()) {
+    console.log(`ElixirLS: stopping client for ${uri}`);
     promises.push(client.stop());
   }
+  clients.clear();
   return Promise.all(promises).then(() => undefined);
+}
+
+function getClient(document: vscode.TextDocument): LanguageClient | null {
+  // We are only interested in elixir files
+  if (document.languageId !== "elixir") {
+    return null;
+  }
+
+  // Files outside of workspace go to default client when no directory is open
+  // otherwise they go to first workspace
+  // (even if we pass undefined in clientOptions vs will pass first workspace as rootUri/rootPath)
+  let folder = workspace.getWorkspaceFolder(document.uri);
+  if (!folder) {
+    if (workspace.workspaceFolders && workspace.workspaceFolders.length !== 0) {
+      // untitled file assigned to first workspace
+      folder = workspace.getWorkspaceFolder(workspace.workspaceFolders[0].uri)!;
+    } else {
+      // no workspace folders - use default client
+      return defaultClient!;
+    }
+  }
+
+  // If we have nested workspace folders we only start a server on the outer most workspace folder.
+  folder = getOuterMostWorkspaceFolder(folder);
+  
+  return clients.get(folder.uri.toString())!;
 }
