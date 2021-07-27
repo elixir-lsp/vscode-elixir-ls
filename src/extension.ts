@@ -216,6 +216,7 @@ function configureManipulatePipes(context: ExtensionContext, operation: "toPipe"
     }
 
     const client = getClient(editor.document);
+    const uri = editor.document.uri
 
     if (!client) {
       return
@@ -239,23 +240,6 @@ function configureManipulatePipes(context: ExtensionContext, operation: "toPipe"
   });
 
   context.subscriptions.push(disposable);
-}
-
-function getClientForURI(uri: Uri) : LanguageClient | undefined {
-  if (!uri) {
-    return;
-  }
-
-  if (uri.scheme === "untitled") {
-    return defaultClient;
-  }
-
-  let folder = workspace.getWorkspaceFolder(uri);
-
-  if (folder) {
-    folder = getOuterMostWorkspaceFolder(folder);
-    return clients.get(folder.uri.toString())
-  }
 }
 
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
