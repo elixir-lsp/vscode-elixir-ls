@@ -173,17 +173,7 @@ function configureExpandMacro(context: ExtensionContext) {
     }
 
     const uri = editor.document.uri;
-    let client = null;
-    if (uri.scheme === "untitled") {
-      client = defaultClient;
-    } else {
-      let folder = workspace.getWorkspaceFolder(uri);
-
-      if (folder) {
-        folder = getOuterMostWorkspaceFolder(folder);
-        client = clients.get(folder.uri.toString())
-      }
-    }
+    const client = getClientForURI(uri)
 
     if (!client) {
       return;
@@ -215,21 +205,6 @@ function configureExpandMacro(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-interface ManipulatePipesResponseEdit {
-  newText: string,
-  range: {
-    start: {line: number, character: number},
-    end: {line: number, character: number}
-  }
-}
-
-interface ManipulatePipesResponse {
-  label: string
-  edit: {
-    changes: Record<string, ManipulatePipesResponseEdit[]>
-  }
-}
-
 function configureManipulatePipes(context: ExtensionContext, operation: "toPipe" | "fromPipe") {
   const commandName = `extension.${operation}`;
 
@@ -241,21 +216,13 @@ function configureManipulatePipes(context: ExtensionContext, operation: "toPipe"
     }
 
     const uri = editor.document.uri;
-    let client = null;
-    if (uri.scheme === "untitled") {
-      client = defaultClient;
-    } else {
-      let folder = workspace.getWorkspaceFolder(uri);
 
-      if (folder) {
-        folder = getOuterMostWorkspaceFolder(folder);
-        client = clients.get(folder.uri.toString())
-      }
-    }
+    const client = getClientForURI(uri);
 
     if (!client) {
-      return;
+      return
     }
+
 
     const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
       .find((c: string) => c.startsWith('manipulatePipes:'))!;
@@ -274,6 +241,23 @@ function configureManipulatePipes(context: ExtensionContext, operation: "toPipe"
   });
 
   context.subscriptions.push(disposable);
+}
+
+function getClientForURI(uri: Uri) : LanguageClient | undefined {
+  if (!uri) {
+    return;
+  }
+
+  if (uri.scheme === "untitled") {
+    return defaultClient;
+  }
+
+  let folder = workspace.getWorkspaceFolder(uri);
+
+  if (folder) {
+    folder = getOuterMostWorkspaceFolder(folder);
+    return clients.get(folder.uri.toString())
+  }
 }
 
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
