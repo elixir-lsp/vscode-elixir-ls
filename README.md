@@ -68,13 +68,35 @@ Add or edit your `emmet.includedLanguages` to include the new Language Id:
 
 See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the supported Elixir and Erlang versions.
 
-## Debugging
+## Troubleshooting
 
 If you run into issues with the extension then try these debugging steps:
 
 - Restart your editor (which will restart ElixirLS) sometimes fixes issues
 - Stop your editor, remove the entire `.elixir_ls` directory, then restart your editor
   - NOTE: This will cause you to have to re-run the entire dialyzer build
+
+If you are seeing the message "Invalid beam file or no abstract code", you need to make sure that your Mix project is set to use the `elixirc` compiler option `--debug-info`, which can be done by adding the following line to your `mix.exs` `project` section:
+
+```
+elixirc_options: [debug_info: Mix.env() == :dev]
+```
+
+For example:
+
+```
+defmodule MyApp.MixProject do
+  use Mix.Project
+
+  def project do
+    [
+      app: :my_app,
+      version: "0.1.0",
+      elixir: "~> 1.7",
+      elixirc_paths: elixirc_paths(Mix.env()),
+      elixirc_options: [debug_info: Mix.env() == :dev],
+    ...
+```
 
 ### Check ElixirLS Output
 
@@ -83,6 +105,30 @@ Check the output log by opening `View > Output` and selecting "ElixirLS" in the 
 ### Check the Developer Tools
 
 Check the developer console by opening `Help > Toggle Developer Tools` and include any errors that look relevant.
+
+## Experimental features
+
+### Test code lenses
+
+This feature allows ElixirLS to provide code lenses that help developers easily execute tests. This feature is currently
+experimental because of a few known issues as well as a lack of large scale testing.
+
+#### Example
+
+![Test Lenses Example](https://raw.githubusercontent.com/elixir-lsp/elixir-ls/master/images/test_lens_example.gif)
+
+#### Configuration
+
+```jsonc
+{
+  // Enable or disable test lenses. Defaults to false.
+  "elixirLS.enableTestLenses": true
+}
+```
+
+#### Known issues
+
+- The generated command sometimes fails to properly execute tests in umbrella apps. See [this comment](https://github.com/elixir-lsp/elixir-ls/issues/438#issuecomment-871861880) for more details.
 
 ## Contributing
 
