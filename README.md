@@ -33,7 +33,6 @@ ElixirLS is opinionated and sets the following default settings for Elixir files
 {
   // Based on Elixir formatter's style
   "editor.insertSpaces": true,
-  "editor.tabSize": 2,
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
