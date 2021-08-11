@@ -22,7 +22,9 @@
   "activationEvents": [
     "onLanguage:elixir",
     "onLanguage:eex",
-    "onLanguage:html-eex"
+    "onLanguage:html-eex",
+    "onLanguage:phoenix-heex",
+    "onLanguage:surface"
   ],
   "main": "./out/extension",
   "contributes": {
