@@ -33,6 +33,9 @@ ElixirLS is opinionated and sets the following default settings for Elixir files
 {
   // Based on Elixir formatter's style
   "editor.insertSpaces": true,
+  // Note: While it is possible to override this in your VSCode configuration, the Elixir Formatter
+  // does not support a configurable tab size, so if you override this then you should not use the
+  // formatter.
   "editor.tabSize": 2,
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,

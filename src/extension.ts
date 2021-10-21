@@ -238,8 +238,6 @@ function configureManipulatePipes(context: ExtensionContext, operation: "toPipe"
 
     client.sendRequest("workspace/executeCommand", params);
   });
-
-  context.subscriptions.push(disposable);
 }
 
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
@@ -391,6 +389,10 @@ export function activate(context: ExtensionContext): void {
       { language: "eex", scheme: "untitled" },
       { language: "html-eex", scheme: "file" },
       { language: "html-eex", scheme: "untitled" },
+      { language: "phoenix-heex", scheme: "file" },
+      { language: "phoenix-heex", scheme: "untitled" },
+      { language: "surface", scheme: "file" },
+      { language: "surface", scheme: "untitled" }
     ],
     // Don't focus the Output pane on errors because request handler errors are no big deal
     revealOutputChannelOn: RevealOutputChannelOn.Never,
@@ -399,14 +401,14 @@ export function activate(context: ExtensionContext): void {
       configurationSection: "elixirLS",
       // Notify the server about file changes to Elixir files contained in the workspace
       fileEvents: [
-        workspace.createFileSystemWatcher("**/*.{ex,exs,erl,hrl,yrl,xrl,eex,leex}"),
+        workspace.createFileSystemWatcher("**/*.{ex,exs,erl,hrl,yrl,xrl,eex,leex,heex,sface}"),
       ],
     },
   };
 
   function didOpenTextDocument(document: vscode.TextDocument): void {
-    // We are only interested in elixir files
-    if (document.languageId !== "elixir") {
+    // We are only interested in elixir related files
+    if (["elixir", "eex", "html-eex", "phoenix-heex", "surface"].indexOf(document.languageId) < 0) {
       return;
     }
 
@@ -439,7 +441,9 @@ export function activate(context: ExtensionContext): void {
       const untitled = folder.index === 0 ? [
         { language: "elixir", scheme: "untitled" },
         { language: "eex", scheme: "untitled" },
-        { language: "html-eex", scheme: "untitled"}
+        { language: "html-eex", scheme: "untitled"},
+        { language: "phoenix-heex", scheme: "untitled"},
+        { language: "surface", scheme: "untitled"}
       ] : [];
       const workspaceClientOptions: LanguageClientOptions = Object.assign(
         {},
@@ -450,6 +454,8 @@ export function activate(context: ExtensionContext): void {
             { language: "elixir", scheme: "file", pattern: pattern },
             { language: "eex", scheme: "file", pattern: pattern },
             { language: "html-eex", scheme: "file", pattern: pattern },
+            { language: "phoenix-heex", scheme: "file", pattern: pattern },
+            { language: "surface", scheme: "file", pattern: pattern },
             ...untitled
           ],
           workspaceFolder: folder,
