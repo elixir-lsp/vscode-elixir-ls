@@ -257,6 +257,10 @@
                 "type": "object",
                 "description": "Environment variables to set before debugging. You may want to set MIX_ENV in here."
               },
+              "debugExpressionTimeoutMs": {
+                "type": "number",
+                "description": "The timeout (in milliseconds) used in debugging when waiting for a code expression to complete"
+              },
               "projectDir": {
                 "type": "string",
                 "description": "Project root directory (usually the workspace root)",
