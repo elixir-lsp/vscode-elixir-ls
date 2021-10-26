@@ -1589,7 +1589,7 @@
       ]
     },
     {
-      "comment": "Embededd Liveview heredoc with double quotes",
+      "comment": "Embedded Liveview heredoc with double quotes",
       "begin": "\\s?(~l\"\"\")$",
       "beginCaptures": {
         "0": {
