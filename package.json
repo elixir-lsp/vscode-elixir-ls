@@ -100,6 +100,12 @@
           ],
           "default": "dialyxir_long"
         },
+        "elixirLS.envVariables": {
+          "scope": "resource",
+          "type": "object",
+          "description": "Environment variables to use for compilation",
+          "minLength": 0
+        },
         "elixirLS.mixEnv": {
           "scope": "resource",
           "type": "string",
