@@ -261,6 +261,19 @@
                 "type": "number",
                 "description": "The timeout (in milliseconds) used in debugging when waiting for a code expression to complete"
               },
+              "debugAutoInterpretAllModules": {
+                "type": "boolean",
+                "description": "When debugging, intepret all files. Note: Only interpreted files will be part of debugging stack traces. However this has a performance impact on large repositories, so if debugging is too slow, disable debugAutoInterpretFiles and use debugInterpretModulesPatterns to specify which files to interpret.",
+                "default": true
+              },
+              "debugInterpretModulesPatterns": {
+                "type": "array",
+                "description": "The modules to interpret when debugging. For details of interpreting see the :int module in Erlang. Only modules that are interpreted will show up in the debugger stacktrace. An example of a pattern is: \"MyApp.*\", which will interpret all modules that begin with \"MyApp.\"",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
               "projectDir": {
                 "type": "string",
                 "description": "Project root directory (usually the workspace root)",
