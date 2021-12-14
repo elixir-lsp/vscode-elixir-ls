@@ -432,6 +432,14 @@
       {
         "command": "extension.expandMacro",
         "title": "ElixirLS: Expand macro"
+      },
+      {
+        "command": "extension.toPipe",
+        "title": "ElixirLS: Convert function call to pipe operator"
+      },
+      {
+        "command": "extension.fromPipe",
+        "title": "ElixirLS: Convert from pipe operator to function call"
       }
     ],
     "menus": {
@@ -442,7 +450,15 @@
         },
         {
           "command": "extension.expandMacro",
-          "title": "editorLangId == elixir"
+          "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
+        },
+        {
+          "command": "extension.toPipe",
+          "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
+        },
+        {
+          "command": "extension.fromPipe",
+          "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
         }
       ]
     }

@@ -205,6 +205,41 @@ function configureExpandMacro(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
+function configureManipulatePipes(context: ExtensionContext, operation: "toPipe" | "fromPipe") {
+  const commandName = `extension.${operation}`;
+
+  const disposable = vscode.commands.registerCommand(commandName, async () => {
+    const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    const editor = vscode.window.activeTextEditor;
+    if (!extension || !editor) {
+      return;
+    }
+
+    const client = getClient(editor.document);
+    const uri = editor.document.uri
+
+    if (!client) {
+      return
+    }
+
+
+    const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
+      .find((c: string) => c.startsWith('manipulatePipes:'))!;
+
+    const uriStr = uri.toString();
+    const args = [
+      operation,
+      uriStr,
+      editor.selection.start.line,
+      editor.selection.start.character,
+    ];
+
+    const params: ExecuteCommandParams = { command, arguments: args };
+
+    client.sendRequest("workspace/executeCommand", params);
+  });
+}
+
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
   createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
     if (session.workspaceFolder) {
@@ -330,7 +365,6 @@ function startClient(context: ExtensionContext, clientOptions: LanguageClientOpt
 }
 
 export function activate(context: ExtensionContext): void {
-  console.warn("activate called");
   testElixir();
   detectConflictingExtension("mjmcloug.vscode-elixir");
   // https://github.com/elixir-lsp/vscode-elixir-ls/issues/34
@@ -339,6 +373,8 @@ export function activate(context: ExtensionContext): void {
   configureRunTestFromCodeLens()
   configureCopyDebugInfo(context);
   configureExpandMacro(context);
+  configureManipulatePipes(context, "fromPipe");
+  configureManipulatePipes(context, "toPipe");
   configureDebugger(context);
   configureTerminalLinkProvider(context);
 
