@@ -157,6 +157,15 @@
           "type": "boolean",
           "description": "Show code lenses to run tests in terminal",
           "default": false
+        },
+        "elixirLS.additionalWatchedExtensions": {
+          "type": "array",
+          "description": "Additional file types capable of triggering a build on change",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "default": []
         }
       }
     },
