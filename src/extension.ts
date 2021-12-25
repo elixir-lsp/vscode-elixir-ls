@@ -238,6 +238,8 @@ function configureManipulatePipes(context: ExtensionContext, operation: "toPipe"
 
     client.sendRequest("workspace/executeCommand", params);
   });
+
+  context.subscriptions.push(disposable);
 }
 
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
