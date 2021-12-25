@@ -434,6 +434,10 @@
         "title": "ElixirLS: Expand macro"
       },
       {
+        "command": "extension.restart",
+        "title": "ElixirLS: Restart language server"
+      },
+      {
         "command": "extension.toPipe",
         "title": "ElixirLS: Convert function call to pipe operator"
       },
@@ -450,6 +454,10 @@
         },
         {
           "command": "extension.expandMacro",
+          "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
+        },
+        {
+          "command": "extension.restart",
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
         },
         {
