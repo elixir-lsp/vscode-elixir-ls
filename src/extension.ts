@@ -205,6 +205,39 @@ function configureExpandMacro(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
+function configureRestart(context: ExtensionContext) {
+  const disposable = vscode.commands.registerCommand("extension.restart", async () => {
+    const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    const editor = vscode.window.activeTextEditor;
+
+    if (!extension || !editor) {
+      return;
+    }
+
+    const client = getClient(editor.document);
+    if (!client) {
+      return;
+    }
+
+    const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
+      .find(c => c.startsWith("restart:"))!;
+
+    const params: ExecuteCommandParams = {
+      command: command,
+      arguments: []
+    };
+
+    try {
+      await client.sendRequest("workspace/executeCommand", params);
+    } catch {
+      // this command will throw Connection got disposed
+      // client reference remains valid as VS will restart server process and the connection
+    }
+  });
+
+  context.subscriptions.push(disposable);
+}
+
 function configureManipulatePipes(context: ExtensionContext, operation: "toPipe" | "fromPipe") {
   const commandName = `extension.${operation}`;
 
@@ -375,6 +408,7 @@ export function activate(context: ExtensionContext): void {
   configureRunTestFromCodeLens()
   configureCopyDebugInfo(context);
   configureExpandMacro(context);
+  configureRestart(context);
   configureManipulatePipes(context, "fromPipe");
   configureManipulatePipes(context, "toPipe");
   configureDebugger(context);
