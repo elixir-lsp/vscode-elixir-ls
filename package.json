@@ -116,7 +116,7 @@
         "elixirLS.mixTarget": {
           "scope": "resource",
           "type": "string",
-          "description": "Mix target to use for compilation (requires Elixir >= 1.8)",
+          "description": "Mix target to use for compilation",
           "minLength": 0
         },
         "elixirLS.projectDir": {
