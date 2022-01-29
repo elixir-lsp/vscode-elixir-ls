@@ -324,9 +324,6 @@
       "patterns": [
         {
           "include": "#regex_sub"
-        },
-        {
-          "include": "#nest_ltgt"
         }
       ]
     },
@@ -348,14 +345,11 @@
       "patterns": [
         {
           "include": "#regex_sub"
-        },
-        {
-          "include": "#nest_ltgt"
         }
       ]
     },
     {
-      "comment": "Regex sigil with single quotes",
+      "comment": "Regex sigil with double quotes heredocs",
       "begin": "~r\\\"\\\"\\\"",
       "beginCaptures": {
         "0": {
@@ -372,9 +366,6 @@
       "patterns": [
         {
           "include": "#regex_sub"
-        },
-        {
-          "include": "#nest_ltgt"
         }
       ]
     },
@@ -396,9 +387,6 @@
       "patterns": [
         {
           "include": "#regex_sub"
-        },
-        {
-          "include": "#nest_ltgt"
         }
       ]
     },
@@ -420,9 +408,6 @@
       "patterns": [
         {
           "include": "#regex_sub"
-        },
-        {
-          "include": "#nest_ltgt"
         }
       ]
     },
@@ -535,12 +520,7 @@
           "name": "punctuation.section.regexp.end.elixir"
         }
       },
-      "name": "string.regexp.literal.elixir",
-      "patterns": [
-        {
-          "include": "#nest_ltgt"
-        }
-      ]
+      "name": "string.regexp.literal.elixir"
     },
     {
       "comment": "Literal regex sigil with single quoted heredoc",
@@ -556,12 +536,7 @@
           "name": "punctuation.section.regexp.end.elixir"
         }
       },
-      "name": "string.regexp.literal.elixir",
-      "patterns": [
-        {
-          "include": "#nest_ltgt"
-        }
-      ]
+      "name": "string.regexp.literal.elixir"
     },
     {
       "comment": "Literal regex sigil with double quoted heredoc",
@@ -577,12 +552,7 @@
           "name": "punctuation.section.regexp.end.elixir"
         }
       },
-      "name": "string.regexp.literal.elixir",
-      "patterns": [
-        {
-          "include": "#nest_ltgt"
-        }
-      ]
+      "name": "string.regexp.literal.elixir"
     },
     {
       "comment": "Literal regex sigil with double quotes",
@@ -598,12 +568,7 @@
           "name": "punctuation.section.regexp.end.elixir"
         }
       },
-      "name": "string.regexp.literal.elixir",
-      "patterns": [
-        {
-          "include": "#nest_ltgt"
-        }
-      ]
+      "name": "string.regexp.literal.elixir"
     },
     {
       "comment": "Literal regex sigil with single quotes",
@@ -619,12 +584,7 @@
           "name": "punctuation.section.regexp.end.elixir"
         }
       },
-      "name": "string.regexp.literal.elixir",
-      "patterns": [
-        {
-          "include": "#nest_ltgt"
-        }
-      ]
+      "name": "string.regexp.literal.elixir"
     },
     {
       "comment": "Character list sigil with curlies",
