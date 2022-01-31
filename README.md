@@ -5,15 +5,15 @@ Provides Elixir language support and debugger. This extension is powered by the 
 Features include:
 
 - Auto-completion (note that it is not possible to get autocomplete on a variable since we don't have that type of type info)
-- Debugger support (requires Erlang >= OTP 19)
-- Automatic, incremental Dialyzer analysis (requires Erlang OTP 20)
+- Debugger support
+- Automatic, incremental Dialyzer analysis
 - Automatic suggestion for @spec annotations based on Dialyzer's inferred success typings
-- Inline reporting of build warnings and errors (requires Elixir >= 1.7)
+- Inline reporting of build warnings and errors
 - Code completion
 - Smart automatic closing of code blocks
 - Documentation lookup on hover
 - Go-to-definition
-- Code formatter (requires Elixir >= 1.7. Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
+- Code formatter (Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
 - Find references to functions and modules (Thanks to @mattbaker)
 - Quick symbol lookup in file (Thanks to @mattbaker)
 
@@ -95,7 +95,7 @@ defmodule MyApp.MixProject do
     [
       app: :my_app,
       version: "0.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: [debug_info: Mix.env() == :dev],
     ...
