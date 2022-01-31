@@ -16,7 +16,7 @@ import {
   LanguageClientOptions,
   RevealOutputChannelOn,
   ServerOptions
-} from "vscode-languageclient";
+} from "vscode-languageclient/node";
 import * as os from "os";
 import Commands from "./constants/commands";
 import runFromCodeLens from "./commands/runTestFromCodeLens";
