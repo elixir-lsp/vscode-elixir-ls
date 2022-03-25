@@ -20,7 +20,7 @@
         }
       },
       "end": "-?%>",
-      "name": "source.elixir.embedded",
+      "name": "meta.embedded.line.elixir",
       "patterns": [
         {
           "captures": {
