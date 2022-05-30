@@ -64,6 +64,8 @@
             "type": "string",
             "enum": [
               "error_handling",
+              "extra_return",
+              "missing_return",
               "no_behaviours",
               "no_contracts",
               "no_fail_call",
@@ -79,7 +81,10 @@
               "unknown",
               "unmatched_returns",
               "overspecs",
-              "specdiffs"
+              "specdiffs",
+              "no_underspecs",
+              "no_extra_return",
+              "no_missing_return"
             ]
           },
           "default": []
