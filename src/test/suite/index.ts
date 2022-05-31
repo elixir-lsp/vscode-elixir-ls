@@ -5,12 +5,9 @@ import * as glob from "glob";
 export function run(): Promise<void> {
   // Create the mocha test
   const mocha = new Mocha({
+    color: true,
     ui: "tdd",
   });
-  // TODO remove cast to any when color is included in typings
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (mocha as any).color(true);
-
   const testsRoot = path.resolve(__dirname, "..");
 
   return new Promise((c, e) => {
