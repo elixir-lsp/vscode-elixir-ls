@@ -496,8 +496,6 @@
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
     "glob": "^7.2.2",
-    "husky": "^4.3.0",
-    "lint-staged": "^12.5.0",
     "mocha": "^9.2.2",
     "prettier": "^2.6.2",
     "typescript": "~4.7.2",
@@ -507,20 +505,5 @@
   "dependencies": {
     "shelljs": "^0.8.5",
     "vscode-languageclient": "^7.0.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,css,json,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ]
   }
 }
