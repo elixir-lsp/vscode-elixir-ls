@@ -487,7 +487,7 @@
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
-    "@types/mocha": "^8.0.3",
+    "@types/mocha": "^9.1.1",
     "@types/node": "^14.11.8",
     "@types/shelljs": "^0.8.8",
     "@types/vscode": "~1.52.0",
@@ -498,7 +498,7 @@
     "glob": "^7.2.2",
     "husky": "^4.3.0",
     "lint-staged": "^10.4.0",
-    "mocha": "^8.1.3",
+    "mocha": "^9.2.2",
     "prettier": "^2.6.2",
     "typescript": "~4.7.2",
     "vsce": "^2.9.0",
