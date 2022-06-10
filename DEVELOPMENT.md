@@ -1,29 +1,31 @@
+# Development
+
 ## Packaging
 
-Make and push the elixir-ls tag
-Update the elixir-ls submodule `git submodule foreach git pull origin master`
+1. Make and push the elixir-ls tag
+2. Update the elixir-ls submodule `git submodule foreach git pull origin master`
 
-Test the new vscode-elixir-ls version with:
+3. Test the new vscode-elixir-ls version with:
 
-```
-npm install
-npm install -g vsce@latest
-cp elixir-ls/.release-tool-versions .tool-versions
-vsce package
-code --install-extension ./elixir-ls-0.2.44.vsix  --force
-```
+    ```
+    npm install
+    npm install -g vsce@latest
+    cp elixir-ls/.release-tool-versions .tool-versions
+    vsce package
+    code --install-extension ./elixir-ls-0.2.44.vsix  --force
+    ```
 
-- Ensure you have a clean git repository
-- `vsce publish 0.3.1` (or whatever version) (note that this will create a commit and a tag)
-- `git push upstream --tags`
-- Update forum announcement post: https://elixirforum.com/t/introducing-elixirls-the-elixir-language-server/5857
+4. Ensure you have a clean git repository
+5. `vsce publish 0.3.1` (or whatever version) (note that this will create a commit and a tag)
+6. `git push upstream --tags`
+7. Update forum announcement post: https://elixirforum.com/t/introducing-elixirls-the-elixir-language-server/5857
 
-Also publish to https://open-vsx.org/
+8. Also publish to https://open-vsx.org/
 
-- `git checkout openvsx`
-- `git rebase -i upstream/master`
-- `ovsx publish -p <TOKEN>`
-- `git push -f`
+    - `git checkout openvsx`
+    - `git rebase -i upstream/master`
+    - `ovsx publish -p <TOKEN>`
+    - `git push -f`
 
 ## References
 
@@ -33,6 +35,6 @@ Personal Access Token (PAT) direct link: https://dev.azure.com/elixir-lsp/_users
 
 https://code.visualstudio.com/api/language-extensions/embedded-languages
 
-## VSCode
+## VSCode grammar debugging
 
 Run "Developer: Inspect Editor Tokens and Scopes" when you want to debug the textmate grammar
