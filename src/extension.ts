@@ -391,11 +391,9 @@ function startClient(context: ExtensionContext, clientOptions: LanguageClientOpt
     serverOptions,
     clientOptions
   );
-  const disposable = client.start();
+  client.start();
+  // should we await start promise here?
 
-  // Push the disposable to the context's subscriptions so that the
-  // client can be deactivated on extension deactivation
-  context.subscriptions.push(disposable);
   return client;
 }
 
@@ -515,8 +513,8 @@ export function activate(context: ExtensionContext): void {
   });
 }
 
-export function deactivate(): Thenable<void> {
-  const promises: Thenable<void>[] = [];
+export async function deactivate() {
+  const promises: Promise<void>[] = [];
   if (defaultClient) {
     console.log("ElixirLS: stopping default client");
     promises.push(defaultClient.stop());
@@ -527,7 +525,7 @@ export function deactivate(): Thenable<void> {
     promises.push(client.stop());
   }
   clients.clear();
-  return Promise.all(promises).then(() => undefined);
+  await Promise.all(promises);
 }
 
 function getClient(document: vscode.TextDocument): LanguageClient | null {
