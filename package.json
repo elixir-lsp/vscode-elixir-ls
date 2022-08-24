@@ -13,7 +13,7 @@
   "publisher": "JakeBecker",
   "version": "0.11.0",
   "engines": {
-    "vscode": "^1.67.0"
+    "vscode": "^1.68.0"
   },
   "categories": [
     "Programming Languages",
@@ -490,7 +490,7 @@
     "@types/mocha": "^9.1.1",
     "@types/node": "^16.0.0",
     "@types/shelljs": "^0.8.11",
-    "@types/vscode": "~1.67.0",
+    "@types/vscode": "~1.68.0",
     "@typescript-eslint/eslint-plugin": "^5.34.0",
     "@typescript-eslint/parser": "^5.34.0",
     "eslint": "^8.22.0",
