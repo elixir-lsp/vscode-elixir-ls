@@ -9,7 +9,7 @@ import { execSync } from "child_process";
 import * as shell from "shelljs";
 import * as path from "path";
 
-import { workspace, ExtensionContext, WorkspaceFolder, Uri } from "vscode";
+import { workspace, ExtensionContext, WorkspaceFolder, Uri, Disposable } from "vscode";
 import {
   ExecuteCommandParams,
   LanguageClient,
@@ -31,7 +31,7 @@ interface TerminalLinkWithData extends vscode.TerminalLink {
 
 const ExpandMacroTitle = 'Expand macro result'
 
-export let defaultClient: LanguageClient | null;
+export let defaultClient: LanguageClient | null = null;
 const clients: Map<string, LanguageClient> = new Map();
 let _sortedWorkspaceFolders: string[] | undefined;
 
@@ -104,7 +104,7 @@ function sortedWorkspaceFolders(): string[] {
   }
   return _sortedWorkspaceFolders;
 }
-workspace.onDidChangeWorkspaceFolders(
+let workspaceSubscription: vscode.Disposable | null | undefined = workspace.onDidChangeWorkspaceFolders(
   () => (_sortedWorkspaceFolders = undefined)
 );
 
@@ -391,11 +391,14 @@ function startClient(context: ExtensionContext, clientOptions: LanguageClientOpt
     serverOptions,
     clientOptions
   );
-  const disposable = client.start();
+  client.start().then(() => {
+    if (clientOptions.workspaceFolder) {
+      console.log(`ElixirLS: started client for ${clientOptions.workspaceFolder!.uri.toString()}`)
+    } else {
+      console.log(`ElixirLS: started default client`)
+    }
+  });
 
-  // Push the disposable to the context's subscriptions so that the
-  // client can be deactivated on extension deactivation
-  context.subscriptions.push(disposable);
   return client;
 }
 
@@ -442,7 +445,7 @@ export function activate(context: ExtensionContext): void {
     },
   };
 
-  function didOpenTextDocument(document: vscode.TextDocument): void {
+  function didOpenTextDocument(document: vscode.TextDocument) {
     // We are only interested in elixir related files
     if (["elixir", "eex", "html-eex", "phoenix-heex", "surface"].indexOf(document.languageId) < 0) {
       return;
@@ -481,53 +484,52 @@ export function activate(context: ExtensionContext): void {
         { language: "phoenix-heex", scheme: "untitled"},
         { language: "surface", scheme: "untitled"}
       ] : [];
-      const workspaceClientOptions: LanguageClientOptions = Object.assign(
-        {},
-        clientOptions,
-        {
-          // the client will iterate through this list and chose the first matching element
-          documentSelector: [
-            { language: "elixir", scheme: "file", pattern: pattern },
-            { language: "eex", scheme: "file", pattern: pattern },
-            { language: "html-eex", scheme: "file", pattern: pattern },
-            { language: "phoenix-heex", scheme: "file", pattern: pattern },
-            { language: "surface", scheme: "file", pattern: pattern },
-            ...untitled
-          ],
-          workspaceFolder: folder,
-        }
-      );
+      const workspaceClientOptions: LanguageClientOptions = {
+        ...clientOptions,
+        // the client will iterate through this list and chose the first matching element
+        documentSelector: [
+          { language: "elixir", scheme: "file", pattern: pattern },
+          { language: "eex", scheme: "file", pattern: pattern },
+          { language: "html-eex", scheme: "file", pattern: pattern },
+          { language: "phoenix-heex", scheme: "file", pattern: pattern },
+          { language: "surface", scheme: "file", pattern: pattern },
+          ...untitled
+        ],
+        workspaceFolder: folder,
+      };
 
       clients.set(folder.uri.toString(), startClient(context, workspaceClientOptions));
     }
   }
 
-  workspace.onDidOpenTextDocument(didOpenTextDocument);
+  context.subscriptions.push(workspace.onDidOpenTextDocument(didOpenTextDocument));
   workspace.textDocuments.forEach(didOpenTextDocument);
-  workspace.onDidChangeWorkspaceFolders((event) => {
+  context.subscriptions.push(workspace.onDidChangeWorkspaceFolders((event) => {
     for (const folder of event.removed) {
       const client = clients.get(folder.uri.toString());
       if (client) {
-        clients.delete(folder.uri.toString());
+        const uri = folder.uri.toString();
+        clients.delete(uri);
         client.stop();
       }
     }
-  });
+  }));
 }
 
-export function deactivate(): Thenable<void> {
-  const promises: Thenable<void>[] = [];
+export async function deactivate() {
+  workspaceSubscription!.dispose();
+  workspaceSubscription = undefined;
+  const promises: Promise<void>[] = [];
   if (defaultClient) {
-    console.log("ElixirLS: stopping default client");
     promises.push(defaultClient.stop());
     defaultClient = null;
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const [uri, client] of clients.entries()) {
-    console.log(`ElixirLS: stopping client for ${uri}`);
     promises.push(client.stop());
   }
   clients.clear();
-  return Promise.all(promises).then(() => undefined);
+  await Promise.all(promises);
 }
 
 function getClient(document: vscode.TextDocument): LanguageClient | null {
