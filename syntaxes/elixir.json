@@ -88,6 +88,12 @@
       ]
     },
     {
+      "begin": "@(spec)\\s",
+      "end": "(?=^\\s*(@|def))",
+      "comment": "Typespec definition",
+      "name": "entity.name.typespec.elixir"
+    },
+    {
       "match": "(?<!\\.)\\b(alias|require|import|use)\\b(?![?!])",
       "name": "keyword.other.special-method.elixir"
     },
