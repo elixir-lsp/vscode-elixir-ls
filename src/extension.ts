@@ -437,11 +437,7 @@ export function activate(context: ExtensionContext): void {
     revealOutputChannelOn: RevealOutputChannelOn.Never,
     synchronize: {
       // Synchronize the setting section 'elixirLS' to the server
-      configurationSection: "elixirLS",
-      // Notify the server about file changes to Elixir files contained in the workspace
-      fileEvents: [
-        workspace.createFileSystemWatcher("**/*.{ex,exs,erl,hrl,yrl,xrl,eex,leex,heex,sface}"),
-      ],
+      configurationSection: "elixirLS"
     },
   };
 
