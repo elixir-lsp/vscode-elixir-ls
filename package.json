@@ -21,6 +21,11 @@
     "Linters",
     "Formatters"
   ],
+  "keywords": [
+    "elixir",
+    "mix",
+    "dialyzer",
+    "multi-root ready"
   ],
   "activationEvents": [
     "onLanguage:elixir",
