@@ -443,27 +443,27 @@
       {
         "category": "Elixir",
         "command": "extension.copyDebugInfo",
-        "title": "ElixirLS: Copy Debug Info"
+        "title": "Copy ElixirLS Debug Info"
       },
       {
         "category": "Elixir",
         "command": "extension.expandMacro",
-        "title": "ElixirLS: Expand macro"
+        "title": "Expand macro"
       },
       {
         "category": "Elixir",
         "command": "extension.restart",
-        "title": "ElixirLS: Restart language server"
+        "title": "Restart language server"
       },
       {
         "category": "Elixir",
         "command": "extension.toPipe",
-        "title": "ElixirLS: Convert function call to pipe operator"
+        "title": "Transform function call to pipe operator"
       },
       {
         "category": "Elixir",
         "command": "extension.fromPipe",
-        "title": "ElixirLS: Convert from pipe operator to function call"
+        "title": "Transform pipe operator to function call"
       }
     ],
     "menus": {
