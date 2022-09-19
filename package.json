@@ -441,22 +441,27 @@
     ],
     "commands": [
       {
+        "category": "Elixir",
         "command": "extension.copyDebugInfo",
         "title": "ElixirLS: Copy Debug Info"
       },
       {
+        "category": "Elixir",
         "command": "extension.expandMacro",
         "title": "ElixirLS: Expand macro"
       },
       {
+        "category": "Elixir",
         "command": "extension.restart",
         "title": "ElixirLS: Restart language server"
       },
       {
+        "category": "Elixir",
         "command": "extension.toPipe",
         "title": "ElixirLS: Convert function call to pipe operator"
       },
       {
+        "category": "Elixir",
         "command": "extension.fromPipe",
         "title": "ElixirLS: Convert from pipe operator to function call"
       }
@@ -464,22 +469,27 @@
     "menus": {
       "commandPalette": [
         {
+          "category": "Elixir",
           "command": "extension.copyDebugInfo",
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
         },
         {
+          "category": "Elixir",
           "command": "extension.expandMacro",
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
         },
         {
+          "category": "Elixir",
           "command": "extension.restart",
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
         },
         {
+          "category": "Elixir",
           "command": "extension.toPipe",
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
         },
         {
+          "category": "Elixir",
           "command": "extension.fromPipe",
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
         }
