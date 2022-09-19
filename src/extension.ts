@@ -9,7 +9,7 @@ import { execSync } from "child_process";
 import * as shell from "shelljs";
 import * as path from "path";
 
-import { workspace, ExtensionContext, WorkspaceFolder, Uri, Disposable } from "vscode";
+import { workspace, ExtensionContext, WorkspaceFolder, Uri } from "vscode";
 import {
   ExecuteCommandParams,
   LanguageClient,
@@ -238,6 +238,35 @@ function configureRestart(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
+function configureMixClean(context: ExtensionContext, cleanDeps: boolean) {
+  const commandName = "extension." + (cleanDeps ?  "mixCleanIncludeDeps" : "mixClean");
+  const disposable = vscode.commands.registerCommand(commandName, async () => {
+    const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
+    const editor = vscode.window.activeTextEditor;
+
+    if (!extension || !editor) {
+      return;
+    }
+
+    const client = getClient(editor.document);
+    if (!client) {
+      return;
+    }
+
+    const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
+      .find(c => c.startsWith("mixClean:"))!;
+
+    const params: ExecuteCommandParams = {
+      command: command,
+      arguments: [cleanDeps]
+    };
+
+    await client.sendRequest("workspace/executeCommand", params);
+  });
+
+  context.subscriptions.push(disposable);
+}
+
 function configureManipulatePipes(context: ExtensionContext, operation: "toPipe" | "fromPipe") {
   const commandName = `extension.${operation}`;
 
@@ -412,6 +441,8 @@ export function activate(context: ExtensionContext): void {
   configureCopyDebugInfo(context);
   configureExpandMacro(context);
   configureRestart(context);
+  configureMixClean(context, false);
+  configureMixClean(context, true);
   configureManipulatePipes(context, "fromPipe");
   configureManipulatePipes(context, "toPipe");
   configureDebugger(context);

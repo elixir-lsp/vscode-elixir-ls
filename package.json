@@ -457,6 +457,16 @@
       },
       {
         "category": "Elixir",
+        "command": "extension.mixClean",
+        "title": "Trigger mix clean in language server"
+      },
+      {
+        "category": "Elixir",
+        "command": "extension.mixCleanIncludeDeps",
+        "title": "Trigger mix clean --deps in language server"
+      },
+      {
+        "category": "Elixir",
         "command": "extension.toPipe",
         "title": "Transform function call to pipe operator"
       },
@@ -481,6 +491,16 @@
         {
           "category": "Elixir",
           "command": "extension.restart",
+          "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
+        },
+        {
+          "category": "Elixir",
+          "command": "extension.mixClean",
+          "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
+        },
+        {
+          "category": "Elixir",
+          "command": "extension.mixCleanIncludeDeps",
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
         },
         {
