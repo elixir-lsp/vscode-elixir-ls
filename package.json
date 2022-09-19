@@ -32,7 +32,9 @@
     "onLanguage:eex",
     "onLanguage:html-eex",
     "onLanguage:phoenix-heex",
-    "onLanguage:surface"
+    "onLanguage:surface",
+    "workspaceContains:mix.exs",
+    "onDebugResolve:elixir"
   ],
   "main": "./out/extension",
   "contributes": {
