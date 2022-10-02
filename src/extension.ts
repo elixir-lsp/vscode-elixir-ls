@@ -35,6 +35,16 @@ export let defaultClient: LanguageClient | null = null;
 const clients: Map<string, LanguageClient> = new Map();
 let _sortedWorkspaceFolders: string[] | undefined;
 
+function allClients(): LanguageClient[] {
+  const result = [...clients.values()];
+
+  if (defaultClient) {
+    result.push(defaultClient);
+  }
+
+  return result;
+}
+
 function testElixirCommand(command: string): false | Buffer {
   try {
     return execSync(`${command} -e " "`);
@@ -208,31 +218,27 @@ function configureExpandMacro(context: ExtensionContext) {
 function configureRestart(context: ExtensionContext) {
   const disposable = vscode.commands.registerCommand("extension.restart", async () => {
     const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
-    const editor = vscode.window.activeTextEditor;
 
-    if (!extension || !editor) {
+    if (!extension) {
       return;
     }
 
-    const client = getClient(editor.document);
-    if (!client) {
-      return;
-    }
+    await Promise.all(allClients().map(async (client: LanguageClient) => {
+      const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
+        .find(c => c.startsWith("restart:"))!;
 
-    const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
-      .find(c => c.startsWith("restart:"))!;
+      const params: ExecuteCommandParams = {
+        command: command,
+        arguments: []
+      };
 
-    const params: ExecuteCommandParams = {
-      command: command,
-      arguments: []
-    };
-
-    try {
-      await client.sendRequest("workspace/executeCommand", params);
-    } catch {
-      // this command will throw Connection got disposed
-      // client reference remains valid as VS will restart server process and the connection
-    }
+      try {
+        await client.sendRequest("workspace/executeCommand", params);
+      } catch {
+        // this command will throw Connection got disposed
+        // client reference remains valid as VS will restart server process and the connection
+      }
+      }));
   });
 
   context.subscriptions.push(disposable);
@@ -242,26 +248,22 @@ function configureMixClean(context: ExtensionContext, cleanDeps: boolean) {
   const commandName = "extension." + (cleanDeps ?  "mixCleanIncludeDeps" : "mixClean");
   const disposable = vscode.commands.registerCommand(commandName, async () => {
     const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
-    const editor = vscode.window.activeTextEditor;
 
-    if (!extension || !editor) {
+    if (!extension) {
       return;
     }
 
-    const client = getClient(editor.document);
-    if (!client) {
-      return;
-    }
+    await Promise.all(allClients().map(async (client: LanguageClient) => {
+      const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
+        .find(c => c.startsWith("mixClean:"))!;
 
-    const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
-      .find(c => c.startsWith("mixClean:"))!;
+      const params: ExecuteCommandParams = {
+        command: command,
+        arguments: [cleanDeps]
+      };
 
-    const params: ExecuteCommandParams = {
-      command: command,
-      arguments: [cleanDeps]
-    };
-
-    await client.sendRequest("workspace/executeCommand", params);
+      await client.sendRequest("workspace/executeCommand", params);
+    }));
   });
 
   context.subscriptions.push(disposable);
