@@ -1,3 +1,4 @@
+// TODO why we have MS copyright here?
 /* --------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
@@ -20,6 +21,7 @@ import {
 import * as os from "os";
 import Commands from "./constants/commands";
 import runFromCodeLens from "./commands/runTestFromCodeLens";
+import runTest from "./commands/runTest";
 
 interface TerminalLinkWithData extends vscode.TerminalLink {
   data: {
@@ -119,17 +121,17 @@ let workspaceSubscription: vscode.Disposable | null | undefined = workspace.onDi
 );
 
 function getOuterMostWorkspaceFolder(folder: WorkspaceFolder): WorkspaceFolder {
-  const sorted = sortedWorkspaceFolders();
-  for (const element of sorted) {
-    let uri = folder.uri.toString();
-    if (uri.charAt(uri.length - 1) !== "/") {
-      uri = uri + "/";
-    }
+  let uri = folder.uri.toString();
+  if (uri.charAt(uri.length - 1) !== "/") {
+    uri = uri + "/";
+  }
+
+  for (const element of sortedWorkspaceFolders()) {
     if (uri.startsWith(element)) {
       return workspace.getWorkspaceFolder(Uri.parse(element))!;
     }
   }
-  return folder;
+  throw "this should not happen";
 }
 
 function configureCopyDebugInfo(context: ExtensionContext) {
@@ -434,6 +436,7 @@ function startClient(context: ExtensionContext, clientOptions: LanguageClientOpt
 }
 
 export function activate(context: ExtensionContext): void {
+  console.log(`ElixirLS: activating extension`)
   testElixir();
   detectConflictingExtension("mjmcloug.vscode-elixir");
   // https://github.com/elixir-lsp/vscode-elixir-ls/issues/34
@@ -449,6 +452,7 @@ export function activate(context: ExtensionContext): void {
   configureManipulatePipes(context, "toPipe");
   configureDebugger(context);
   configureTerminalLinkProvider(context);
+  configureTestController(context);
 
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
@@ -482,6 +486,8 @@ export function activate(context: ExtensionContext): void {
 
     const uri = document.uri;
     let folder = workspace.getWorkspaceFolder(uri);
+
+    console.log("uri", uri, "folder", folder?.uri)
 
     // Files outside of workspace go to default client when no directory is open
     // otherwise they go to first workspace
@@ -561,16 +567,11 @@ export async function deactivate() {
   await Promise.all(promises);
 }
 
-function getClient(document: vscode.TextDocument): LanguageClient | null {
-  // We are only interested in elixir files
-  if (document.languageId !== "elixir") {
-    return null;
-  }
-
+function getClientByUri(uri: Uri): LanguageClient {
   // Files outside of workspace go to default client when no directory is open
   // otherwise they go to first workspace
   // (even if we pass undefined in clientOptions vs will pass first workspace as rootUri/rootPath)
-  let folder = workspace.getWorkspaceFolder(document.uri);
+  let folder = workspace.getWorkspaceFolder(uri);
   if (!folder) {
     if (workspace.workspaceFolders && workspace.workspaceFolders.length !== 0) {
       // untitled file assigned to first workspace
@@ -585,4 +586,294 @@ function getClient(document: vscode.TextDocument): LanguageClient | null {
   folder = getOuterMostWorkspaceFolder(folder);
 
   return clients.get(folder.uri.toString())!;
+}
+
+function getClient(document: vscode.TextDocument): LanguageClient | null {
+  // We are only interested in elixir files
+  if (document.languageId !== "elixir") {
+    return null;
+  }
+
+  return getClientByUri(document.uri);
+}
+
+function configureTestController(context: ExtensionContext) {
+  console.log("creating test controller")
+  const controller = vscode.tests.createTestController(
+    'elixirLSExUnitTests',
+    'ExUnit Tests'
+  );
+
+  context.subscriptions.push(controller);
+
+  // First, create the `resolveHandler`. This may initially be called with
+  // "undefined" to ask for all tests in the workspace to be discovered, usually
+  // when the user opens the Test Explorer for the first time.
+  controller.resolveHandler = async test => {
+    if (!test) {
+      await discoverAllFilesInWorkspace();
+    } else {
+      await parseTestsInFileContents(test);
+    }
+  };
+
+  context.subscriptions.push(
+    // When text documents are open, parse tests in them.
+    vscode.workspace.onDidOpenTextDocument(parseTestsInDocument),
+    // We could also listen to document changes to re-parse unsaved changes:
+    vscode.workspace.onDidChangeTextDocument(e => parseTestsInDocument(e.document))
+  );
+
+  enum ItemType {
+    File,
+    Module,
+    Describe,
+    TestCase
+  }
+  
+  const testData = new WeakMap<vscode.TestItem, ItemType>();
+  
+  const getType = (testItem: vscode.TestItem) => testData.get(testItem) ?? ItemType.TestCase;
+  
+  // In this function, we'll get the file TestItem if we've already found it,
+  // otherwise we'll create it with `canResolveChildren = true` to indicate it
+  // can be passed to the `controller.resolveHandler` to gets its children.
+  function getOrCreateFile(uri: vscode.Uri) {
+    const existing = controller.items.get(uri.toString());
+    if (existing) {
+      return existing;
+    }
+
+    let folder = workspace.getWorkspaceFolder(uri);
+    folder = getOuterMostWorkspaceFolder(folder!);
+    const relativePath = uri.fsPath.slice(folder.uri.fsPath.length)
+    const fileTestItem = controller.createTestItem(uri.toString(), relativePath, uri);
+    fileTestItem.canResolveChildren = true;
+    fileTestItem.range = new vscode.Range(0, 0, 0, 0)
+    controller.items.add(fileTestItem);
+    testData.set(fileTestItem, ItemType.File);
+    return fileTestItem;
+  }
+
+  function filterTestFile(uri: Uri) {
+    if (uri.scheme !== 'file') {
+      // filter out untitled and other non file
+      return false;
+    }
+
+    if (!uri.path.endsWith('_test.exs')) {
+      // filter out non test
+      return false;
+    }
+
+    let folder = workspace.getWorkspaceFolder(uri);
+    if (!folder) {
+      // filter out files outside any of workspace folders
+      return false;
+    }
+
+    folder = getOuterMostWorkspaceFolder(folder);
+    const relativePath = uri.fsPath.slice(folder.uri.fsPath.length);
+    const pathSegments = relativePath.split("/");
+    const firstSegment = pathSegments[1];
+    if (firstSegment == "_build" || firstSegment == "deps" || firstSegment == ".elixir_ls") {
+      // filter out test files in deps and _build dirs
+      return false;
+    }
+
+    if (pathSegments.includes("node_modules")) {
+      // exclude phoenix tests in node_module
+      return false;
+    }
+
+    return true;
+  }
+
+  function parseTestsInDocument(e: vscode.TextDocument) {
+    if (filterTestFile(e.uri)) {
+      parseTestsInFileContents(getOrCreateFile(e.uri));
+    }
+  }
+
+  async function parseTestsInFileContents(file: vscode.TestItem) {
+    // If a document is open, VS Code already knows its contents. If this is being
+    // called from the resolveHandler when a document isn't open, we'll need to
+    // read them from disk ourselves.
+    const client = getClientByUri(file.uri!);
+
+    const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
+        .find(c => c.startsWith("getExUnitTestsInFile:"))!;
+
+      const params: ExecuteCommandParams = {
+        command: command,
+        arguments: [file.uri!.toString()]
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const res: any[] = await client.sendRequest("workspace/executeCommand", params);
+
+      for (const moduleEntry of res) {
+        const moduleTestItem = controller.createTestItem(moduleEntry.module, moduleEntry.module, file.uri!)
+        moduleTestItem.range = new vscode.Range(moduleEntry.line, 0, moduleEntry.line, 0)
+        testData.set(moduleTestItem, ItemType.Module);
+        file.children.add(moduleTestItem);
+        for (const describeEntry of moduleEntry.describes) {
+          let describeCollection: vscode.TestItemCollection;
+          if (describeEntry.describe) {
+            const describeTestItem = controller.createTestItem(describeEntry.describe, describeEntry.describe, file.uri!);
+            describeTestItem.range = new vscode.Range(describeEntry.line, 0, describeEntry.line, 0)
+            describeTestItem.description = "describe";
+            testData.set(describeTestItem, ItemType.Describe);
+            moduleTestItem.children.add(describeTestItem);
+            describeCollection = describeTestItem.children;
+          } else {
+            describeCollection = moduleTestItem.children;
+          }
+          for (const testEntry of describeEntry.tests) {
+            let name = testEntry.name;
+            const prefix = testEntry.type + " "
+            if (name.startsWith(prefix)) {
+              name = name.slice(prefix.length);
+            }
+            const testItem = controller.createTestItem(testEntry.name, name, file.uri);
+            testItem.range = new vscode.Range(testEntry.line, 0, testEntry.line, 0)
+            testItem.description = testEntry.type;
+            describeCollection.add(testItem);
+          }
+        }
+        
+      }
+
+      
+  }
+
+  async function discoverAllFilesInWorkspace() {
+    if (!vscode.workspace.workspaceFolders) {
+      return []; // handle the case of no open folders
+    }
+
+    console.log('calling discoverAllFilesInWorkspace')
+
+    const outerMostWorkspaceFolders = [...new Set(vscode.workspace.workspaceFolders.map(workspaceFolder => getOuterMostWorkspaceFolder(workspaceFolder)))];
+    
+    return Promise.all(
+      outerMostWorkspaceFolders.map(async workspaceFolder => {
+        console.log('registering watcher in', workspaceFolder.name)
+        const pattern = new vscode.RelativePattern(workspaceFolder, '**/*_test.exs');
+        const watcher = vscode.workspace.createFileSystemWatcher(pattern);
+
+        context.subscriptions.push(watcher);
+
+        // When files are created, make sure there's a corresponding "file" node in the tree
+        watcher.onDidCreate(uri => getOrCreateFile(uri));
+        // When files change, re-parse them. Note that you could optimize this so
+        // that you only re-parse children that have been resolved in the past.
+        watcher.onDidChange(uri => parseTestsInFileContents(getOrCreateFile(uri)));
+        // And, finally, delete TestItems for removed files. This is simple, since
+        // we use the URI as the TestItem's ID.
+        watcher.onDidDelete(uri => controller.items.delete(uri.toString()));
+
+        const files = await vscode.workspace.findFiles(pattern);
+
+        for (const file of files) {
+          if (filterTestFile(file)) {
+            getOrCreateFile(file);
+          }
+        }
+
+        return watcher;
+      })
+    );
+  }
+
+  function writeOutput(run: vscode.TestRun, output: string, test: vscode.TestItem) {
+    // output is a raw terminal, we need to wrap lines with CRLF
+    // note replace("\n", "\r\n") is not working correctly
+    for (const line of output.split("\n")) {
+      run.appendOutput(line, undefined, test)
+      run.appendOutput("\r\n", undefined, test)
+    }
+  }
+
+  async function runHandler(
+    shouldDebug: boolean,
+    request: vscode.TestRunRequest,
+    token: vscode.CancellationToken
+  ) {
+    const run = controller.createTestRun(request);
+    const queue: vscode.TestItem[] = [];
+
+    // Loop through all included tests, or all known tests, and add them to our queue
+    if (request.include) {
+      request.include.forEach(test => {
+        queue.push(test);
+        run.enqueued(test);
+      });
+    } else {
+      controller.items.forEach(test => {
+        queue.push(test);
+        run.enqueued(test);
+      });
+    }
+
+    // For every test that was queued, try to run it. Call run.passed() or run.failed().
+    // The `TestMessage` can contain extra information, like a failing location or
+    // a diff output. But here we'll just give it a textual message.
+    while (queue.length > 0 && !token.isCancellationRequested) {
+      const test = queue.pop()!;
+
+      // Skip tests the user asked to exclude
+      if (request.exclude?.includes(test)) {
+        continue;
+      }
+
+      switch (getType(test)) {
+        case ItemType.File:
+          // If we're running a file and don't know what it contains yet, parse it now
+          if (test.children.size === 0) {
+            await parseTestsInFileContents(test);
+          }
+          break;
+        case ItemType.TestCase:
+          // Otherwise, just run the test case. Note that we don't need to manually
+          // set the state of parent tests; they'll be set automatically.
+          // eslint-disable-next-line no-case-declarations
+          const start = Date.now();
+          run.started(test);
+          try {
+            let folder = workspace.getWorkspaceFolder(test.uri!)!;
+            folder = getOuterMostWorkspaceFolder(folder);
+            const folderPath = folder.uri.fsPath;
+            const relativePath = test.uri!.fsPath.slice(folderPath.length + 1);
+            const output = await runTest({cwd: folderPath, filePath: relativePath, line: test.range!.start.line + 1})
+            writeOutput(run, output, test);
+            run.passed(test, Date.now() - start);
+          } catch (e) {
+            writeOutput(run, (e as string), test);
+            run.failed(test, new vscode.TestMessage((e as string)), Date.now() - start);
+          }
+          break;
+        default:
+          break;
+      }
+
+      test.children.forEach(test => {
+        queue.push(test);
+        run.enqueued(test);
+      });
+    }
+
+    // Make sure to end the run after all tests have been executed:
+    run.end();
+  }
+  
+  const runProfile = controller.createRunProfile(
+    'Run',
+    vscode.TestRunProfileKind.Run,
+    (request, token) => {
+      runHandler(false, request, token);
+    }
+  );
+
+  context.subscriptions.push(runProfile);
 }
