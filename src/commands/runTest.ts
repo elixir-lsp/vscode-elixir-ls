@@ -7,26 +7,26 @@ type RunArgs = {
 };
 
 export default async function runTest(args: RunArgs): Promise<string> {
-  const command = buildTestCommand(args)
-  console.log(command, args.cwd)
+  const command = buildTestCommand(args);
+  console.log(command, args.cwd);
 
   return new Promise((resolve, reject) => {
     exec(command, { cwd: args.cwd }, (error, stdout, stderr) => {
-      console.log("stdout", stdout)
-      console.log("stderr", stderr)
+      console.log("stdout", stdout);
+      console.log("stderr", stderr);
       if (!error) {
-        resolve(stdout)
+        resolve(stdout);
       } else {
-        reject(stdout)
+        reject(stdout);
       }
-    })
+    });
   });
 }
 
 function buildTestCommand(args: RunArgs): string {
   let line = "";
-  if(typeof args.line === 'number') {
-    line = `:${args.line}`
+  if (typeof args.line === "number") {
+    line = `:${args.line}`;
   }
 
   return `mix test ${args.filePath}${line}`;
