@@ -1,5 +1,5 @@
 {
-  "fileTypes": ["eex", "leex"],
+  "fileTypes": ["eex", "leex", "heex"],
   "name": "Embedded Elixir",
   "patterns": [
     {
