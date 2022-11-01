@@ -105,6 +105,8 @@ defmodule MyApp.MixProject do
 
 Check the output log by opening `View > Output` and selecting "ElixirLS" in the dropdown.
 
+![View ElixirLS Output](images/viewing-elixir-ls-output.gif)
+
 ### Check the Developer Tools
 
 Check the developer console by opening `Help > Toggle Developer Tools` and include any errors that look relevant.
