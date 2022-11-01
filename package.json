@@ -13,7 +13,7 @@
   "publisher": "JakeBecker",
   "version": "0.11.0",
   "engines": {
-    "vscode": "^1.68.0"
+    "vscode": "^1.70.0"
   },
   "categories": [
     "Programming Languages",
@@ -531,17 +531,17 @@
     "@types/mocha": "^9.1.1",
     "@types/node": "^16.0.0",
     "@types/shelljs": "^0.8.11",
-    "@types/vscode": "~1.68.0",
-    "@typescript-eslint/eslint-plugin": "^5.34.0",
-    "@typescript-eslint/parser": "^5.34.0",
-    "eslint": "^8.22.0",
+    "@types/vscode": "~1.70.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "eslint": "^8.26.0",
     "eslint-config-prettier": "^8.5.0",
     "glob": "^7.2.2",
     "mocha": "^9.2.2",
     "prettier": "^2.7.1",
-    "typescript": "~4.7.4",
-    "vsce": "^2.10.2",
-    "@vscode/test-electron": "^2.1.5"
+    "typescript": "~4.8.4",
+    "vsce": "^2.13.0",
+    "@vscode/test-electron": "^2.2.0"
   },
   "dependencies": {
     "shelljs": "^0.8.5",
