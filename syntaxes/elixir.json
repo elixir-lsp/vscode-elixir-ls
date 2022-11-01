@@ -88,7 +88,7 @@
       ]
     },
     {
-      "begin": "@(spec)\\s",
+      "begin": "@(spec|typep?|opaque|callback|macrocallback)\\s",
       "end": "(?=^\\s*(@|def))",
       "comment": "Typespec definition",
       "name": "entity.name.typespec.elixir"
