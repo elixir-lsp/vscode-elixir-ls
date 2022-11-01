@@ -1555,6 +1555,25 @@
       ]
     },
     {
+      "comment": "Embedded HEEx heredoc with doublequotes",
+      "begin": "\\s?(~H\"\"\")$",
+      "end": "^\\s*(\"\"\"[a-z]*)$",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.elixir" },
+        "1": { "name": "string.quoted.double.heredoc.elixir" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.elixir" },
+        "1": { "name": "string.quoted.double.heredoc.elixir" }
+      },
+      "name": "text.html.elixir",
+      "patterns": [
+        {
+          "include": "text.html.elixir"
+        }
+      ]
+    },
+    {
       "comment": "Embedded Liveview heredoc with double quotes",
       "begin": "\\s?(~l\"\"\")$",
       "beginCaptures": {
