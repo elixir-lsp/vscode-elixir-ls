@@ -210,7 +210,8 @@
         ],
         "extensions": [
           ".eex",
-          ".leex"
+          ".leex",
+          ".heex"
         ],
         "configuration": "./eex-language-configuration.json"
       },
@@ -222,7 +223,8 @@
         ],
         "extensions": [
           ".html.eex",
-          ".html.leex"
+          ".html.leex",
+          ".html.heex"
         ],
         "configuration": "./eex-language-configuration.json"
       }
