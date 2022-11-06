@@ -15,6 +15,9 @@
   "engines": {
     "vscode": "^1.70.0"
   },
+  "sponsor": {
+    "url": "https://github.com/sponsors/elixir-lsp"
+  },
   "categories": [
     "Programming Languages",
     "Debuggers",
