@@ -1,0 +1,35 @@
+on:
+  push:
+    tags:
+      - "*"
+
+name: Deploy Extension
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: install jq
+        run: |
+          sudo apt-get install jq
+      - run: npm ci
+      - name: set publisher for Open VSX Registry
+        run: |
+          jq '.publisher = "JakeBecker"' package.json > package_temp.json
+          mv package_temp.json package.json
+      - name: Publish to Visual Studio Marketplace
+        uses: HaaLeo/publish-vscode-extension@v1
+        with:
+          pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
+          registryUrl: https://marketplace.visualstudio.com
+      - name: set publisher for Open VSX Registry
+        run: |
+          jq '.publisher = "elixir-lsp"' package.json > package_temp.json
+          mv package_temp.json package.json
+      - name: Publish to Open VSX Registry
+        uses: HaaLeo/publish-vscode-extension@v1
+        with:
+          pat: ${{ secrets.OPEN_VSX_TOKEN }}
