@@ -15,11 +15,8 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
-      - name: Checkout submodules
-        run: |
-          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-          git submodule sync --recursive
-          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+        with:
+          submodules: 'true'
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
@@ -27,8 +24,8 @@ jobs:
       - name: Setup Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: 1.11.x
-          otp-version: 23.2.x
+          elixir-version: 1.14.x
+          otp-version: 25.x
       - name: Install Xvfb
         run: |
           sudo apt-get install xvfb
