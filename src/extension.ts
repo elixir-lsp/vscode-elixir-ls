@@ -12,6 +12,7 @@ import * as path from "path";
 
 import { workspace, ExtensionContext, WorkspaceFolder, Uri } from "vscode";
 import {
+  Executable,
   ExecuteCommandParams,
   LanguageClient,
   LanguageClientOptions,
@@ -453,7 +454,7 @@ function startClient(
     .getConfiguration("elixirLS", clientOptions.workspaceFolder)
     .get("languageServerOverridePath")!;
 
-  const serverOpts = {
+  const serverOpts: Executable = {
     command: lsOverridePath
       ? path.join(lsOverridePath, command)
       : context.asAbsolutePath("./elixir-ls-release/" + command),
