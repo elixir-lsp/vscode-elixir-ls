@@ -12,6 +12,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
+      - name: Setup Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.11.x
+          otp-version: 22.x
       - name: install jq
         run: |
           sudo apt-get install jq
