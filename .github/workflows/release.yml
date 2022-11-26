@@ -6,7 +6,7 @@ on:
 name: Deploy Extension
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -17,7 +17,7 @@ jobs:
       - name: Setup Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: 1.11.x
+          elixir-version: 1.12.x
           otp-version: 22.x
       - name: install jq
         run: |
