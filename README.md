@@ -120,7 +120,7 @@ experimental because of a few known issues as well as a lack of large scale test
 
 #### Example
 
-![Test Lenses Example](https://raw.githubusercontent.com/elixir-lsp/elixir-ls/master/images/test_lens_example.gif)
+![Test Lenses Example](images/test_lens_example.gif)
 
 #### Configuration
 
