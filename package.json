@@ -185,6 +185,12 @@
             "type": "string"
           },
           "default": []
+        },
+        "elixirLS.languageServerOverridePath": {
+          "scope": "resource",
+          "type": "string",
+          "description": "Absolute path to alternative ElixirLS release that will override packaged release.",
+          "minLength": 0
         }
       }
     },
