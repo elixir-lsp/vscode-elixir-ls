@@ -1,5 +1,16 @@
 ### Unreleased
 
+### v0.12.0: 10 January 2023
+
+#### Improvements
+
+- Allow to override default elixirLS release path in config [Daniel Silva](https://github.com/DFilipeS)
+- VSCode task provider with common mix tasks e.g. clean, compile, get.deps, test
+
+#### Deprecations and removals
+
+- HEEX syntax highlighting - turned out to break phoenix extension
+
 ### v0.12.0: 8 November 2022
 
 Improvements:
