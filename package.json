@@ -523,8 +523,17 @@
     },
     "taskDefinitions": [
       {
-        "type": "ElixirLS"
-      }
+				"type": "mix",
+				"required": [
+					"task"
+				],
+				"properties": {
+					"task": {
+						"type": "string",
+						"description": "The Mix task"
+					}
+				}
+			}
     ]
   },
   "scripts": {
