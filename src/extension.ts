@@ -19,6 +19,7 @@ import {
   ServerOptions
 } from "vscode-languageclient/node";
 import * as os from "os";
+import { TaskProvider } from "./TaskProvider";
 import Commands from "./constants/commands";
 import runFromCodeLens from "./commands/runTestFromCodeLens";
 import runTest from "./commands/runTest";
@@ -91,9 +92,9 @@ function detectConflictingExtension(extensionId: string): void {
   if (extension) {
     vscode.window.showErrorMessage(
       "Warning: " +
-        extensionId +
-        " is not compatible with ElixirLS, please uninstall " +
-        extensionId
+      extensionId +
+      " is not compatible with ElixirLS, please uninstall " +
+      extensionId
     );
   }
 }
@@ -551,6 +552,8 @@ export function activate(context: ExtensionContext): void {
       }
     }
   }));
+
+  context.subscriptions.push(vscode.tasks.registerTaskProvider(TaskProvider.TaskType, new TaskProvider()));
 }
 
 export async function deactivate() {

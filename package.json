@@ -526,7 +526,21 @@
           "when": "editorLangId == elixir || editorLangId == eex || editorLangId == html-eex"
         }
       ]
-    }
+    },
+    "taskDefinitions": [
+      {
+				"type": "mix",
+				"required": [
+					"task"
+				],
+				"properties": {
+					"task": {
+						"type": "string",
+						"description": "The Mix task"
+					}
+				}
+			}
+    ]
   },
   "scripts": {
     "vscode:prepublish": "./prepublish.bash",
