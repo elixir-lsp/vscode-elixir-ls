@@ -551,7 +551,7 @@ export function activate(context: ExtensionContext): void {
     }
   }));
 
-  vscode.tasks.registerTaskProvider(TaskProvider.TaskType, new TaskProvider());
+  context.subscriptions.push(vscode.tasks.registerTaskProvider(TaskProvider.TaskType, new TaskProvider()));
 }
 
 export async function deactivate() {
