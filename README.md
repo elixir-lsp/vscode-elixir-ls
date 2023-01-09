@@ -67,6 +67,25 @@ Add or edit your `emmet.includedLanguages` to include the new Language Id:
 }
 ```
 
+### Override packaged ElixirLS release
+
+Sometimes you might want to locally build your own release of ElixirLS. For that, you need to clone the [ElixirLS repository](https://github.com/elixir-lsp/elixir-ls), fetch its dependencies and create a new release.
+
+```shell
+git clone git@github.com:elixir-lsp/elixir-ls.git
+
+cd elixir-ls
+mix deps.get
+MIX_ENV=prod mix compile
+MIX_ENV=prod mix elixir_ls.release -o <release_dir>
+```
+
+If no `<release_dir>` is provided, the built release will be on a folder called `release` in the same directory as ElixirLS. In this `<release_dir>`, you will find the language server scripts and binaries (like `language_server.sh`, for example).
+
+The absolute path to this `<release_dir>` is what you need to provide to ElixirLS setting (`elixirLS.languageServerOverridePath`) in Visual Studio Code.
+
+![Language server override setting](./images/language-server-override.png)
+
 ## Supported versions
 
 See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the supported Elixir and Erlang versions.

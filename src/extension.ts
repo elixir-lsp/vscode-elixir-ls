@@ -398,8 +398,10 @@ function startClient(context: ExtensionContext, clientOptions: LanguageClientOpt
   const command =
     os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
 
+  const lsOverridePath: string = vscode.workspace.getConfiguration('elixirLS').get('languageServerOverridePath')!;
+
   const serverOpts = {
-    command: context.asAbsolutePath("./elixir-ls-release/" + command),
+    command: lsOverridePath ? path.join(lsOverridePath, command) : context.asAbsolutePath("./elixir-ls-release/" + command),
   };
 
   // If the extension is launched in debug mode then the `debug` server options are used instead of `run`
