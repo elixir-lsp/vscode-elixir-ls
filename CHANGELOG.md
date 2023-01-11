@@ -1,6 +1,6 @@
 ### Unreleased
 
-### v0.12.0: 10 January 2023
+### v0.13.0: 10 January 2023
 
 #### Improvements
 
