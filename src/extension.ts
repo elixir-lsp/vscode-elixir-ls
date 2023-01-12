@@ -735,12 +735,7 @@ function configureTestController(context: ExtensionContext) {
             describeCollection = moduleTestItem.children;
           }
           for (const testEntry of describeEntry.tests) {
-            let name = testEntry.name;
-            const prefix = testEntry.type + " "
-            if (name.startsWith(prefix)) {
-              name = name.slice(prefix.length);
-            }
-            const testItem = controller.createTestItem(testEntry.name, name, file.uri);
+            const testItem = controller.createTestItem(testEntry.name, testEntry.name, file.uri);
             testItem.range = new vscode.Range(testEntry.line, 0, testEntry.line, 0)
             testItem.description = testEntry.type;
             describeCollection.add(testItem);
@@ -877,6 +872,50 @@ function configureTestController(context: ExtensionContext) {
     vscode.TestRunProfileKind.Run,
     (request, token) => {
       runHandler(false, request, token);
+    }
+  );
+
+  type RunArgs = {
+    projectDir: string;
+    filePath: string;
+    describe?: string;
+    testName?: string;
+    module: string;
+  };
+
+  vscode.commands.registerCommand(
+    Commands.RUN_TEST_FROM_CODELENS,
+    async (args: RunArgs) => {
+      const fileTestItem = vscode.Uri.file(args.filePath);
+      await parseTestsInFileContents(getOrCreateFile(fileTestItem));
+      function getTestItem(
+        item: vscode.TestItem,
+        ids: (string | undefined)[]
+      ): vscode.TestItem {
+        if (ids.length === 0) {
+          return item;
+        }
+        const [id, ...rest] = ids;
+        if (!id) {
+          return getTestItem(item, rest);
+        }
+        const childItem = item.children.get(id);
+
+        if (childItem) {
+          return getTestItem(childItem, rest);
+        }
+        return item;
+      }
+      const testItem = getTestItem(
+        controller.items.get(fileTestItem.toString())!,
+        [args.module, args.describe, args.testName]
+      );
+      runHandler(
+        false,
+        new vscode.TestRunRequest([testItem]),
+        new vscode.CancellationTokenSource().token
+      );
+      vscode.commands.executeCommand("vscode.revealTestInExplorer", testItem);
     }
   );
 
