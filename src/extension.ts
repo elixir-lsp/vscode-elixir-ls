@@ -241,14 +241,14 @@ function configureRestart(context: ExtensionContext) {
         // this command will throw Connection got disposed
         // client reference remains valid as VS will restart server process and the connection
       }
-      }));
+    }));
   });
 
   context.subscriptions.push(disposable);
 }
 
 function configureMixClean(context: ExtensionContext, cleanDeps: boolean) {
-  const commandName = "extension." + (cleanDeps ?  "mixCleanIncludeDeps" : "mixClean");
+  const commandName = "extension." + (cleanDeps ? "mixCleanIncludeDeps" : "mixClean");
   const disposable = vscode.commands.registerCommand(commandName, async () => {
     const extension = vscode.extensions.getExtension("jakebecker.elixir-ls");
 
@@ -391,10 +391,6 @@ function configureTerminalLinkProvider(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-function configureRunTestFromCodeLens() {
-  vscode.commands.registerCommand(Commands.RUN_TEST_FROM_CODELENS, runFromCodeLens);
-}
-
 function startClient(context: ExtensionContext, clientOptions: LanguageClientOptions): LanguageClient {
   const command =
     os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
@@ -445,7 +441,6 @@ export function activate(context: ExtensionContext): void {
   // https://github.com/elixir-lsp/vscode-elixir-ls/issues/34
   detectConflictingExtension("sammkj.vscode-elixir-formatter");
 
-  configureRunTestFromCodeLens()
   configureCopyDebugInfo(context);
   configureExpandMacro(context);
   configureRestart(context);
@@ -518,9 +513,9 @@ export function activate(context: ExtensionContext): void {
       const untitled = folder.index === 0 ? [
         { language: "elixir", scheme: "untitled" },
         { language: "eex", scheme: "untitled" },
-        { language: "html-eex", scheme: "untitled"},
-        { language: "phoenix-heex", scheme: "untitled"},
-        { language: "surface", scheme: "untitled"}
+        { language: "html-eex", scheme: "untitled" },
+        { language: "phoenix-heex", scheme: "untitled" },
+        { language: "surface", scheme: "untitled" }
       ] : [];
       const workspaceClientOptions: LanguageClientOptions = {
         ...clientOptions,
@@ -635,11 +630,11 @@ function configureTestController(context: ExtensionContext) {
     Describe,
     TestCase
   }
-  
+
   const testData = new WeakMap<vscode.TestItem, ItemType>();
-  
+
   const getType = (testItem: vscode.TestItem) => testData.get(testItem) ?? ItemType.TestCase;
-  
+
   // In this function, we'll get the file TestItem if we've already found it,
   // otherwise we'll create it with `canResolveChildren = true` to indicate it
   // can be passed to the `controller.resolveHandler` to gets its children.
@@ -707,44 +702,44 @@ function configureTestController(context: ExtensionContext) {
     const client = getClientByUri(file.uri!);
 
     const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
-        .find(c => c.startsWith("getExUnitTestsInFile:"))!;
+      .find(c => c.startsWith("getExUnitTestsInFile:"))!;
 
-      const params: ExecuteCommandParams = {
-        command: command,
-        arguments: [file.uri!.toString()]
-      };
+    const params: ExecuteCommandParams = {
+      command: command,
+      arguments: [file.uri!.toString()]
+    };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const res: any[] = await client.sendRequest("workspace/executeCommand", params);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const res: any[] = await client.sendRequest("workspace/executeCommand", params);
 
-      for (const moduleEntry of res) {
-        const moduleTestItem = controller.createTestItem(moduleEntry.module, moduleEntry.module, file.uri!)
-        moduleTestItem.range = new vscode.Range(moduleEntry.line, 0, moduleEntry.line, 0)
-        testData.set(moduleTestItem, ItemType.Module);
-        file.children.add(moduleTestItem);
-        for (const describeEntry of moduleEntry.describes) {
-          let describeCollection: vscode.TestItemCollection;
-          if (describeEntry.describe) {
-            const describeTestItem = controller.createTestItem(describeEntry.describe, describeEntry.describe, file.uri!);
-            describeTestItem.range = new vscode.Range(describeEntry.line, 0, describeEntry.line, 0)
-            describeTestItem.description = "describe";
-            testData.set(describeTestItem, ItemType.Describe);
-            moduleTestItem.children.add(describeTestItem);
-            describeCollection = describeTestItem.children;
-          } else {
-            describeCollection = moduleTestItem.children;
-          }
-          for (const testEntry of describeEntry.tests) {
-            const testItem = controller.createTestItem(testEntry.name, testEntry.name, file.uri);
-            testItem.range = new vscode.Range(testEntry.line, 0, testEntry.line, 0)
-            testItem.description = testEntry.type;
-            describeCollection.add(testItem);
-          }
+    for (const moduleEntry of res) {
+      const moduleTestItem = controller.createTestItem(moduleEntry.module, moduleEntry.module, file.uri!)
+      moduleTestItem.range = new vscode.Range(moduleEntry.line, 0, moduleEntry.line, 0)
+      testData.set(moduleTestItem, ItemType.Module);
+      file.children.add(moduleTestItem);
+      for (const describeEntry of moduleEntry.describes) {
+        let describeCollection: vscode.TestItemCollection;
+        if (describeEntry.describe) {
+          const describeTestItem = controller.createTestItem(describeEntry.describe, describeEntry.describe, file.uri!);
+          describeTestItem.range = new vscode.Range(describeEntry.line, 0, describeEntry.line, 0)
+          describeTestItem.description = "describe";
+          testData.set(describeTestItem, ItemType.Describe);
+          moduleTestItem.children.add(describeTestItem);
+          describeCollection = describeTestItem.children;
+        } else {
+          describeCollection = moduleTestItem.children;
         }
-        
+        for (const testEntry of describeEntry.tests) {
+          const testItem = controller.createTestItem(testEntry.name, testEntry.name, file.uri);
+          testItem.range = new vscode.Range(testEntry.line, 0, testEntry.line, 0)
+          testItem.description = testEntry.type;
+          describeCollection.add(testItem);
+        }
       }
 
-      
+    }
+
+
   }
 
   async function discoverAllFilesInWorkspace() {
@@ -755,7 +750,7 @@ function configureTestController(context: ExtensionContext) {
     console.log('calling discoverAllFilesInWorkspace')
 
     const outerMostWorkspaceFolders = [...new Set(vscode.workspace.workspaceFolders.map(workspaceFolder => getOuterMostWorkspaceFolder(workspaceFolder)))];
-    
+
     return Promise.all(
       outerMostWorkspaceFolders.map(async workspaceFolder => {
         console.log('registering watcher in', workspaceFolder.name)
@@ -845,7 +840,7 @@ function configureTestController(context: ExtensionContext) {
             folder = getOuterMostWorkspaceFolder(folder);
             const folderPath = folder.uri.fsPath;
             const relativePath = test.uri!.fsPath.slice(folderPath.length + 1);
-            const output = await runTest({cwd: folderPath, filePath: relativePath, line: test.range!.start.line + 1})
+            const output = await runTest({ cwd: folderPath, filePath: relativePath, line: test.range!.start.line + 1 })
             writeOutput(run, output, test);
             run.passed(test, Date.now() - start);
           } catch (e) {
@@ -866,7 +861,7 @@ function configureTestController(context: ExtensionContext) {
     // Make sure to end the run after all tests have been executed:
     run.end();
   }
-  
+
   const runProfile = controller.createRunProfile(
     'Run',
     vscode.TestRunProfileKind.Run,
