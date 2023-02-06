@@ -529,17 +529,17 @@
     },
     "taskDefinitions": [
       {
-				"type": "mix",
-				"required": [
-					"task"
-				],
-				"properties": {
-					"task": {
-						"type": "string",
-						"description": "The Mix task"
-					}
-				}
-			}
+        "type": "mix",
+        "required": [
+          "task"
+        ],
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The Mix task"
+          }
+        }
+      }
     ]
   },
   "scripts": {
@@ -548,8 +548,8 @@
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "test": "node ./out/test/runTest.js",
     "lint": "eslint . --ext .js,.ts",
-    "check-formatting": "prettier --check ./src/**/*.ts .*.js ",
-    "fix-formatting": "prettier --write ./src/**/*.ts .*.js "
+    "check-formatting": "prettier --check ./src/ .*.js ",
+    "fix-formatting": "prettier --write ./src/ .*.js "
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
