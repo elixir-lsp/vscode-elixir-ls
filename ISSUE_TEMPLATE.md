@@ -8,7 +8,7 @@ If the language server fails to launch, the problem is most likely in ElixirLS, 
 
 ### Environment
 
-Most of this can be filled out by running the VSCode command (by default bound to Ctrl+Shift+P) "ElixirLS: Copy Debug Info"
+Most of this can be filled out by running the VSCode command "Elixir: Copy ElixirLS Debug Info". You can run the command by opening the Command Palette in VSCode (by default bound to Ctrl+Shift+P or Cmd+Shift+P on Mac), typing search terms like "elixir copy debug" until the command appears at the top of the list of results, and then hitting Enter. The info will be copied to the clipboard so you can paste it here.
 
 - Elixir & Erlang versions (elixir --version):
 - VSCode ElixirLS version:
