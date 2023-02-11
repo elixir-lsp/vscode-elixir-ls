@@ -21,7 +21,6 @@ import {
 import * as os from "os";
 import { TaskProvider } from "./TaskProvider";
 import Commands from "./constants/commands";
-import runFromCodeLens from "./commands/runTestFromCodeLens";
 import runTest from "./commands/runTest";
 
 interface TerminalLinkWithData extends vscode.TerminalLink {
@@ -802,27 +801,50 @@ function configureTestController(context: ExtensionContext) {
     // read them from disk ourselves.
     const client = getClientByUri(file.uri!);
 
-    const command = client.initializeResult!.capabilities.executeCommandProvider!.commands
-      .find(c => c.startsWith("getExUnitTestsInFile:"))!;
+    const command =
+      client.initializeResult!.capabilities.executeCommandProvider!.commands.find(
+        (c) => c.startsWith("getExUnitTestsInFile:")
+      )!;
 
     const params: ExecuteCommandParams = {
       command: command,
-      arguments: [file.uri!.toString()]
+      arguments: [file.uri!.toString()],
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res: any[] = await client.sendRequest("workspace/executeCommand", params);
+    const res: any[] = await client.sendRequest(
+      "workspace/executeCommand",
+      params
+    );
 
     for (const moduleEntry of res) {
-      const moduleTestItem = controller.createTestItem(moduleEntry.module, moduleEntry.module, file.uri!)
-      moduleTestItem.range = new vscode.Range(moduleEntry.line, 0, moduleEntry.line, 0)
+      const moduleTestItem = controller.createTestItem(
+        moduleEntry.module,
+        moduleEntry.module,
+        file.uri!
+      );
+      moduleTestItem.range = new vscode.Range(
+        moduleEntry.line,
+        0,
+        moduleEntry.line,
+        0
+      );
       testData.set(moduleTestItem, ItemType.Module);
       file.children.add(moduleTestItem);
       for (const describeEntry of moduleEntry.describes) {
         let describeCollection: vscode.TestItemCollection;
         if (describeEntry.describe) {
-          const describeTestItem = controller.createTestItem(describeEntry.describe, describeEntry.describe, file.uri!);
-          describeTestItem.range = new vscode.Range(describeEntry.line, 0, describeEntry.line, 0)
+          const describeTestItem = controller.createTestItem(
+            describeEntry.describe,
+            describeEntry.describe,
+            file.uri!
+          );
+          describeTestItem.range = new vscode.Range(
+            describeEntry.line,
+            0,
+            describeEntry.line,
+            0
+          );
           describeTestItem.description = "describe";
           testData.set(describeTestItem, ItemType.Describe);
           moduleTestItem.children.add(describeTestItem);
@@ -831,8 +853,17 @@ function configureTestController(context: ExtensionContext) {
           describeCollection = moduleTestItem.children;
         }
         for (const testEntry of describeEntry.tests) {
-          const testItem = controller.createTestItem(testEntry.name, testEntry.name, file.uri);
-          testItem.range = new vscode.Range(testEntry.line, 0, testEntry.line, 0)
+          const testItem = controller.createTestItem(
+            testEntry.name,
+            testEntry.name,
+            file.uri
+          );
+          testItem.range = new vscode.Range(
+            testEntry.line,
+            0,
+            testEntry.line,
+            0
+          );
           testItem.description = testEntry.type;
           describeCollection.add(testItem);
         }
@@ -854,8 +885,6 @@ function configureTestController(context: ExtensionContext) {
         )
       ),
     ];
-
-    const outerMostWorkspaceFolders = [...new Set(vscode.workspace.workspaceFolders.map(workspaceFolder => getOuterMostWorkspaceFolder(workspaceFolder)))];
 
     return Promise.all(
       outerMostWorkspaceFolders.map(async (workspaceFolder) => {
