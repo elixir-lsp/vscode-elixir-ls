@@ -63,6 +63,12 @@
     "configuration": {
       "title": "ElixirLS",
       "properties": {
+        "elixirLS.autoBuild": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": true,
+          "description": "Trigger ElixirLS build when code is saved"
+        },
         "elixirLS.dialyzerEnabled": {
           "scope": "resource",
           "type": "boolean",
