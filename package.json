@@ -164,6 +164,7 @@
           "default": true
         },
         "elixirLS.trace.server": {
+          "scope": "window",
           "type": "string",
           "enum": [
             "off",
@@ -174,16 +175,19 @@
           "description": "Traces the communication between VS Code and the Elixir language server."
         },
         "elixirLS.signatureAfterComplete": {
+          "scope": "resource",
           "type": "boolean",
           "description": "Show signature help after confirming autocomplete",
           "default": true
         },
         "elixirLS.enableTestLenses": {
+          "scope": "resource",
           "type": "boolean",
           "description": "Show code lenses to run tests in terminal",
           "default": false
         },
         "elixirLS.additionalWatchedExtensions": {
+          "scope": "resource",
           "type": "array",
           "description": "Additional file types capable of triggering a build on change",
           "uniqueItems": true,
