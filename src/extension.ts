@@ -377,6 +377,7 @@ function configureDebugger(context: ExtensionContext) {
     "mix_task",
     factory
   );
+
   context.subscriptions.push(disposable);
 }
 
@@ -984,11 +985,14 @@ function configureTestController(context: ExtensionContext) {
             folder = getOuterMostWorkspaceFolder(folder);
             const folderPath = folder.uri.fsPath;
             const relativePath = test.uri!.fsPath.slice(folderPath.length + 1);
-            const output = await runTest({
-              cwd: folderPath,
-              filePath: relativePath,
-              line: test.range!.start.line + 1,
-            });
+            const output = await runTest(
+              {
+                cwd: folderPath,
+                filePath: relativePath,
+                line: test.range!.start.line + 1,
+              },
+              shouldDebug
+            );
             writeOutput(run, output, test);
             run.passed(test, Date.now() - start);
           } catch (e) {
@@ -1022,6 +1026,18 @@ function configureTestController(context: ExtensionContext) {
     }
   );
 
+  context.subscriptions.push(runProfile);
+
+  const debugProfile = controller.createRunProfile(
+    "Debug",
+    vscode.TestRunProfileKind.Debug,
+    (request, token) => {
+      runHandler(true, request, token);
+    }
+  );
+
+  context.subscriptions.push(debugProfile);
+
   type RunArgs = {
     projectDir: string;
     filePath: string;
@@ -1030,7 +1046,7 @@ function configureTestController(context: ExtensionContext) {
     module: string;
   };
 
-  vscode.commands.registerCommand(
+  const testCommand = vscode.commands.registerCommand(
     Commands.RUN_TEST_FROM_CODELENS,
     async (args: RunArgs) => {
       const fileTestItem = vscode.Uri.file(args.filePath);
@@ -1066,5 +1082,5 @@ function configureTestController(context: ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(runProfile);
+  context.subscriptions.push(testCommand);
 }
