@@ -448,8 +448,9 @@ function startClient(
   const command =
     os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
 
+  // get workspaceFolder scoped configuration or default
   const lsOverridePath: string = vscode.workspace
-    .getConfiguration("elixirLS")
+    .getConfiguration("elixirLS", clientOptions.workspaceFolder)
     .get("languageServerOverridePath")!;
 
   const serverOpts = {
