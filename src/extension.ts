@@ -729,6 +729,7 @@ function configureTestController(context: ExtensionContext) {
   );
 
   enum ItemType {
+    WorkspaceFolder,
     File,
     Module,
     Describe,
@@ -739,6 +740,27 @@ function configureTestController(context: ExtensionContext) {
 
   const getType = (testItem: vscode.TestItem) =>
     testData.get(testItem) ?? ItemType.TestCase;
+
+  function getOrCreateWorkspaceFolderTestItem(uri: vscode.Uri) {
+    let workspaceFolder = workspace.getWorkspaceFolder(uri)!;
+    workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
+
+    const existing = controller.items.get(workspaceFolder.uri.toString());
+    if (existing) {
+      return existing;
+    }
+
+    const workspaceFolderTestItem = controller.createTestItem(
+      workspaceFolder.uri.toString(),
+      workspaceFolder.name,
+      workspaceFolder.uri
+    );
+    workspaceFolderTestItem.canResolveChildren = true;
+    workspaceFolderTestItem.range = new vscode.Range(0, 0, 0, 0);
+    controller.items.add(workspaceFolderTestItem);
+    testData.set(workspaceFolderTestItem, ItemType.WorkspaceFolder);
+    return workspaceFolderTestItem;
+  }
 
   // In this function, we'll get the file TestItem if we've already found it,
   // otherwise we'll create it with `canResolveChildren = true` to indicate it
@@ -757,7 +779,10 @@ function configureTestController(context: ExtensionContext) {
     );
     fileTestItem.canResolveChildren = true;
     fileTestItem.range = new vscode.Range(0, 0, 0, 0);
-    controller.items.add(fileTestItem);
+
+    const workspaceFolderTestItem = getOrCreateWorkspaceFolderTestItem(uri);
+    workspaceFolderTestItem.children.add(fileTestItem);
+
     testData.set(fileTestItem, ItemType.File);
     return fileTestItem;
   }
