@@ -25,7 +25,7 @@ async function runTestWithoutDebug(args: RunArgs): Promise<string> {
       if (!error) {
         resolve(stdout);
       } else {
-        reject(stdout);
+        reject(stdout + (stderr ? ("\n" + stderr) : ""));
       }
     });
   });
