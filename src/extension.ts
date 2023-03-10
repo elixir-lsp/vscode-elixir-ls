@@ -688,6 +688,17 @@ function getClient(document: vscode.TextDocument): LanguageClient | null {
   return getClientByUri(document.uri);
 }
 
+function getProjectDir(workspaceFolder: WorkspaceFolder): string {
+  // check if projectDir is not overriden in workspace
+  const projectDir = vscode.workspace
+    .getConfiguration("elixirLS", workspaceFolder)
+    .get<string>("projectDir");
+
+  return projectDir
+    ? path.join(workspaceFolder.uri.fsPath, projectDir)
+    : workspaceFolder.uri.fsPath;
+}
+
 function configureTestController(context: ExtensionContext) {
   console.log("creating test controller");
   const controller = vscode.tests.createTestController(
@@ -718,6 +729,7 @@ function configureTestController(context: ExtensionContext) {
   );
 
   enum ItemType {
+    WorkspaceFolder,
     File,
     Module,
     Describe,
@@ -729,18 +741,37 @@ function configureTestController(context: ExtensionContext) {
   const getType = (testItem: vscode.TestItem) =>
     testData.get(testItem) ?? ItemType.TestCase;
 
+  function getOrCreateWorkspaceFolderTestItem(uri: vscode.Uri) {
+    let workspaceFolder = workspace.getWorkspaceFolder(uri)!;
+    workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
+
+    const existing = controller.items.get(workspaceFolder.uri.toString());
+    if (existing) {
+      return existing;
+    }
+
+    const workspaceFolderTestItem = controller.createTestItem(
+      workspaceFolder.uri.toString(),
+      workspaceFolder.name,
+      workspaceFolder.uri
+    );
+    workspaceFolderTestItem.canResolveChildren = true;
+    workspaceFolderTestItem.range = new vscode.Range(0, 0, 0, 0);
+    controller.items.add(workspaceFolderTestItem);
+    testData.set(workspaceFolderTestItem, ItemType.WorkspaceFolder);
+    return workspaceFolderTestItem;
+  }
+
   // In this function, we'll get the file TestItem if we've already found it,
   // otherwise we'll create it with `canResolveChildren = true` to indicate it
   // can be passed to the `controller.resolveHandler` to gets its children.
-  function getOrCreateFile(uri: vscode.Uri) {
+  function getOrCreateFile(uri: vscode.Uri, projectDir: string) {
     const existing = controller.items.get(uri.toString());
     if (existing) {
       return existing;
     }
 
-    let folder = workspace.getWorkspaceFolder(uri);
-    folder = getOuterMostWorkspaceFolder(folder!);
-    const relativePath = uri.fsPath.slice(folder.uri.fsPath.length);
+    const relativePath = uri.fsPath.slice(projectDir.length);
     const fileTestItem = controller.createTestItem(
       uri.toString(),
       relativePath,
@@ -748,12 +779,15 @@ function configureTestController(context: ExtensionContext) {
     );
     fileTestItem.canResolveChildren = true;
     fileTestItem.range = new vscode.Range(0, 0, 0, 0);
-    controller.items.add(fileTestItem);
+
+    const workspaceFolderTestItem = getOrCreateWorkspaceFolderTestItem(uri);
+    workspaceFolderTestItem.children.add(fileTestItem);
+
     testData.set(fileTestItem, ItemType.File);
     return fileTestItem;
   }
 
-  function filterTestFile(uri: Uri) {
+  function filterTestFile(uri: Uri, projectDir: string) {
     if (uri.scheme !== "file") {
       // filter out untitled and other non file
       return false;
@@ -764,14 +798,7 @@ function configureTestController(context: ExtensionContext) {
       return false;
     }
 
-    let folder = workspace.getWorkspaceFolder(uri);
-    if (!folder) {
-      // filter out files outside any of workspace folders
-      return false;
-    }
-
-    folder = getOuterMostWorkspaceFolder(folder);
-    const relativePath = uri.fsPath.slice(folder.uri.fsPath.length);
+    const relativePath = uri.fsPath.slice(projectDir.length);
     const pathSegments = relativePath.split("/");
     const firstSegment = pathSegments[1];
     if (
@@ -792,8 +819,14 @@ function configureTestController(context: ExtensionContext) {
   }
 
   function parseTestsInDocument(e: vscode.TextDocument) {
-    if (filterTestFile(e.uri)) {
-      parseTestsInFileContents(getOrCreateFile(e.uri));
+    let workspaceFolder = workspace.getWorkspaceFolder(e.uri);
+    if (!workspaceFolder) {
+      return;
+    }
+    workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
+    const projectDir = getProjectDir(workspaceFolder);
+    if (filterTestFile(e.uri, projectDir)) {
+      parseTestsInFileContents(getOrCreateFile(e.uri, projectDir));
     }
   }
 
@@ -890,21 +923,20 @@ function configureTestController(context: ExtensionContext) {
 
     return Promise.all(
       outerMostWorkspaceFolders.map(async (workspaceFolder) => {
-        console.log("registering watcher in", workspaceFolder.name);
-        const pattern = new vscode.RelativePattern(
-          workspaceFolder,
-          "**/*_test.exs"
-        );
+        const projectDir = getProjectDir(workspaceFolder);
+        console.log("registering watcher in", workspaceFolder.name, "projectDir", projectDir);
+        
+        const pattern = new vscode.RelativePattern(projectDir, "**/*_test.exs");
         const watcher = vscode.workspace.createFileSystemWatcher(pattern);
 
         context.subscriptions.push(watcher);
 
         // When files are created, make sure there's a corresponding "file" node in the tree
-        watcher.onDidCreate((uri) => getOrCreateFile(uri));
+        watcher.onDidCreate((uri) => getOrCreateFile(uri, projectDir));
         // When files change, re-parse them. Note that you could optimize this so
         // that you only re-parse children that have been resolved in the past.
         watcher.onDidChange((uri) =>
-          parseTestsInFileContents(getOrCreateFile(uri))
+          parseTestsInFileContents(getOrCreateFile(uri, projectDir))
         );
         // And, finally, delete TestItems for removed files. This is simple, since
         // we use the URI as the TestItem's ID.
@@ -913,8 +945,8 @@ function configureTestController(context: ExtensionContext) {
         const files = await vscode.workspace.findFiles(pattern);
 
         for (const file of files) {
-          if (filterTestFile(file)) {
-            getOrCreateFile(file);
+          if (filterTestFile(file, projectDir)) {
+            getOrCreateFile(file, projectDir);
           }
         }
 
@@ -982,13 +1014,13 @@ function configureTestController(context: ExtensionContext) {
           const start = Date.now();
           run.started(test);
           try {
-            let folder = workspace.getWorkspaceFolder(test.uri!)!;
-            folder = getOuterMostWorkspaceFolder(folder);
-            const folderPath = folder.uri.fsPath;
-            const relativePath = test.uri!.fsPath.slice(folderPath.length + 1);
+            let workspaceFolder = workspace.getWorkspaceFolder(test.uri!)!;
+            workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
+            const projectDir = getProjectDir(workspaceFolder)
+            const relativePath = test.uri!.fsPath.slice(projectDir.length + 1);
             const output = await runTest(
               {
-                cwd: folderPath,
+                cwd: projectDir,
                 filePath: relativePath,
                 line: test.range!.start.line + 1,
               },
@@ -1051,7 +1083,10 @@ function configureTestController(context: ExtensionContext) {
     Commands.RUN_TEST_FROM_CODELENS,
     async (args: RunArgs) => {
       const fileTestItem = vscode.Uri.file(args.filePath);
-      await parseTestsInFileContents(getOrCreateFile(fileTestItem));
+      let workspaceFolder = workspace.getWorkspaceFolder(fileTestItem)!;
+      workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
+      const projectDir = getProjectDir(workspaceFolder);
+      await parseTestsInFileContents(getOrCreateFile(fileTestItem, projectDir));
       function getTestItem(
         item: vscode.TestItem,
         ids: (string | undefined)[]

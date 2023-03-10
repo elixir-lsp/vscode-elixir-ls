@@ -25,7 +25,7 @@ async function runTestWithoutDebug(args: RunArgs): Promise<string> {
       if (!error) {
         resolve(stdout);
       } else {
-        reject(stdout);
+        reject(stdout + (stderr ? ("\n" + stderr) : ""));
       }
     });
   });
@@ -41,7 +41,7 @@ async function debugTest(args: RunArgs): Promise<string> {
     task: "test",
     taskArgs: [buildTestCommandArgs(args)],
     startApps: true,
-    projectDir: "${workspaceRoot}",
+    projectDir: args.cwd,
     // we need to require all test helpers and only the file we need to test
     // mix test runs tests in all required files even if they do not match
     // given path:line
