@@ -924,8 +924,13 @@ function configureTestController(context: ExtensionContext) {
     return Promise.all(
       outerMostWorkspaceFolders.map(async (workspaceFolder) => {
         const projectDir = getProjectDir(workspaceFolder);
-        console.log("registering watcher in", workspaceFolder.name, "projectDir", projectDir);
-        
+        console.log(
+          "registering watcher in",
+          workspaceFolder.name,
+          "projectDir",
+          projectDir
+        );
+
         const pattern = new vscode.RelativePattern(projectDir, "**/*_test.exs");
         const watcher = vscode.workspace.createFileSystemWatcher(pattern);
 
@@ -1016,7 +1021,7 @@ function configureTestController(context: ExtensionContext) {
           try {
             let workspaceFolder = workspace.getWorkspaceFolder(test.uri!)!;
             workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
-            const projectDir = getProjectDir(workspaceFolder)
+            const projectDir = getProjectDir(workspaceFolder);
             const relativePath = test.uri!.fsPath.slice(projectDir.length + 1);
             const output = await runTest(
               {
