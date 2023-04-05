@@ -32,9 +32,6 @@
     "multi-root ready"
   ],
   "activationEvents": [
-    "onLanguage:elixir",
-    "onLanguage:eex",
-    "onLanguage:html-eex",
     "onLanguage:phoenix-heex",
     "onLanguage:surface",
     "workspaceContains:mix.exs",
