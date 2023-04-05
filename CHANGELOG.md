@@ -1,5 +1,23 @@
 ### Unreleased
 
+### v0.14.0: x April 2023
+
+#### Highlights
+
+- Debugger can now be run directly from Test UI
+
+#### Improvements
+
+- Test Code Lense integrated with Test UI [Carl-Foster](https://github.com/Carl-Foster)
+- Test UI properly respects `projectDir` setting
+- Improve rendering of `defdelegate` [Vicente Merlo](https://github.com/antedeguemon)
+- It's now possible to disable auto build with `autoBuild` setting
+- Fixed handling of scoped setings in multiroot workspaces
+
+#### Refactorings
+
+- Formatter properly lints all files [Carl-Foster](https://github.com/Carl-Foster)
+
 ### v0.13.0: 10 January 2023
 
 #### Improvements
