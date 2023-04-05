@@ -13,7 +13,7 @@
   "publisher": "JakeBecker",
   "version": "0.13.0",
   "engines": {
-    "vscode": "^1.70.0"
+    "vscode": "^1.75.0"
   },
   "sponsor": {
     "url": "https://github.com/sponsors/elixir-lsp"
@@ -554,7 +554,8 @@
   },
   "scripts": {
     "vscode:prepublish": "./prepublish.bash",
-    "compile": "tsc -p ./ && cd elixir-ls && MIX_ENV=prod mix elixir_ls.release -o ../elixir-ls-release",
+    "compile": "tsc -b && cd elixir-ls && MIX_ENV=prod mix elixir_ls.release -o ../elixir-ls-release",
+    "watch": "cd elixir-ls && MIX_ENV=prod mix elixir_ls.release -o ../elixir-ls-release && cd .. && tsc -b -w",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "test": "node ./out/test/runTest.js",
     "lint": "eslint . --ext .js,.ts",
@@ -566,7 +567,7 @@
     "@types/mocha": "^9.1.1",
     "@types/node": "^16.0.0",
     "@types/shelljs": "^0.8.11",
-    "@types/vscode": "~1.70.0",
+    "@types/vscode": "~1.75.0",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
     "eslint": "^8.26.0",
@@ -580,6 +581,6 @@
   },
   "dependencies": {
     "shelljs": "^0.8.5",
-    "vscode-languageclient": "^8.0.2"
+    "vscode-languageclient": "^8.1.0"
   }
 }
