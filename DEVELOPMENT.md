@@ -4,28 +4,19 @@
 
 1. Make and push the elixir-ls tag
 2. Update the elixir-ls submodule `git submodule foreach git pull origin master`
-
-3. Test the new vscode-elixir-ls version with:
+3. Set `ELS_RELEASE` to an appropriate version in `launch.sh` and `language_server|debugger.bat`
+4. Test the new vscode-elixir-ls version with:
 
     ```
     npm install
     npm install -g vsce@latest
-    cp elixir-ls/.release-tool-versions .tool-versions
     vsce package
     code --install-extension ./elixir-ls-0.2.44.vsix  --force
     ```
 
-4. Ensure you have a clean git repository
-5. `vsce publish 0.3.1` (or whatever version) (note that this will create a commit and a tag)
-6. `git push upstream --tags`
+5. Push and verify the build is green.
+6. Tag and push tags. Github action will create and publish the release to Visual Studio Marketplace and Open VSX Registry
 7. Update forum announcement post: https://elixirforum.com/t/introducing-elixirls-the-elixir-language-server/5857
-
-8. Also publish to https://open-vsx.org/
-
-    - `git checkout openvsx`
-    - `git rebase -i upstream/master`
-    - `ovsx publish -p <TOKEN>`
-    - `git push -f`
 
 ## References
 

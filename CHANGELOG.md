@@ -1,10 +1,11 @@
 ### Unreleased
 
-### v0.14.0: x April 2023
+### v0.14.0: 14 April 2023
 
 #### Highlights
 
 - Debugger can now be run directly from Test UI
+- The extension now uses `Mix.install` to manage elixir-ls versions. Thanks to that it will use a correct version build for the project's environment, OTP and elixir version.
 
 #### Improvements
 
@@ -12,7 +13,8 @@
 - Test UI properly respects `projectDir` setting
 - Improve rendering of `defdelegate` [Vicente Merlo](https://github.com/antedeguemon)
 - It's now possible to disable auto build with `autoBuild` setting
-- Fixed handling of scoped setings in multiroot workspaces
+- Fixed handling of scoped settings in multiroot workspaces
+- Debugger respects `MIX_TARGET`
 
 #### Refactorings
 
@@ -36,7 +38,7 @@ Improvements:
 - Test UI support added
 - HEEX syntax highlighting [Matthew Lehner](https://github.com/matthewlehner)
 - More extension activation events
-- Support for elixr 1.14 EEX comment syntax [Brian Alexander](https://github.com/balexand)
+- Support for elixir 1.14 EEX comment syntax [Brian Alexander](https://github.com/balexand)
 - Custom command `Trigger mix clean in language server`
 
 Fixes:
@@ -54,11 +56,11 @@ Improvements:
 - Fixed dialyzer crash on OTP 25
 - Added support for mix formatter plugins ([Dalibor Horinek](https://github.com/DaliborHorinek))
 - Debugger now returns detailed info about ports, pids and function variables
-- Debugger completions now return detal field
+- Debugger completions now return detail field
 - Diagnostic positions now return column position returned by compiler (elixir 1.14+)
 - Diagnostic position fixed to never return invalid negative values
-- An exat `do` keyword completion is now preselected and more preferred over `defoverridable`
-- Fixed hexdoc links in hover for aliased modules and imported functions ([Milo Lee](https://github.com/oo6))
+- An exact `do` keyword completion is now preselected and more preferred over `defoverridable`
+- Fixed hexdocs links in hover for aliased modules and imported functions ([Milo Lee](https://github.com/oo6))
 - Better module name suggestions in Phoenix `live` directory ([Manos Emmanouilidis](https://github.com/bottlenecked))
 
 **Deprecations**
@@ -66,7 +68,7 @@ Improvements:
 
 ### v0.10.0: 10 June 2022
 
-Improvements to debugger addapter:
+Improvements to debugger adapter:
 
 - A lot of new features around breakpoints: function breakpoints, conditional breakpoints, hit count and log points [#656](https://github.com/elixir-lsp/elixir-ls/pull/656), [#661](https://github.com/elixir-lsp/elixir-ls/pull/661), [#671](https://github.com/elixir-lsp/elixir-ls/pull/671) (thanks [Łukasz Samson](https://github.com/lukaszsamson))
 - Completions in debugger eval console [#679](https://github.com/elixir-lsp/elixir-ls/pull/679) (thanks [Łukasz Samson](https://github.com/lukaszsamson))
@@ -74,7 +76,7 @@ Improvements to debugger addapter:
 - Messages in the queue of debugged process can now be examined [#681](https://github.com/elixir-lsp/elixir-ls/pull/681) (thanks [Łukasz Samson](https://github.com/lukaszsamson))
 - Debugger can now handle pause and terminateThread requests [#675](https://github.com/elixir-lsp/elixir-ls/pull/675) (thanks [Łukasz Samson](https://github.com/lukaszsamson))
 - Clipboard and hover eval is now supported in debugger [#680](https://github.com/elixir-lsp/elixir-ls/pull/680) (thanks [Łukasz Samson](https://github.com/lukaszsamson))
-- Auto interpretting can now be disabled [#616](https://github.com/elixir-lsp/elixir-ls/pull/616) (thanks [Jason Axelson](https://github.com/axelson))
+- Auto interpreting can now be disabled [#616](https://github.com/elixir-lsp/elixir-ls/pull/616) (thanks [Jason Axelson](https://github.com/axelson))
 - Debugger conforms better to DAP 1.51 specification [#678](https://github.com/elixir-lsp/elixir-ls/pull/678) (thanks [Łukasz Samson](https://github.com/lukaszsamson))
 
 Improvements to language server:
@@ -103,7 +105,7 @@ VSCode:
 - New OTP 25 dialyzer settings (https://github.com/elixir-lsp/vscode-elixir-ls/commit/50a8a53fa79c14d2ea4031f872ec3d7cd32155f5) (thanks [Łukasz Samson](https://github.com/lukaszsamson))
 - Compile time environment variables can now be set in extension config [#213](https://github.com/elixir-lsp/vscode-elixir-ls/pull/213) (thanks [vacarsu](https://github.com/vacarsu))
 - Additional watched extensions can now be set in extension config [#197](https://github.com/elixir-lsp/vscode-elixir-ls/pull/197) (thanks [Vanja Bucic](https://github.com/vanjabucic))
-- Improved unquite_slicing highlighting [#221](https://github.com/elixir-lsp/vscode-elixir-ls/pull/221) (thanks [Milo Lee](https://github.com/oo6))
+- Improved unquote_slicing highlighting [#221](https://github.com/elixir-lsp/vscode-elixir-ls/pull/221) (thanks [Milo Lee](https://github.com/oo6))
 - Improved string interpolation highlighting [#229](https://github.com/elixir-lsp/vscode-elixir-ls/pull/229) (thanks [Milo Lee](https://github.com/oo6))
 - Improved regex with < highlighting [#226](https://github.com/elixir-lsp/vscode-elixir-ls/pull/226) (thanks [Tiago Moraes](https://github.com/tiagoefmoraes))
 - Extension updated to use LSP v3.16 [#227](https://github.com/elixir-lsp/vscode-elixir-ls/pull/227) (thanks [Łukasz Samson](https://github.com/lukaszsamson))
@@ -145,7 +147,7 @@ Improvements:
 
 Housekeeping:
 - Remove dependency on forms (thanks [Awlexus](https://github.com/Awlexus)) [#596](https://github.com/elixir-lsp/elixir-ls/pull/596)
-- CI releases: utilize auto seleciton of latest patch version (thanks [Po Chen](https://github.com/princemaple)) [#591](https://github.com/elixir-lsp/elixir-ls/pull/591)
+- CI releases: utilize auto selection of latest patch version (thanks [Po Chen](https://github.com/princemaple)) [#591](https://github.com/elixir-lsp/elixir-ls/pull/591)
 - Change minimum OTP version to 22 in warning message (thanks [Thanabodee Charoenpiriyakij](https://github.com/wingyplus)) [#592](https://github.com/elixir-lsp/elixir-ls/pull/592)
 - Fix various typos (thanks [Kian Meng Ang](https://github.com/kianmeng)) [#594](https://github.com/elixir-lsp/elixir-ls/pull/594)
 

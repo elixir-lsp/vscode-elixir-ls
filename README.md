@@ -67,25 +67,6 @@ Add or edit your `emmet.includedLanguages` to include the new Language Id:
 }
 ```
 
-### Override packaged ElixirLS release
-
-Sometimes you might want to locally build your own release of ElixirLS. For that, you need to clone the [ElixirLS repository](https://github.com/elixir-lsp/elixir-ls), fetch its dependencies and create a new release.
-
-```shell
-git clone git@github.com:elixir-lsp/elixir-ls.git
-
-cd elixir-ls
-mix deps.get
-MIX_ENV=prod mix compile
-MIX_ENV=prod mix elixir_ls.release -o <release_dir>
-```
-
-If no `<release_dir>` is provided, the built release will be on a folder called `release` in the same directory as ElixirLS. In this `<release_dir>`, you will find the language server scripts and binaries (like `language_server.sh`, for example).
-
-The absolute path to this `<release_dir>` is what you need to provide to ElixirLS setting (`elixirLS.languageServerOverridePath`) in Visual Studio Code.
-
-![Language server override setting](./images/language-server-override.png)
-
 ## Supported versions
 
 See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the supported Elixir and Erlang versions.
@@ -150,10 +131,6 @@ experimental because of a few known issues as well as a lack of large scale test
 }
 ```
 
-#### Known issues
-
-- The generated command sometimes fails to properly execute tests in umbrella apps. See [this comment](https://github.com/elixir-lsp/elixir-ls/issues/438#issuecomment-871861880) for more details.
-
 ## Contributing
 
 ### Installation
@@ -168,9 +145,11 @@ npm install
 
 # Fetch elixir-ls dependencies
 cd elixir-ls
-asdf install # required for asdf users, or remove .tool-versions to use global asdf settings
 mix deps.get
+MIX_ENV=prod mix compile
 ```
+
+Navigate to elixir-ls-release and uncomment `ELS_LOCAL` environment variable in `launch.sh` or `language_server|debugger.bat`. This will make the install scripts use the local version from `elixir-ls` directory.
 
 To launch the extension from VS Code, run the "Launch Extension" launch configuration from [Run view](https://code.visualstudio.com/docs/editor/debugging#_run-view) or press F5.
 
