@@ -36,6 +36,9 @@ then
   esac
 fi
 
+export ELS_RELEASE="v0.14.0"
+# export ELS_LOCAL="1"
+
 # In case that people want to tweak the path, which Elixir to use, or
 # whatever prior to launching the language server or the debugger, we
 # give them the chance here. ELS_MODE will be set for
