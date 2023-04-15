@@ -1,10 +1,11 @@
 ### Unreleased
 
-### v0.14.1: 15 April 2023
+### v0.14.2: 15 April 2023
 
 #### Fixes
 
 - Correctly set release tag in Windows startup scripts
+- Make startup scripts not crash on Linux
 
 ### v0.14.0: 14 April 2023
 
