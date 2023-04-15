@@ -36,7 +36,7 @@ then
   esac
 fi
 
-export ELS_RELEASE="v0.14.1"
+export ELS_RELEASE="v0.14.2"
 # export ELS_LOCAL="1"
 
 # In case that people want to tweak the path, which Elixir to use, or
@@ -74,6 +74,6 @@ fi
 export MIX_ENV=prod
 # Mix.install prints to stdout and reads from stdin
 # we need to make sure it doesn't interfere with LSP/DAP
-elixir "$SCRIPTPATH/quiet_install.exs" 1> /dev/null < /dev/zero || exit 1
+echo "" | elixir "$SCRIPTPATH/quiet_install.exs" >/dev/null || exit 1
 
 exec elixir --erl "+sbwt none +sbwtdcpu none +sbwtdio none" "$SCRIPTPATH/$ELS_MODE.exs"
