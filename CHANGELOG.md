@@ -1,5 +1,11 @@
 ### Unreleased
 
+### v0.14.1: 15 April 2023
+
+#### Fixes
+
+- Correctly set release tag in Windows startup scripts
+
 ### v0.14.0: 14 April 2023
 
 #### Highlights
