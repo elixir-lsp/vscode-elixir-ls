@@ -36,7 +36,7 @@ then
   esac
 fi
 
-export ELS_RELEASE="v0.14.3"
+export ELS_RELEASE="v0.14.4"
 # export ELS_LOCAL="1"
 
 # In case that people want to tweak the path, which Elixir to use, or
