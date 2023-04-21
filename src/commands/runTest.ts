@@ -1,4 +1,4 @@
-import { exec } from "child_process";
+import { ExecOptions, exec } from "child_process";
 import * as vscode from "vscode";
 
 type RunArgs = {
@@ -19,7 +19,14 @@ async function runTestWithoutDebug(args: RunArgs): Promise<string> {
   console.log(command, args.cwd);
 
   return new Promise((resolve, reject) => {
-    exec(command, { cwd: args.cwd }, (error, stdout, stderr) => {
+    const options: ExecOptions = {
+      cwd: args.cwd,
+      env: {
+        ...process.env,
+        MIX_ENV: "test",
+      },
+    };
+    exec(command, options, (error, stdout, stderr) => {
       console.log("stdout", stdout);
       console.log("stderr", stderr);
       if (!error) {
@@ -39,6 +46,9 @@ async function debugTest(args: RunArgs): Promise<string> {
     name: "mix test",
     request: "launch",
     task: "test",
+    env: {
+      MIX_ENV: "test",
+    },
     taskArgs: [buildTestCommandArgs(args)],
     startApps: true,
     projectDir: args.cwd,
