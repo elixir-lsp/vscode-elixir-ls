@@ -1,5 +1,12 @@
 ### Unreleased
 
+### v0.14.5: 21 April 2023
+
+#### Fixes
+
+- Include fixes for crashes from v0.14.5 of elixirLS
+- Explicitly set MIX_ENV to `test` in run/debug test commands
+
 ### v0.14.4: 20 April 2023
 
 #### Fixes
