@@ -38,10 +38,26 @@ async function runTestWithoutDebug(args: RunArgs): Promise<string> {
   });
 }
 
-async function debugTest(args: RunArgs): Promise<string> {
-  // create a new debug config
-  // it may mke sense to load and override an existing one
-  const debugConfiguration: vscode.DebugConfiguration = {
+// Get the configuration for mix test, if it exists
+function getTestConfig(args: RunArgs): vscode.DebugConfiguration | undefined {
+  const launchJson = vscode.workspace.getConfiguration("launch");
+  const testConfig = launchJson.configurations.findLast((e: { name: string; }) => e.name == "mix test")
+
+  if (testConfig == undefined) {
+    return undefined;
+  }
+
+  testConfig.projectDir = args.cwd;
+  testConfig.taskArgs.concat(buildTestCommandArgs(args));
+  testConfig.requireFiles.push(args.filePath);
+  return testConfig;
+}
+
+// Get the config to use for debugging
+function getDebugConfig(args: RunArgs): vscode.DebugConfiguration {
+  const fileConfiguration: vscode.DebugConfiguration | undefined = getTestConfig(args);
+
+  const fallbackConfiguration: vscode.DebugConfiguration = {
     type: "mix_task",
     name: "mix test",
     request: "launch",
@@ -61,6 +77,12 @@ async function debugTest(args: RunArgs): Promise<string> {
       args.filePath,
     ],
   };
+
+  return fileConfiguration ?? fallbackConfiguration;
+}
+
+async function debugTest(args: RunArgs): Promise<string> {
+  const debugConfiguration: vscode.DebugConfiguration = getDebugConfig(args);
 
   return new Promise((resolve, reject) => {
     const listeners: Array<vscode.Disposable> = [];
