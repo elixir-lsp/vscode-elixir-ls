@@ -832,6 +832,9 @@ function configureTestController(context: ExtensionContext) {
   }
 
   async function parseTestsInFileContents(file: vscode.TestItem) {
+    if (!file.uri!.toString().endsWith(".exs")) {
+      return;
+    }
     // If a document is open, VS Code already knows its contents. If this is being
     // called from the resolveHandler when a document isn't open, we'll need to
     // read them from disk ourselves.
@@ -841,6 +844,8 @@ function configureTestController(context: ExtensionContext) {
       client.initializeResult!.capabilities.executeCommandProvider!.commands.find(
         (c) => c.startsWith("getExUnitTestsInFile:")
       )!;
+
+    console.log("Finding tests in ", file.uri!.toString())
 
     const params: ExecuteCommandParams = {
       command: command,
