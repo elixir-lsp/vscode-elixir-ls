@@ -171,6 +171,12 @@
           "default": "off",
           "description": "Traces the communication between VS Code and the Elixir language server."
         },
+        "elixirLS.autoInsertRequiredAlias": {
+          "scope": "window",
+          "type": "boolean",
+          "description": "Enable auto-insert required alias. By default, it's true, which means enabled.",
+          "default": true
+        },
         "elixirLS.signatureAfterComplete": {
           "scope": "resource",
           "type": "boolean",
