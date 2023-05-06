@@ -845,7 +845,7 @@ function configureTestController(context: ExtensionContext) {
         (c) => c.startsWith("getExUnitTestsInFile:")
       )!;
 
-    console.log("Finding tests in ", file.uri!.toString())
+    console.log("Finding tests in ", file.uri!.toString());
 
     const params: ExecuteCommandParams = {
       command: command,
@@ -1093,11 +1093,13 @@ function configureTestController(context: ExtensionContext) {
   const testCommand = vscode.commands.registerCommand(
     Commands.RUN_TEST_FROM_CODELENS,
     async (args: RunArgs) => {
-      const fileTestItem = vscode.Uri.file(args.filePath);
-      let workspaceFolder = workspace.getWorkspaceFolder(fileTestItem)!;
+      const fileTestItemUri = vscode.Uri.file(args.filePath);
+      let workspaceFolder = workspace.getWorkspaceFolder(fileTestItemUri)!;
       workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
       const projectDir = getProjectDir(workspaceFolder);
-      await parseTestsInFileContents(getOrCreateFile(fileTestItem, projectDir));
+      await parseTestsInFileContents(
+        getOrCreateFile(fileTestItemUri, projectDir)
+      );
       function getTestItem(
         item: vscode.TestItem,
         ids: (string | undefined)[]
@@ -1116,10 +1118,35 @@ function configureTestController(context: ExtensionContext) {
         }
         return item;
       }
-      const testItem = getTestItem(
-        controller.items.get(fileTestItem.toString())!,
-        [args.module, args.describe, args.testName]
+      function getFileTestItemRecursive(
+        items: vscode.TestItemCollection,
+        id: string
+      ): vscode.TestItem | undefined {
+        let item = items.get(id);
+        if (item) {
+          return item;
+        }
+        for (const [childId, child] of items) {
+          item = getFileTestItemRecursive(child.children, id);
+          if (item) {
+            return item;
+          }
+        }
+      }
+
+      const fileTestItem = getFileTestItemRecursive(
+        controller.items,
+        fileTestItemUri.toString()
       );
+      if (!fileTestItem) {
+        console.warn(`Test item ${fileTestItemUri.toString()} not found`);
+        return;
+      }
+      const testItem = getTestItem(fileTestItem, [
+        args.module,
+        args.describe,
+        args.testName,
+      ]);
       runHandler(
         false,
         new vscode.TestRunRequest([testItem]),

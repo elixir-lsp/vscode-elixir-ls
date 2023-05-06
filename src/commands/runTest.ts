@@ -41,7 +41,9 @@ async function runTestWithoutDebug(args: RunArgs): Promise<string> {
 // Get the configuration for mix test, if it exists
 function getTestConfig(args: RunArgs): vscode.DebugConfiguration | undefined {
   const launchJson = vscode.workspace.getConfiguration("launch");
-  const testConfig = launchJson.configurations.findLast((e: { name: string; }) => e.name == "mix test")
+  const testConfig = launchJson.configurations.findLast(
+    (e: { name: string }) => e.name == "mix test"
+  );
 
   if (testConfig == undefined) {
     return undefined;
@@ -55,7 +57,8 @@ function getTestConfig(args: RunArgs): vscode.DebugConfiguration | undefined {
 
 // Get the config to use for debugging
 function getDebugConfig(args: RunArgs): vscode.DebugConfiguration {
-  const fileConfiguration: vscode.DebugConfiguration | undefined = getTestConfig(args);
+  const fileConfiguration: vscode.DebugConfiguration | undefined =
+    getTestConfig(args);
 
   const fallbackConfiguration: vscode.DebugConfiguration = {
     type: "mix_task",
