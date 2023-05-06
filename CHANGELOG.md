@@ -1,5 +1,20 @@
 ### Unreleased
 
+### v0.14.6: 6 May 2023
+
+#### Improvements
+
+- Mix.install is now running in quiet mode. Thanks to that git errors are no longer swallowed. This should make resolving problems easier.
+- TestUI Run test and Debug will now be default use a launch configuration named `mix test` if present in workspace [Dave Purrington](https://github.com/dpurrington)
+- Added option `elixirLS.autoInsertRequiredAlias` controlling if complete provider
+will auto insert aliases
+
+#### Fixes
+
+- Fix crash when running tests via code lense
+- Fix crash in test discovery
+- Protocol consolidation is now turned off. This was causing problems in debugger
+
 ### v0.14.5: 21 April 2023
 
 #### Fixes
