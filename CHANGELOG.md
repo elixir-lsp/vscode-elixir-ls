@@ -1,5 +1,11 @@
 ### Unreleased
 
+### v0.14.7: 6 May 2023
+
+#### Fixes
+
+- Refer to correct version in launch script
+
 ### v0.14.6: 6 May 2023
 
 #### Improvements

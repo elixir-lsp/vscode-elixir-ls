@@ -1,7 +1,7 @@
 @echo off & setlocal enabledelayedexpansion
 
 SET ELS_MODE=language_server
-SET ELS_RELEASE=v0.14.5
+SET ELS_RELEASE=v0.14.6
 @REM SET ELS_LOCAL=1
 IF EXIST "%APPDATA%\elixir_ls\setup.bat" (
     ECHO "" | CALL "%APPDATA%\elixir_ls\setup.bat" > nul

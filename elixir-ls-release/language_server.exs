@@ -10,9 +10,10 @@ if System.get_env("ELS_LOCAL") == "1" do
   )
 else
   Mix.install([
-    {:elixir_ls, github: "elixir-lsp/elixir-ls", tag: System.get_env("ELS_RELEASE")},
+      {:elixir_ls, github: "elixir-lsp/elixir-ls", tag: System.get_env("ELS_RELEASE")}
+    ],
     consolidate_protocols: false
-  ])
+  )
 end
 
 
