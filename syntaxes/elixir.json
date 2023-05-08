@@ -1603,7 +1603,7 @@
       ]
     },
     {
-      "comment": "Embededd Liveview heredoc with single quotes",
+      "comment": "Embedded LiveView heredoc with single quotes",
       "begin": "\\s?(~l''')$",
       "beginCaptures": {
         "0": {
@@ -2253,7 +2253,7 @@
       "name": "comment.wildcard.elixir"
     },
     {
-      "comment": "matches questionmark-letters.\n\nexamples (1st alternation = hex):\n?\\x1     ?\\x61\n\nexamples (2nd alternation = octal):\n?\\0      ?\\07     ?\\017\n\nexamples (3rd alternation = escaped):\n?\\n      ?\\b\n\nexamples (4th alternation = meta-ctrl):\n?\\C-a    ?\\M-a    ?\\C-\\M-\\C-\\M-a\n\nexamples (4th alternation = normal):\n?a       ?A       ?0\n?*       ?\"       ?(\n?.       ?#\n\n\nthe negative lookbehind prevents against matching\np(42.tainted?)",
+      "comment": "matches question mark letters.\n\nexamples (1st alternation = hex):\n?\\x1     ?\\x61\n\nexamples (2nd alternation = octal):\n?\\0      ?\\07     ?\\017\n\nexamples (3rd alternation = escaped):\n?\\n      ?\\b\n\nexamples (4th alternation = meta-ctrl):\n?\\C-a    ?\\M-a    ?\\C-\\M-\\C-\\M-a\n\nexamples (4th alternation = normal):\n?a       ?A       ?0\n?*       ?\"       ?(\n?.       ?#\n\n\nthe negative lookbehind prevents against matching\np(42.tainted?)",
       "match": "(?<!\\w)\\?(\\\\(x\\h{1,2}(?!\\h)\\b|0[0-7]{0,2}(?![0-7])\\b|[^x0MC])|(\\\\[MC]-)+\\w|[^\\s\\\\])",
       "name": "constant.numeric.elixir"
     },

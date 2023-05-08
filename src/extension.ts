@@ -12,7 +12,7 @@ import { configureCommands } from "./commands";
 import { handleDidChangeWorkspaceFolders } from "./project";
 import { testElixir } from "./testElixir";
 
-const languageClientManager = new LanguageClientManager();
+export const languageClientManager = new LanguageClientManager();
 
 const workspaceSubscription: vscode.Disposable =
   vscode.workspace.onDidChangeWorkspaceFolders(() =>

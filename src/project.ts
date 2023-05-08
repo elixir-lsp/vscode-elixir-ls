@@ -4,7 +4,7 @@ import * as path from "path";
 import * as vscode from "vscode";
 
 export function getProjectDir(workspaceFolder: vscode.WorkspaceFolder): string {
-  // check if projectDir is not overriden in workspace
+  // check if projectDir is not overridden in workspace
   const projectDir = vscode.workspace
     .getConfiguration("elixirLS", workspaceFolder)
     .get<string>("projectDir");

@@ -318,7 +318,7 @@
               },
               "debugAutoInterpretAllModules": {
                 "type": "boolean",
-                "description": "When debugging, intepret all files. Note: Only interpreted files will be part of debugging stack traces. However this has a performance impact on large repositories, so if debugging is too slow, disable debugAutoInterpretFiles and use debugInterpretModulesPatterns to specify which files to interpret.",
+                "description": "When debugging, interpret all files. Note: Only interpreted files will be part of debugging stack traces. However this has a performance impact on large repositories, so if debugging is too slow, disable debugAutoInterpretFiles and use debugInterpretModulesPatterns to specify which files to interpret.",
                 "default": true
               },
               "debugInterpretModulesPatterns": {
