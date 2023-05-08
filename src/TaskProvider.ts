@@ -1,3 +1,5 @@
+"use strict";
+
 import * as vscode from "vscode";
 
 export class TaskProvider implements vscode.TaskProvider {
