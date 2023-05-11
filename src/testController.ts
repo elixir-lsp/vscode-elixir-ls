@@ -3,15 +3,16 @@
 import * as vscode from "vscode";
 import { ExecuteCommandParams } from "vscode-languageclient";
 import runTest from "./commands/runTest";
-import { getOuterMostWorkspaceFolder, getProjectDir } from "./project";
+import { WorkspaceTracker, getProjectDir } from "./project";
 import { LanguageClientManager } from "./languageClientManager";
 import { RUN_TEST_FROM_CODELENS } from "./constants";
 
 export function configureTestController(
   context: vscode.ExtensionContext,
-  languageClientManager: LanguageClientManager
+  languageClientManager: LanguageClientManager,
+  workspaceTracker: WorkspaceTracker
 ) {
-  console.log("creating test controller");
+  console.log("ElixirLS: creating test controller");
   const controller = vscode.tests.createTestController(
     "elixirLSExUnitTests",
     "ExUnit Tests"
@@ -54,7 +55,8 @@ export function configureTestController(
 
   function getOrCreateWorkspaceFolderTestItem(uri: vscode.Uri) {
     let workspaceFolder = vscode.workspace.getWorkspaceFolder(uri)!;
-    workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
+    workspaceFolder =
+      workspaceTracker.getOuterMostWorkspaceFolder(workspaceFolder);
 
     const existing = controller.items.get(workspaceFolder.uri.toString());
     if (existing) {
@@ -130,13 +132,8 @@ export function configureTestController(
   }
 
   function parseTestsInDocument(e: vscode.TextDocument) {
-    let workspaceFolder = vscode.workspace.getWorkspaceFolder(e.uri);
-    if (!workspaceFolder) {
-      return;
-    }
-    workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
-    const projectDir = getProjectDir(workspaceFolder);
-    if (filterTestFile(e.uri, projectDir)) {
+    const projectDir = workspaceTracker.getProjectDirForUri(e.uri);
+    if (projectDir && filterTestFile(e.uri, projectDir)) {
       parseTestsInFileContents(getOrCreateFile(e.uri, projectDir));
     }
   }
@@ -155,7 +152,7 @@ export function configureTestController(
         (c) => c.startsWith("getExUnitTestsInFile:")
       )!;
 
-    console.log("Finding tests in ", file.uri!.toString());
+    console.log("ElixirLS: Finding tests in ", file.uri!.toString());
 
     const params: ExecuteCommandParams = {
       command: command,
@@ -227,12 +224,10 @@ export function configureTestController(
       return []; // handle the case of no open folders
     }
 
-    console.log("calling discoverAllFilesInWorkspace");
-
     const outerMostWorkspaceFolders = [
       ...new Set(
         vscode.workspace.workspaceFolders.map((workspaceFolder) =>
-          getOuterMostWorkspaceFolder(workspaceFolder)
+          workspaceTracker.getOuterMostWorkspaceFolder(workspaceFolder)
         )
       ),
     ];
@@ -241,7 +236,7 @@ export function configureTestController(
       outerMostWorkspaceFolders.map(async (workspaceFolder) => {
         const projectDir = getProjectDir(workspaceFolder);
         console.log(
-          "registering watcher in",
+          "ElixirLS: registering watcher in",
           workspaceFolder.name,
           "projectDir",
           projectDir
@@ -335,11 +330,7 @@ export function configureTestController(
           const start = Date.now();
           run.started(test);
           try {
-            let workspaceFolder = vscode.workspace.getWorkspaceFolder(
-              test.uri!
-            )!;
-            workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
-            const projectDir = getProjectDir(workspaceFolder);
+            const projectDir = workspaceTracker.getProjectDirForUri(test.uri!)!;
             const relativePath = test.uri!.fsPath.slice(projectDir.length + 1);
             const output = await runTest(
               {
@@ -406,10 +397,7 @@ export function configureTestController(
     RUN_TEST_FROM_CODELENS,
     async (args: RunArgs) => {
       const fileTestItemUri = vscode.Uri.file(args.filePath);
-      let workspaceFolder =
-        vscode.workspace.getWorkspaceFolder(fileTestItemUri)!;
-      workspaceFolder = getOuterMostWorkspaceFolder(workspaceFolder);
-      const projectDir = getProjectDir(workspaceFolder);
+      const projectDir = workspaceTracker.getProjectDirForUri(fileTestItemUri)!;
       await parseTestsInFileContents(
         getOrCreateFile(fileTestItemUri, projectDir)
       );

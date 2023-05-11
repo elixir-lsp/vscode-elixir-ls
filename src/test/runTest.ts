@@ -8,12 +8,53 @@ async function main(): Promise<void> {
     // Passed to `--extensionDevelopmentPath`
     const extensionDevelopmentPath = path.resolve(__dirname, "../../");
 
-    // The path to test runner
-    // Passed to --extensionTestsPath
-    const extensionTestsPath = path.resolve(__dirname, "./suite/index");
+    // single elixir file no workspace
+    await runTests({
+      extensionDevelopmentPath,
+      extensionTestsPath: path.resolve(__dirname, "./noWorkspaceElixirFile"),
+      launchArgs: [
+        path.resolve(__dirname, "../../src/test-fixtures/elixir_script.exs"),
+      ],
+    });
 
-    // Download VS Code, unzip it and run the integration test
-    await runTests({ extensionDevelopmentPath, extensionTestsPath });
+    // single non elixir file no workspace
+    await runTests({
+      extensionDevelopmentPath,
+      extensionTestsPath: path.resolve(__dirname, "./noWorkspace"),
+      launchArgs: [
+        path.resolve(__dirname, "../../src/test-fixtures/non_elixir.txt"),
+      ],
+    });
+
+    // single folder no mix
+    await runTests({
+      extensionDevelopmentPath,
+      extensionTestsPath: path.resolve(__dirname, "./singleFolderNoMix"),
+      launchArgs: [
+        path.resolve(__dirname, "../../src/test-fixtures/single_folder_no_mix"),
+      ],
+    });
+
+    // single folder mix
+    await runTests({
+      extensionDevelopmentPath,
+      extensionTestsPath: path.resolve(__dirname, "./singleFolderMix"),
+      launchArgs: [
+        path.resolve(__dirname, "../../src/test-fixtures/single_folder_mix"),
+      ],
+    });
+
+    // multi root
+    await runTests({
+      extensionDevelopmentPath,
+      extensionTestsPath: path.resolve(__dirname, "./multiRoot"),
+      launchArgs: [
+        path.resolve(
+          __dirname,
+          "../../src/test-fixtures/multi_root.code-workspace"
+        ),
+      ],
+    });
   } catch (err) {
     console.error(err);
     console.error("Failed to run tests");

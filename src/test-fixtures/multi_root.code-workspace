@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "sample_umbrella"
+		},
+		{
+			"path": "sample_umbrella/apps/child1"
+		},
+		{
+			"path": "single_folder_no_mix"
+		}
+	],
+	"settings": {}
+}

@@ -10,24 +10,27 @@ import {
   RevealOutputChannelOn,
   ServerOptions,
 } from "vscode-languageclient/node";
-import { getOuterMostWorkspaceFolder } from "./project";
+import { WorkspaceMode, WorkspaceTracker } from "./project";
+
+const languageIds = ["elixir", "eex", "html-eex", "phoenix-heex", "surface"];
+const defaultDocumentSelector = languageIds.flatMap((language) => [
+  { language, scheme: "file" },
+  { language, scheme: "untitled" },
+]);
+
+const untitledDocumentSelector = languageIds.map((language) => ({
+  language,
+  scheme: "untitled",
+}));
+
+const patternDocumentSelector = (pattern: string) =>
+  languageIds.map((language) => ({ language, scheme: "file", pattern }));
 
 // Options to control the language client
 const clientOptions: LanguageClientOptions = {
   // Register the server for Elixir documents
   // the client will iterate through this list and chose the first matching element
-  documentSelector: [
-    { language: "elixir", scheme: "file" },
-    { language: "elixir", scheme: "untitled" },
-    { language: "eex", scheme: "file" },
-    { language: "eex", scheme: "untitled" },
-    { language: "html-eex", scheme: "file" },
-    { language: "html-eex", scheme: "untitled" },
-    { language: "phoenix-heex", scheme: "file" },
-    { language: "phoenix-heex", scheme: "untitled" },
-    { language: "surface", scheme: "file" },
-    { language: "surface", scheme: "untitled" },
-  ],
+  documentSelector: defaultDocumentSelector,
   // Don't focus the Output pane on errors because request handler errors are no big deal
   revealOutputChannelOn: RevealOutputChannelOn.Never,
   synchronize: {
@@ -39,7 +42,7 @@ const clientOptions: LanguageClientOptions = {
 function startClient(
   context: vscode.ExtensionContext,
   clientOptions: LanguageClientOptions
-): LanguageClient {
+): [LanguageClient, Promise<LanguageClient>] {
   const command =
     os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
 
@@ -64,7 +67,7 @@ function startClient(
   let displayName;
   if (clientOptions.workspaceFolder) {
     console.log(
-      `ElixirLS: starting client for ${clientOptions.workspaceFolder!.uri.toString()} with server options`,
+      `ElixirLS: starting client for ${clientOptions.workspaceFolder.uri.toString()} with server options`,
       serverOptions,
       "client options",
       clientOptions
@@ -86,22 +89,36 @@ function startClient(
     serverOptions,
     clientOptions
   );
-  client.start().then(() => {
-    if (clientOptions.workspaceFolder) {
-      console.log(
-        `ElixirLS: started client for ${clientOptions.workspaceFolder!.uri.toString()}`
-      );
-    } else {
-      console.log(`ElixirLS: started default client`);
-    }
+  const clientPromise = new Promise<LanguageClient>((resolve) => {
+    client.start().then(() => {
+      if (clientOptions.workspaceFolder) {
+        console.log(
+          `ElixirLS: started client for ${clientOptions.workspaceFolder.uri.toString()}`
+        );
+      } else {
+        console.log(`ElixirLS: started default client`);
+      }
+      resolve(client);
+    });
   });
 
-  return client;
+  return [client, clientPromise];
 }
 
 export class LanguageClientManager {
   defaultClient: LanguageClient | null = null;
+  defaultClientPromise: Promise<LanguageClient> | null = null;
   clients: Map<string, LanguageClient> = new Map();
+  clientsPromises: Map<string, Promise<LanguageClient>> = new Map();
+  private _workspaceTracker: WorkspaceTracker;
+
+  constructor(workspaceTracker: WorkspaceTracker) {
+    this._workspaceTracker = workspaceTracker;
+  }
+
+  public getDefaultClient() {
+    return this.defaultClient;
+  }
 
   public allClients(): LanguageClient[] {
     const result = [...this.clients.values()];
@@ -123,20 +140,51 @@ export class LanguageClientManager {
         vscode.workspace.workspaceFolders &&
         vscode.workspace.workspaceFolders.length !== 0
       ) {
-        // untitled file assigned to first workspace
-        folder = vscode.workspace.getWorkspaceFolder(
-          vscode.workspace.workspaceFolders[0].uri
-        )!;
+        // untitled: and file: outside workspace folders assigned to first workspace
+        folder = vscode.workspace.workspaceFolders[0];
       } else {
         // no workspace folders - use default client
-        return this.defaultClient!;
+        if (this.defaultClient) {
+          return this.defaultClient;
+        } else {
+          throw "default client not started";
+        }
       }
     }
 
     // If we have nested workspace folders we only start a server on the outer most workspace folder.
-    folder = getOuterMostWorkspaceFolder(folder);
+    folder = this._workspaceTracker.getOuterMostWorkspaceFolder(folder);
 
-    return this.clients.get(folder.uri.toString())!;
+    const client = this.clients.get(folder.uri.toString());
+    if (client) {
+      return client;
+    } else {
+      throw `client for ${folder.uri.toString()} not started`;
+    }
+  }
+
+  public getClientPromiseByUri(uri: vscode.Uri): Promise<LanguageClient> {
+    // Files outside of workspace go to default client when no directory is open
+    // otherwise they go to first workspace
+    // (even if we pass undefined in clientOptions vs will pass first workspace as rootUri/rootPath)
+    let folder = vscode.workspace.getWorkspaceFolder(uri);
+    if (!folder) {
+      if (
+        vscode.workspace.workspaceFolders &&
+        vscode.workspace.workspaceFolders.length !== 0
+      ) {
+        // untitled: and file: outside workspace folders assigned to first workspace
+        folder = vscode.workspace.workspaceFolders[0];
+      } else {
+        // no folders - use default client
+        return this.defaultClientPromise!;
+      }
+    }
+
+    // If we have nested workspace folders we only start a server on the outer most workspace folder.
+    folder = this._workspaceTracker.getOuterMostWorkspaceFolder(folder);
+
+    return this.clientsPromises.get(folder.uri.toString())!;
   }
 
   public getClientByDocument(
@@ -151,17 +199,26 @@ export class LanguageClientManager {
   }
 
   public async deactivate() {
-    const promises: Promise<void>[] = [];
+    const clientStartPromises: Promise<unknown>[] = [];
+    const clientsToDispose: LanguageClient[] = [];
     if (this.defaultClient) {
-      promises.push(this.defaultClient.stop());
+      clientStartPromises.push(this.defaultClientPromise!);
+      clientsToDispose.push(this.defaultClient);
       this.defaultClient = null;
+      this.defaultClientPromise = null;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     for (const [uri, client] of this.clients.entries()) {
-      promises.push(client.stop());
+      clientStartPromises.push(this.clientsPromises.get(uri)!);
+      clientsToDispose.push(client);
     }
     this.clients.clear();
-    await Promise.all(promises);
+    this.clientsPromises.clear();
+    // need to await - disposing or stopping a starting client crashes
+    // in vscode-languageclient 8.1.0
+    // https://github.com/microsoft/vscode-languageserver-node/blob/d859bb14d1bcb3923eecaf0ef587e55c48502ccc/client/src/common/client.ts#L1311
+    await Promise.all(clientStartPromises);
+    await Promise.all(clientsToDispose.map((client) => client.dispose()));
   }
 
   public handleDidOpenTextDocument(
@@ -169,84 +226,101 @@ export class LanguageClientManager {
     context: vscode.ExtensionContext
   ) {
     // We are only interested in elixir related files
-    if (
-      ["elixir", "eex", "html-eex", "phoenix-heex", "surface"].includes(
-        document.languageId
-      )
-    ) {
+    if (!languageIds.includes(document.languageId)) {
       return;
     }
 
     const uri = document.uri;
     let folder = vscode.workspace.getWorkspaceFolder(uri);
 
-    console.log("uri", uri, "folder", folder?.uri);
-
-    // Files outside of workspace go to default client when no directory is open
+    // Files outside of workspace go to default client when no workspace folder is open
     // otherwise they go to first workspace
-    // (even if we pass undefined in clientOptions vs will pass first workspace as rootUri/rootPath)
+    // NOTE
+    // even if we pass undefined in clientOptions and try to create a default client
+    // vscode will pass first workspace as rootUri/rootPath and we will have 2 servers
+    // running in the same directory
     if (!folder) {
       if (
         vscode.workspace.workspaceFolders &&
         vscode.workspace.workspaceFolders.length !== 0
       ) {
-        // untitled file assigned to first workspace
-        folder = vscode.workspace.getWorkspaceFolder(
-          vscode.workspace.workspaceFolders[0].uri
-        )!;
+        // untitled: or file: outside the workspace folders assigned to first workspace
+        folder = vscode.workspace.workspaceFolders[0];
       } else {
-        // no workspace folders - use default client
+        // no workspace - use default client
         if (!this.defaultClient) {
-          // Create the language client and start the client.
-          this.defaultClient = startClient(context, clientOptions);
+          // Create the language client and start the client
+          // the client will get all requests from untitled: file:
+          [this.defaultClient, this.defaultClientPromise] = startClient(
+            context,
+            clientOptions
+          );
         }
         return;
       }
     }
 
     // If we have nested workspace folders we only start a server on the outer most workspace folder.
-    folder = getOuterMostWorkspaceFolder(folder);
+    folder = this._workspaceTracker.getOuterMostWorkspaceFolder(folder);
 
     if (!this.clients.has(folder.uri.toString())) {
-      const pattern = `${folder.uri.fsPath}/**/*`;
-      // open untitled files go to the first workspace
-      const untitled =
-        folder.index === 0
-          ? [
-              { language: "elixir", scheme: "untitled" },
-              { language: "eex", scheme: "untitled" },
-              { language: "html-eex", scheme: "untitled" },
-              { language: "phoenix-heex", scheme: "untitled" },
-              { language: "surface", scheme: "untitled" },
-            ]
-          : [];
+      let documentSelector;
+      if (this._workspaceTracker.mode === WorkspaceMode.MULTI_ROOT) {
+        // multi-root workspace
+        // create document selector with glob pattern that will match files
+        // in that directory
+        const pattern = `${folder.uri.fsPath}/**/*`;
+        // additionally if this is the first workspace add untitled schema files
+        // NOTE that no client will match file: outside any of the workspace folders
+        // if we passed a glob allowing any file the first server would get requests form
+        // other workspace folders
+        const maybeUntitledDocumentSelector =
+          folder.index === 0 ? untitledDocumentSelector : [];
+
+        documentSelector = [
+          ...patternDocumentSelector(pattern),
+          ...maybeUntitledDocumentSelector,
+        ];
+      } else if (this._workspaceTracker.mode === WorkspaceMode.SINGLE_FOLDER) {
+        // single folder workspace
+        // no need to filter with glob patterns
+        // the client will get all requests even from untitled: and files outside
+        // workspace folder
+        documentSelector = defaultDocumentSelector;
+      } else if (this._workspaceTracker.mode === WorkspaceMode.NO_WORKSPACE) {
+        throw "this should not happen";
+      }
+
       const workspaceClientOptions: LanguageClientOptions = {
         ...clientOptions,
         // the client will iterate through this list and chose the first matching element
-        documentSelector: [
-          { language: "elixir", scheme: "file", pattern: pattern },
-          { language: "eex", scheme: "file", pattern: pattern },
-          { language: "html-eex", scheme: "file", pattern: pattern },
-          { language: "phoenix-heex", scheme: "file", pattern: pattern },
-          { language: "surface", scheme: "file", pattern: pattern },
-          ...untitled,
-        ],
+        documentSelector: documentSelector,
         workspaceFolder: folder,
       };
 
-      this.clients.set(
-        folder.uri.toString(),
-        startClient(context, workspaceClientOptions)
+      const [client, clientPromise] = startClient(
+        context,
+        workspaceClientOptions
       );
+      this.clients.set(folder.uri.toString(), client);
+      this.clientsPromises.set(folder.uri.toString(), clientPromise);
     }
   }
 
-  public handleWorkspaceFolderRemoved(folder: vscode.WorkspaceFolder) {
-    const client = this.clients.get(folder.uri.toString());
+  public async handleWorkspaceFolderRemoved(folder: vscode.WorkspaceFolder) {
+    const uri = folder.uri.toString();
+    const client = this.clients.get(uri);
     if (client) {
-      const uri = folder.uri.toString();
+      console.log("ElixirLS: Stopping client for", folder.uri.fsPath);
+
+      // need to await - disposing or stopping a starting client crashes
+      // in vscode-languageclient 8.1.0
+      // https://github.com/microsoft/vscode-languageserver-node/blob/d859bb14d1bcb3923eecaf0ef587e55c48502ccc/client/src/common/client.ts#L1311
+      await this.clientsPromises.get(uri);
+      await client.dispose();
+
       this.clients.delete(uri);
-      client.stop();
+      this.clientsPromises.delete(uri);
     }
   }
 }
