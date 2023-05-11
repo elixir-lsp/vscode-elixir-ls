@@ -134,7 +134,7 @@ suite("Multi root workspace tests", () => {
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
 
-    await sleep(3000);
+    await sleep(5000);
 
     assert.ok(!languageClientManager.defaultClient);
     assert.equal(languageClientManager.clients.size, 3);
@@ -146,7 +146,7 @@ suite("Multi root workspace tests", () => {
       vscode.workspace.updateWorkspaceFolders(addedWorkspaceFolder.index, 1);
     });
 
-    await sleep(3000);
+    await sleep(5000);
 
     assert.equal(languageClientManager.clients.size, 2);
   }).timeout(30000);
@@ -172,7 +172,7 @@ suite("Multi root workspace tests", () => {
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
 
-    await sleep(3000);
+    await sleep(5000);
 
     assert.ok(!languageClientManager.defaultClient);
     assert.equal(languageClientManager.clients.size, 2);
@@ -184,7 +184,7 @@ suite("Multi root workspace tests", () => {
       vscode.workspace.updateWorkspaceFolders(addedWorkspaceFolder.index, 1);
     });
 
-    await sleep(3000);
+    await sleep(5000);
 
     assert.equal(languageClientManager.clients.size, 2);
   }).timeout(30000);

@@ -198,29 +198,6 @@ export class LanguageClientManager {
     return this.getClientByUri(document.uri);
   }
 
-  public async deactivate() {
-    const clientStartPromises: Promise<unknown>[] = [];
-    const clientsToDispose: LanguageClient[] = [];
-    if (this.defaultClient) {
-      clientStartPromises.push(this.defaultClientPromise!);
-      clientsToDispose.push(this.defaultClient);
-      this.defaultClient = null;
-      this.defaultClientPromise = null;
-    }
-
-    for (const [uri, client] of this.clients.entries()) {
-      clientStartPromises.push(this.clientsPromises.get(uri)!);
-      clientsToDispose.push(client);
-    }
-    this.clients.clear();
-    this.clientsPromises.clear();
-    // need to await - disposing or stopping a starting client crashes
-    // in vscode-languageclient 8.1.0
-    // https://github.com/microsoft/vscode-languageserver-node/blob/d859bb14d1bcb3923eecaf0ef587e55c48502ccc/client/src/common/client.ts#L1311
-    await Promise.all(clientStartPromises);
-    await Promise.all(clientsToDispose.map((client) => client.dispose()));
-  }
-
   public handleDidOpenTextDocument(
     document: vscode.TextDocument,
     context: vscode.ExtensionContext
@@ -307,6 +284,38 @@ export class LanguageClientManager {
     }
   }
 
+  public async deactivate() {
+    const clientStartPromises: Promise<unknown>[] = [];
+    const clientsToDispose: LanguageClient[] = [];
+    if (this.defaultClient) {
+      clientStartPromises.push(this.defaultClientPromise!);
+      clientsToDispose.push(this.defaultClient);
+      this.defaultClient = null;
+      this.defaultClientPromise = null;
+    }
+
+    for (const [uri, client] of this.clients.entries()) {
+      clientStartPromises.push(this.clientsPromises.get(uri)!);
+      clientsToDispose.push(client);
+    }
+    this.clients.clear();
+    this.clientsPromises.clear();
+    // need to await - disposing or stopping a starting client crashes
+    // in vscode-languageclient 8.1.0
+    // https://github.com/microsoft/vscode-languageserver-node/blob/d859bb14d1bcb3923eecaf0ef587e55c48502ccc/client/src/common/client.ts#L1311
+    try {
+      await Promise.all(clientStartPromises);
+    } catch {
+      /* no reason to log here */
+    }
+    try {
+      // dispose can timeout
+      await Promise.all(clientsToDispose.map((client) => client.dispose()));
+    } catch {
+      /* no reason to log here */
+    }
+  }
+
   public async handleWorkspaceFolderRemoved(folder: vscode.WorkspaceFolder) {
     const uri = folder.uri.toString();
     const client = this.clients.get(uri);
@@ -316,8 +325,20 @@ export class LanguageClientManager {
       // need to await - disposing or stopping a starting client crashes
       // in vscode-languageclient 8.1.0
       // https://github.com/microsoft/vscode-languageserver-node/blob/d859bb14d1bcb3923eecaf0ef587e55c48502ccc/client/src/common/client.ts#L1311
-      await this.clientsPromises.get(uri);
-      await client.dispose();
+      try {
+        await this.clientsPromises.get(uri);
+      } catch (e) {
+        console.warn(
+          "ElixirLS: error during wait for stoppable client state",
+          e
+        );
+      }
+      try {
+        // dispose can timeout
+        await client.dispose();
+      } catch (e) {
+        console.warn("ElixirLS: error during client dispose", e);
+      }
 
       this.clients.delete(uri);
       this.clientsPromises.delete(uri);
