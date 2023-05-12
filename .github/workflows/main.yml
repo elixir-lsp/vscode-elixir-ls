@@ -36,7 +36,15 @@ jobs:
         run: |
           cd elixir-ls
           mix deps.get
-          MIX_ENV=prod mix compile
+          mix compile
+        env:
+          MIX_ENV: "prod"
+      - name: Install local release
+        run: |
+          elixir "elixir-ls-release/quiet_install.exs"
+        env:
+          MIX_ENV: "prod"
+          ELS_LOCAL: 1
       - name: Resolve vscode-elixir-ls dependencies
         run: |
           npm install
@@ -47,4 +55,6 @@ jobs:
         run: |
           npm test
         env:
+          DISABLE_GPU: 1
+          ELS_LOCAL: 1
           DISPLAY: :99.0
