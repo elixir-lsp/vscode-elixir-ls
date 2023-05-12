@@ -10,12 +10,12 @@ on:
 
 jobs:
   build:
-    # TODO test on windows and macos
-    # strategy:
-    #   matrix:
-    #     os: [macos-latest, ubuntu-latest, windows-latest]
-    # runs-on: ${{ matrix.os }}
-    runs-on: ubuntu-20.04
+    # TODO test on macos-latest?
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, windows-2019]
+    runs-on: ${{ matrix.os }}
+    # runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout source
