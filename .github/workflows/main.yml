@@ -46,7 +46,7 @@ jobs:
           ELS_LOCAL: 1
       - name: Resolve vscode-elixir-ls dependencies
         run: |
-          npm install
+          npm ci
           npm run lint
           npm run check-formatting
           npm run compile
