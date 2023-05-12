@@ -10,6 +10,11 @@ on:
 
 jobs:
   build:
+    # TODO test on windows and macos
+    # strategy:
+    #   matrix:
+    #     os: [macos-latest, ubuntu-latest, windows-latest]
+    # runs-on: ${{ matrix.os }}
     runs-on: ubuntu-20.04
 
     steps:
@@ -26,12 +31,6 @@ jobs:
         with:
           elixir-version: 1.14.x
           otp-version: 25.x
-      - name: Install Xvfb
-        run: |
-          sudo apt-get install xvfb
-      - name: Start Xvfb
-        run: |
-          /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
       - name: Resolve elixir-ls dependencies
         run: |
           cd elixir-ls
@@ -53,8 +52,15 @@ jobs:
           npm run compile
       - name: Run tests
         run: |
+          xvfb-run -a npm test
+        env:
+          # DISABLE_GPU: 1
+          ELS_LOCAL: 1
+        if: runner.os == 'Linux'
+      - name: Run tests
+        run: |
           npm test
         env:
-          DISABLE_GPU: 1
+          # DISABLE_GPU: 1
           ELS_LOCAL: 1
-          DISPLAY: :99.0
+        if: runner.os != 'Linux'
