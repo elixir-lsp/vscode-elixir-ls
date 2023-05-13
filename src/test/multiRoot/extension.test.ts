@@ -26,6 +26,7 @@ suite("Multi root workspace tests", () => {
     assert.equal(workspaceTracker.mode, WorkspaceMode.MULTI_ROOT);
     assert.ok(!languageClientManager.defaultClient);
     // TODO start client?
+    await sleep(3000);
     assert.equal(languageClientManager.clients.size, 0);
   }).timeout(30000);
 

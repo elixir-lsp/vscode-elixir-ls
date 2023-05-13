@@ -13,17 +13,78 @@
       "preLaunchTask": "build"
     },
     {
-      "name": "Launch Tests",
+      "name": "Launch noWorkspaceElixirFile Tests",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
         "--disable-extensions",
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test/suite/index"
+        "--extensionTestsPath=${workspaceFolder}/out/test/noWorkspaceElixirFile",
+        "${workspaceFolder}/src/test-fixtures/elixir_script.exs"
       ],
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "Launch noWorkspace Tests",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--disable-extensions",
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/out/test/noWorkspace",
+        "${workspaceFolder}/src/test-fixtures/non_elixir.txt"
+      ],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "Launch singleFolderNoMix Tests",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--disable-extensions",
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/out/test/singleFolderNoMix",
+        "${workspaceFolder}/src/test-fixtures/single_folder_no_mix"
+      ],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "Launch singleFolderMix Tests",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--disable-extensions",
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/out/test/singleFolderMix",
+        "${workspaceFolder}/src/test-fixtures/single_folder_mix"
+      ],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "Launch multiRoot Tests",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--disable-extensions",
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/out/test/multiRoot",
+        "${workspaceFolder}/src/test-fixtures/multi_root.code-workspace"
+      ],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
       "preLaunchTask": "build"
     }
   ]
