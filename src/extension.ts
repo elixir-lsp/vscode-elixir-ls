@@ -14,6 +14,11 @@ import { testElixir } from "./testElixir";
 
 console.log("ElixirLS: Loading extension");
 
+export interface ElixirLS {
+  workspaceTracker: WorkspaceTracker;
+  languageClientManager: LanguageClientManager;
+}
+
 export const workspaceTracker = new WorkspaceTracker();
 export const languageClientManager = new LanguageClientManager(
   workspaceTracker
@@ -25,7 +30,7 @@ const startClientsForOpenDocumnts = (context: vscode.ExtensionContext) => {
   });
 };
 
-export function activate(context: vscode.ExtensionContext): void {
+export function activate(context: vscode.ExtensionContext): ElixirLS {
   console.log(`ElixirLS: activating extension in mode`, workspaceTracker.mode);
   console.log(
     "ElixirLS: Workspace folders are",
@@ -79,6 +84,10 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   console.log(`ElixirLS: extension activated`);
+  return {
+    languageClientManager,
+    workspaceTracker,
+  };
 }
 
 export async function deactivate() {

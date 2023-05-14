@@ -3,14 +3,14 @@ import * as assert from "assert";
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from "vscode";
-import { languageClientManager, workspaceTracker } from "../../extension";
+import { ElixirLS } from "../../extension";
 import { ELIXIR_LS_EXTENSION_NAME } from "../../constants";
 import { WorkspaceMode } from "../../project";
 import { sleep } from "../utils";
 
-let extension: vscode.Extension<void>;
+let extension: vscode.Extension<ElixirLS>;
 
-suite("No workspace elixir file opened tests", () => {
+suite("No workspace non elixir file opened tests", () => {
   vscode.window.showInformationMessage("Start no workspace tests.");
 
   suiteSetup(async () => {
@@ -31,8 +31,11 @@ suite("No workspace elixir file opened tests", () => {
     await sleep(3000);
 
     assert.ok(extension.isActive);
-    assert.equal(workspaceTracker.mode, WorkspaceMode.NO_WORKSPACE);
-    assert.ok(languageClientManager.defaultClientPromise);
-    assert.equal(languageClientManager.clients.size, 0);
+    assert.equal(
+      extension.exports.workspaceTracker.mode,
+      WorkspaceMode.NO_WORKSPACE
+    );
+    assert.ok(extension.exports.languageClientManager.defaultClientPromise);
+    assert.equal(extension.exports.languageClientManager.clients.size, 0);
   }).timeout(30000);
 });

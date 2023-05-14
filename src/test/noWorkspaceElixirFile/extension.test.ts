@@ -4,11 +4,11 @@ import * as assert from "assert";
 // as well as import your extension to test it
 import * as vscode from "vscode";
 import * as path from "path";
-import { languageClientManager, workspaceTracker } from "../../extension";
+import { ElixirLS } from "../../extension";
 import { ELIXIR_LS_EXTENSION_NAME } from "../../constants";
 import { WorkspaceMode } from "../../project";
 
-let extension: vscode.Extension<void>;
+let extension: vscode.Extension<ElixirLS>;
 const fixturesPath = path.resolve(__dirname, "../../../src/test-fixtures");
 
 suite("No workspace elixir file opened tests", () => {
@@ -22,9 +22,12 @@ suite("No workspace elixir file opened tests", () => {
 
   test("extension is active and starts default client", async () => {
     assert.ok(extension.isActive);
-    assert.equal(workspaceTracker.mode, WorkspaceMode.NO_WORKSPACE);
-    assert.ok(languageClientManager.defaultClient);
-    assert.equal(languageClientManager.clients.size, 0);
+    assert.equal(
+      extension.exports.workspaceTracker.mode,
+      WorkspaceMode.NO_WORKSPACE
+    );
+    assert.ok(extension.exports.languageClientManager.defaultClient);
+    assert.equal(extension.exports.languageClientManager.clients.size, 0);
   }).timeout(30000);
 
   // test("starts default client when untitled: .exs opened", async () => {
@@ -38,8 +41,8 @@ suite("No workspace elixir file opened tests", () => {
   test("requests from untitled: docs go to default client", async () => {
     const sampleFileUri = vscode.Uri.parse("untitled:sample.exs");
     assert.equal(
-      languageClientManager.getClientByUri(sampleFileUri),
-      languageClientManager.defaultClient
+      extension.exports.languageClientManager.getClientByUri(sampleFileUri),
+      extension.exports.languageClientManager.defaultClient
     );
   });
 
@@ -48,8 +51,8 @@ suite("No workspace elixir file opened tests", () => {
       path.join(fixturesPath, "elixir_file.ex")
     );
     assert.equal(
-      languageClientManager.getClientByUri(sampleFileUri),
-      languageClientManager.defaultClient
+      extension.exports.languageClientManager.getClientByUri(sampleFileUri),
+      extension.exports.languageClientManager.defaultClient
     );
   });
 });
