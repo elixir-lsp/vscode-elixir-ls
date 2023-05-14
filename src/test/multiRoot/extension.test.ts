@@ -6,7 +6,12 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { ElixirLS } from "../../extension";
 import { WorkspaceMode } from "../../project";
-import { getExtension, sleep, waitForWorkspaceUpdate } from "../utils";
+import {
+  getExtension,
+  sleep,
+  waitForLanguageClientManagerUpdate,
+  waitForWorkspaceUpdate,
+} from "../utils";
 
 let extension: vscode.Extension<ElixirLS>;
 const fixturesPath = path.resolve(__dirname, "../../../src/test-fixtures");
@@ -25,8 +30,6 @@ suite("Multi root workspace tests", () => {
       WorkspaceMode.MULTI_ROOT
     );
     assert.ok(!extension.exports.languageClientManager.defaultClient);
-    // TODO start client?
-    await sleep(3000);
     assert.equal(extension.exports.languageClientManager.clients.size, 0);
   }).timeout(30000);
 
@@ -34,10 +37,11 @@ suite("Multi root workspace tests", () => {
     const fileUri = vscode.Uri.file(
       path.join(fixturesPath, "sample_umbrella", "mix.exs")
     );
-    const document = await vscode.workspace.openTextDocument(fileUri);
-    await vscode.window.showTextDocument(document);
 
-    await sleep(3000);
+    await waitForLanguageClientManagerUpdate(extension, async () => {
+      const document = await vscode.workspace.openTextDocument(fileUri);
+      await vscode.window.showTextDocument(document);
+    });
 
     assert.ok(!extension.exports.languageClientManager.defaultClient);
     assert.equal(extension.exports.languageClientManager.clients.size, 1);
@@ -109,10 +113,11 @@ suite("Multi root workspace tests", () => {
     const fileUri = vscode.Uri.file(
       path.join(fixturesPath, "single_folder_no_mix", "elixir_script.exs")
     );
-    const document = await vscode.workspace.openTextDocument(fileUri);
-    await vscode.window.showTextDocument(document);
 
-    await sleep(3000);
+    await waitForLanguageClientManagerUpdate(extension, async () => {
+      const document = await vscode.workspace.openTextDocument(fileUri);
+      await vscode.window.showTextDocument(document);
+    });
 
     assert.ok(!extension.exports.languageClientManager.defaultClient);
     assert.equal(extension.exports.languageClientManager.clients.size, 2);
@@ -122,7 +127,7 @@ suite("Multi root workspace tests", () => {
     const addedFolderUri = vscode.Uri.file(
       path.join(fixturesPath, "single_folder_mix")
     );
-    waitForWorkspaceUpdate(() => {
+    await waitForWorkspaceUpdate(() => {
       vscode.workspace.updateWorkspaceFolders(
         vscode.workspace.workspaceFolders!.length,
         null,
@@ -136,10 +141,11 @@ suite("Multi root workspace tests", () => {
     const fileUri = vscode.Uri.file(
       path.join(fixturesPath, "single_folder_mix", "mix.exs")
     );
-    const document = await vscode.workspace.openTextDocument(fileUri);
-    await vscode.window.showTextDocument(document);
 
-    await sleep(5000);
+    await waitForLanguageClientManagerUpdate(extension, async () => {
+      const document = await vscode.workspace.openTextDocument(fileUri);
+      await vscode.window.showTextDocument(document);
+    });
 
     assert.ok(!extension.exports.languageClientManager.defaultClient);
     assert.equal(extension.exports.languageClientManager.clients.size, 3);
@@ -147,11 +153,9 @@ suite("Multi root workspace tests", () => {
     const addedWorkspaceFolder =
       vscode.workspace.getWorkspaceFolder(addedFolderUri)!;
 
-    waitForWorkspaceUpdate(() => {
+    await waitForLanguageClientManagerUpdate(extension, async () => {
       vscode.workspace.updateWorkspaceFolders(addedWorkspaceFolder.index, 1);
     });
-
-    await sleep(5000);
 
     assert.equal(extension.exports.languageClientManager.clients.size, 2);
   }).timeout(30000);
@@ -160,7 +164,7 @@ suite("Multi root workspace tests", () => {
     const addedFolderUri = vscode.Uri.file(
       path.join(fixturesPath, "sample_umbrella", "apps", "child2")
     );
-    waitForWorkspaceUpdate(() => {
+    await waitForWorkspaceUpdate(() => {
       vscode.workspace.updateWorkspaceFolders(
         vscode.workspace.workspaceFolders!.length,
         null,
@@ -177,7 +181,7 @@ suite("Multi root workspace tests", () => {
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
 
-    await sleep(5000);
+    await sleep(3000);
 
     assert.ok(!extension.exports.languageClientManager.defaultClient);
     assert.equal(extension.exports.languageClientManager.clients.size, 2);
@@ -185,11 +189,11 @@ suite("Multi root workspace tests", () => {
     const addedWorkspaceFolder =
       vscode.workspace.getWorkspaceFolder(addedFolderUri)!;
 
-    waitForWorkspaceUpdate(() => {
+    await waitForWorkspaceUpdate(() => {
       vscode.workspace.updateWorkspaceFolders(addedWorkspaceFolder.index, 1);
     });
 
-    await sleep(5000);
+    await sleep(3000);
 
     assert.equal(extension.exports.languageClientManager.clients.size, 2);
   }).timeout(30000);

@@ -110,6 +110,10 @@ export class LanguageClientManager {
   defaultClientPromise: Promise<LanguageClient> | null = null;
   clients: Map<string, LanguageClient> = new Map();
   clientsPromises: Map<string, Promise<LanguageClient>> = new Map();
+  private _onDidChange = new vscode.EventEmitter<void>();
+  get onDidChange(): vscode.Event<void> {
+    return this._onDidChange.event;
+  }
   private _workspaceTracker: WorkspaceTracker;
 
   constructor(workspaceTracker: WorkspaceTracker) {
@@ -232,6 +236,7 @@ export class LanguageClientManager {
             context,
             clientOptions
           );
+          this._onDidChange.fire();
         }
         return;
       }
@@ -281,25 +286,34 @@ export class LanguageClientManager {
       );
       this.clients.set(folder.uri.toString(), client);
       this.clientsPromises.set(folder.uri.toString(), clientPromise);
+      this._onDidChange.fire();
     }
   }
 
   public async deactivate() {
     const clientStartPromises: Promise<unknown>[] = [];
     const clientsToDispose: LanguageClient[] = [];
+    let changed = false;
     if (this.defaultClient) {
       clientStartPromises.push(this.defaultClientPromise!);
       clientsToDispose.push(this.defaultClient);
       this.defaultClient = null;
       this.defaultClientPromise = null;
+      changed = true;
     }
 
     for (const [uri, client] of this.clients.entries()) {
       clientStartPromises.push(this.clientsPromises.get(uri)!);
       clientsToDispose.push(client);
+      changed = true;
     }
+
     this.clients.clear();
     this.clientsPromises.clear();
+
+    if (changed) {
+      this._onDidChange.fire();
+    }
     // need to await - disposing or stopping a starting client crashes
     // in vscode-languageclient 8.1.0
     // https://github.com/microsoft/vscode-languageserver-node/blob/d859bb14d1bcb3923eecaf0ef587e55c48502ccc/client/src/common/client.ts#L1311
@@ -321,12 +335,18 @@ export class LanguageClientManager {
     const client = this.clients.get(uri);
     if (client) {
       console.log("ElixirLS: Stopping client for", folder.uri.fsPath);
+      const clientPromise = this.clientsPromises.get(uri);
+
+      this.clients.delete(uri);
+      this.clientsPromises.delete(uri);
+
+      this._onDidChange.fire();
 
       // need to await - disposing or stopping a starting client crashes
       // in vscode-languageclient 8.1.0
       // https://github.com/microsoft/vscode-languageserver-node/blob/d859bb14d1bcb3923eecaf0ef587e55c48502ccc/client/src/common/client.ts#L1311
       try {
-        await this.clientsPromises.get(uri);
+        await clientPromise;
       } catch (e) {
         console.warn(
           "ElixirLS: error during wait for stoppable client state",
@@ -339,9 +359,6 @@ export class LanguageClientManager {
       } catch (e) {
         console.warn("ElixirLS: error during client dispose", e);
       }
-
-      this.clients.delete(uri);
-      this.clientsPromises.delete(uri);
     }
   }
 }

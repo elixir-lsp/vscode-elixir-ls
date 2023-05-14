@@ -45,3 +45,21 @@ export const waitForWorkspaceUpdate = (fun: () => void) =>
       reject(e);
     }
   });
+
+export const waitForLanguageClientManagerUpdate = (
+  extension: vscode.Extension<ElixirLS>,
+  fun: () => void
+) =>
+  new Promise((resolve, reject) => {
+    const disposable = extension.exports.languageClientManager.onDidChange(
+      () => {
+        disposable.dispose();
+        resolve(undefined);
+      }
+    );
+    try {
+      fun();
+    } catch (e) {
+      reject(e);
+    }
+  });

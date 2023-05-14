@@ -6,7 +6,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { ElixirLS } from "../../extension";
 import { WorkspaceMode } from "../../project";
-import { getExtension, sleep } from "../utils";
+import { getExtension, waitForLanguageClientManagerUpdate } from "../utils";
 
 let extension: vscode.Extension<ElixirLS>;
 const fixturesPath = path.resolve(__dirname, "../../../src/test-fixtures");
@@ -40,10 +40,11 @@ suite("Single folder no mix tests", () => {
         "single_folder_mix.ex"
       )
     );
-    const document = await vscode.workspace.openTextDocument(fileUri);
-    await vscode.window.showTextDocument(document);
 
-    await sleep(3000);
+    await waitForLanguageClientManagerUpdate(extension, async () => {
+      const document = await vscode.workspace.openTextDocument(fileUri);
+      await vscode.window.showTextDocument(document);
+    });
 
     assert.ok(!extension.exports.languageClientManager.defaultClient);
     assert.equal(extension.exports.languageClientManager.clients.size, 1);
