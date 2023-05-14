@@ -5,9 +5,8 @@ import * as assert from "assert";
 import * as vscode from "vscode";
 import * as path from "path";
 import { ElixirLS } from "../../extension";
-import { ELIXIR_LS_EXTENSION_NAME } from "../../constants";
 import { WorkspaceMode } from "../../project";
-import { sleep, waitForWorkspaceUpdate } from "../utils";
+import { getExtension, sleep, waitForWorkspaceUpdate } from "../utils";
 
 let extension: vscode.Extension<ElixirLS>;
 const fixturesPath = path.resolve(__dirname, "../../../src/test-fixtures");
@@ -16,9 +15,7 @@ suite("Multi root workspace tests", () => {
   vscode.window.showInformationMessage("Start multi root workspace tests.");
 
   suiteSetup(async () => {
-    const ext = vscode.extensions.getExtension(ELIXIR_LS_EXTENSION_NAME);
-    assert(ext);
-    extension = ext!;
+    extension = getExtension();
   });
 
   test("extension detects mix.exs and actives", async () => {

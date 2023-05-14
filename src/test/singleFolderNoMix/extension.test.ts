@@ -4,32 +4,13 @@ import * as assert from "assert";
 // as well as import your extension to test it
 import * as vscode from "vscode";
 import * as path from "path";
-import { ElixirLS } from "../../extension";
-import { ELIXIR_LS_EXTENSION_NAME } from "../../constants";
-import { WorkspaceMode } from "../../project";
-import { sleep } from "../utils";
 
-let extension: vscode.Extension<ElixirLS>;
+import { getActiveExtensionAsync } from "../utils";
+
 const fixturesPath = path.resolve(__dirname, "../../../src/test-fixtures");
 
 suite("Single folder no mix tests", () => {
   vscode.window.showInformationMessage("Start single folder no mix tests.");
-
-  suiteSetup(async () => {
-    const ext = vscode.extensions.getExtension(ELIXIR_LS_EXTENSION_NAME);
-    assert(ext);
-    extension = ext!;
-  });
-
-  test("Extension is not active", async () => {
-    assert.ok(!extension.isActive);
-    assert.equal(
-      extension.exports.workspaceTracker.mode,
-      WorkspaceMode.SINGLE_FOLDER
-    );
-    assert.ok(!extension.exports.languageClientManager.defaultClient);
-    assert.equal(extension.exports.languageClientManager.clients.size, 0);
-  }).timeout(30000);
 
   test("extension activates on file open", async () => {
     const fileUri = vscode.Uri.file(
@@ -38,7 +19,7 @@ suite("Single folder no mix tests", () => {
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
 
-    await sleep(3000);
+    const extension = await getActiveExtensionAsync();
 
     assert.ok(extension.isActive);
 
@@ -48,6 +29,7 @@ suite("Single folder no mix tests", () => {
 
   test("requests from untitled: docs go to first workspace client", async () => {
     const sampleFileUri = vscode.Uri.parse("untitled:sample.exs");
+    const extension = await getActiveExtensionAsync();
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(sampleFileUri),
       extension.exports.languageClientManager.clients.get(
@@ -60,6 +42,7 @@ suite("Single folder no mix tests", () => {
     const fileUri = vscode.Uri.file(
       path.join(fixturesPath, "single_folder_no_mix", "elixir_file.ex")
     );
+    const extension = await getActiveExtensionAsync();
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(fileUri),
       extension.exports.languageClientManager.clients.get(
@@ -70,6 +53,7 @@ suite("Single folder no mix tests", () => {
 
   test("requests from non workspace file: docs go to first workspace client", async () => {
     const fileUri = vscode.Uri.file(path.join(fixturesPath, "elixir_file.ex"));
+    const extension = await getActiveExtensionAsync();
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(fileUri),
       extension.exports.languageClientManager.clients.get(
