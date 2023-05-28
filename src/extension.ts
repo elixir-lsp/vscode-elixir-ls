@@ -24,7 +24,7 @@ export const languageClientManager = new LanguageClientManager(
   workspaceTracker
 );
 
-const startClientsForOpenDocumnts = (context: vscode.ExtensionContext) => {
+const startClientsForOpenDocuments = (context: vscode.ExtensionContext) => {
   vscode.workspace.textDocuments.forEach((value) => {
     languageClientManager.handleDidOpenTextDocument(value, context);
   });
@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
     })
   );
 
-  startClientsForOpenDocumnts(context);
+  startClientsForOpenDocuments(context);
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeWorkspaceFolders(async (event) => {
@@ -75,7 +75,7 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
       }
       // we might have closed client for some nested workspace folder child
       // reopen all needed
-      startClientsForOpenDocumnts(context);
+      startClientsForOpenDocuments(context);
     })
   );
 
