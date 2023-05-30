@@ -1,4 +1,4 @@
-
+Application.put_env(:elixir, :ansi_enabled, false)
 Code.eval_file("#{__DIR__}/installer.exs")
 
 Mix.start
