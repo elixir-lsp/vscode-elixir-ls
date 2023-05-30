@@ -1,4 +1,3 @@
-
 Code.eval_file("#{__DIR__}/installer.exs")
 
 Mix.start
@@ -11,4 +10,11 @@ Mix.start
 # https://github.com/elixir-lang/elixir/blob/6f96693b355a9b670f2630fd8e6217b69e325c5a/lib/mix/lib/mix/scm/git.ex#LL304C1-L304C1
 Mix.shell(ElixirLS.Shell.Quiet)
 
-ElixirLS.Installer.install_with_retry()
+ElixirLS.Installer.install_for_launch()
+
+case System.get_env("ELS_MODE") do
+  "language_server" ->
+    ElixirLS.LanguageServer.CLI.main()
+  "debugger" ->
+    ElixirLS.Debugger.CLI.main()
+end
