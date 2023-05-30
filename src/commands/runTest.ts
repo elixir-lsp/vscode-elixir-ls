@@ -128,5 +128,6 @@ function buildTestCommandArgs(args: RunArgs): string {
     line = `:${args.line}`;
   }
 
-  return `${args.filePath}${line}`;
+  // as of vscode 1.78 ANSI is not fully supported
+  return `${args.filePath}${line} --no-color`;
 }
