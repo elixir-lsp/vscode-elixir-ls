@@ -278,13 +278,13 @@
         "type": "mix_task",
         "label": "Mix Task",
         "windows": {
-          "program": "elixir-ls-release/debugger.bat"
+          "program": "debugger.bat"
         },
         "linux": {
-          "program": "elixir-ls-release/debugger.sh"
+          "program": "debugger.sh"
         },
         "osx": {
-          "program": "elixir-ls-release/debugger.sh"
+          "program": "debugger.sh"
         },
         "languages": [
           "elixir"

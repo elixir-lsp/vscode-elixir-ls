@@ -1,8 +1,6 @@
 "use strict";
 
 import * as vscode from "vscode";
-import * as os from "os";
-import * as path from "path";
 import {
   Executable,
   LanguageClient,
@@ -11,6 +9,7 @@ import {
   ServerOptions,
 } from "vscode-languageclient/node";
 import { WorkspaceMode, WorkspaceTracker } from "./project";
+import { buildCommand } from "./executable";
 
 const languageIds = ["elixir", "eex", "html-eex", "phoenix-heex", "surface"];
 const defaultDocumentSelector = languageIds.flatMap((language) => [
@@ -43,18 +42,12 @@ function startClient(
   context: vscode.ExtensionContext,
   clientOptions: LanguageClientOptions
 ): [LanguageClient, Promise<LanguageClient>] {
-  const command =
-    os.platform() == "win32" ? "language_server.bat" : "language_server.sh";
-
-  // get workspaceFolder scoped configuration or default
-  const lsOverridePath: string = vscode.workspace
-    .getConfiguration("elixirLS", clientOptions.workspaceFolder)
-    .get("languageServerOverridePath")!;
-
   const serverOpts: Executable = {
-    command: lsOverridePath
-      ? path.join(lsOverridePath, command)
-      : context.asAbsolutePath("./elixir-ls-release/" + command),
+    command: buildCommand(
+      context,
+      "language_server",
+      clientOptions.workspaceFolder
+    ),
   };
 
   // If the extension is launched in debug mode then the `debug` server options are used instead of `run`
@@ -67,7 +60,7 @@ function startClient(
   let displayName;
   if (clientOptions.workspaceFolder) {
     console.log(
-      `ElixirLS: starting client for ${clientOptions.workspaceFolder.uri.toString()} with server options`,
+      `ElixirLS: starting LSP client for ${clientOptions.workspaceFolder.uri.fsPath} with server options`,
       serverOptions,
       "client options",
       clientOptions
@@ -75,7 +68,7 @@ function startClient(
     displayName = `ElixirLS - ${clientOptions.workspaceFolder!.name}`;
   } else {
     console.log(
-      `ElixirLS: starting default client with server options`,
+      `ElixirLS: starting default LSP client with server options`,
       serverOptions,
       "client options",
       clientOptions
@@ -93,10 +86,10 @@ function startClient(
     client.start().then(() => {
       if (clientOptions.workspaceFolder) {
         console.log(
-          `ElixirLS: started client for ${clientOptions.workspaceFolder.uri.toString()}`
+          `ElixirLS: started LSP client for ${clientOptions.workspaceFolder.uri.toString()}`
         );
       } else {
-        console.log(`ElixirLS: started default client`);
+        console.log(`ElixirLS: started default LSP client`);
       }
       resolve(client);
     });
@@ -151,7 +144,7 @@ export class LanguageClientManager {
         if (this.defaultClient) {
           return this.defaultClient;
         } else {
-          throw "default client not started";
+          throw "default client LSP not started";
         }
       }
     }
@@ -163,7 +156,7 @@ export class LanguageClientManager {
     if (client) {
       return client;
     } else {
-      throw `client for ${folder.uri.toString()} not started`;
+      throw `LSP client for ${folder.uri.toString()} not started`;
     }
   }
 
@@ -334,7 +327,7 @@ export class LanguageClientManager {
     const uri = folder.uri.toString();
     const client = this.clients.get(uri);
     if (client) {
-      console.log("ElixirLS: Stopping client for", folder.uri.fsPath);
+      console.log("ElixirLS: Stopping LSP client for", folder.uri.fsPath);
       const clientPromise = this.clientsPromises.get(uri);
 
       this.clients.delete(uri);
@@ -349,7 +342,7 @@ export class LanguageClientManager {
         await clientPromise;
       } catch (e) {
         console.warn(
-          "ElixirLS: error during wait for stoppable client state",
+          "ElixirLS: error during wait for stoppable LSP client state",
           e
         );
       }
@@ -357,7 +350,7 @@ export class LanguageClientManager {
         // dispose can timeout
         await client.dispose();
       } catch (e) {
-        console.warn("ElixirLS: error during client dispose", e);
+        console.warn("ElixirLS: error during LSP client dispose", e);
       }
     }
   }
