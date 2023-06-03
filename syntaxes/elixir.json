@@ -1882,7 +1882,7 @@
       ]
     },
     {
-      "begin": "~[A-Z](?>\"\"\")",
+      "begin": "~[A-Z]+(?>\"\"\")",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -1898,7 +1898,7 @@
       "name": "string.quoted.other.literal.elixir"
     },
     {
-      "begin": "~[A-Z](?>''')",
+      "begin": "~[A-Z]+(?>''')",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -1914,7 +1914,7 @@
       "name": "string.quoted.other.literal.elixir"
     },
     {
-      "begin": "~[A-Z]\\{",
+      "begin": "~[A-Z]+\\{",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -1930,7 +1930,7 @@
       "name": "string.quoted.double.literal.elixir"
     },
     {
-      "begin": "~[A-Z]\\[",
+      "begin": "~[A-Z]+\\[",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -1951,7 +1951,7 @@
       ]
     },
     {
-      "begin": "~[A-Z]\\<",
+      "begin": "~[A-Z]+\\<",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -1972,7 +1972,7 @@
       ]
     },
     {
-      "begin": "~[A-Z]\\(",
+      "begin": "~[A-Z]+\\(",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -1993,7 +1993,7 @@
       ]
     },
     {
-      "begin": "~[A-Z]\\/",
+      "begin": "~[A-Z]+\\/",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -2009,7 +2009,7 @@
       "name": "string.quoted.double.literal.elixir"
     },
     {
-      "begin": "~[A-Z]\\'",
+      "begin": "~[A-Z]+\\'",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -2025,7 +2025,7 @@
       "name": "string.quoted.double.literal.elixir"
     },
     {
-      "begin": "~[A-Z]\\\"",
+      "begin": "~[A-Z]+\\\"",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -2041,7 +2041,7 @@
       "name": "string.quoted.double.literal.elixir"
     },
     {
-      "begin": "~[A-Z]\\|",
+      "begin": "~[A-Z]+\\|",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
