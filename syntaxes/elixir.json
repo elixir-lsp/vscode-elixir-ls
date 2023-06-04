@@ -1,5 +1,5 @@
 {
-  "comment": "Atom Syntax Parser for Elixir Programming Language.",
+  "comment": "Syntax Parser for Elixir Programming Language.",
   "fileTypes": ["ex", "exs"],
   "firstLineMatch": "^#!/.*\\belixir",
   "foldingStartMarker": "(after|else|catch|rescue|\\-\\>|\\{|\\[|do)\\s*$",
@@ -93,6 +93,30 @@
     {
       "comment": "@doc false is treated as documentation",
       "match": "@(module|type)?doc false",
+      "name": "comment.documentation.false"
+    },
+    {
+      "comment": "@doc since|deprecated is treated as documentation",
+      "begin": "@(module|type)?doc (since|deprecated): '",
+      "end": "'",
+      "name": "comment.documentation.false"
+    },
+    {
+      "comment": "@doc since|deprecated is treated as documentation",
+      "begin": "@(module|type)?doc (since|deprecated): \"",
+      "end": "\"",
+      "name": "comment.documentation.false"
+    },
+    {
+      "comment": "@deprecated is treated as documentation",
+      "begin": "@deprecated '",
+      "end": "'",
+      "name": "comment.documentation.false"
+    },
+    {
+      "comment": "@deprecated is treated as documentation",
+      "begin": "@deprecated \"",
+      "end": "\"",
       "name": "comment.documentation.false"
     },
     {
