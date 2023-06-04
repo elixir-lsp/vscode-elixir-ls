@@ -5,6 +5,16 @@
   "foldingStartMarker": "(after|else|catch|rescue|\\-\\>|\\{|\\[|do)\\s*$",
   "foldingStopMarker": "^\\s*((\\}|\\]|after|else|catch|rescue)\\s*$|end\\b)",
   "name": "Elixir",
+  "injections": {
+    "R:text.html.elixir meta.tag meta.attribute string.quoted": {
+      "comment": "Uses R: to ensure this matches after any other injections.",
+      "patterns": [
+        {
+          "include": "text.elixir"
+        }
+      ]
+    }
+  },
   "patterns": [
     {
       "captures": {
@@ -1522,7 +1532,7 @@
       ]
     },
     {
-      "comment": "Embedded Liveview heredoc with double quotes",
+      "comment": "Embedded LiveView heredoc with double quotes",
       "begin": "\\s?(~L\"\"\")$",
       "beginCaptures": {
         "0": {
@@ -1549,7 +1559,7 @@
       ]
     },
     {
-      "comment": "Embedded Liveview heredoc with double quotes",
+      "comment": "Embedded LiveView heredoc with double quotes",
       "begin": "\\s?(~l\"\"\")$",
       "beginCaptures": {
         "0": {
@@ -1576,7 +1586,7 @@
       ]
     },
     {
-      "comment": "Embededd Liveview heredoc with single quotes",
+      "comment": "Embedded LiveView heredoc with single quotes",
       "begin": "\\s?(~L''')$",
       "beginCaptures": {
         "0": {
