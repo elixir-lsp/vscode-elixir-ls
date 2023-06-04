@@ -10,6 +10,5 @@ elixir-ls/**
 .github/**
 .gitignore
 tsconfig.json
-prepublish.bash
 .vscodeignore
 .eslint*
