@@ -39,11 +39,14 @@
         },
         {
           "include": "#escaped_char"
+        },
+        {
+          "include": "text.html.markdown"
         }
       ]
     },
     {
-      "begin": "@(module|type)?doc ~s'''",
+      "begin": "@(module|type)?doc (~s)?'''",
       "comment": "@doc with interpolated single quoted heredocs",
       "end": "\\s*'''",
       "name": "comment.documentation.heredoc.elixir",
@@ -53,6 +56,9 @@
         },
         {
           "include": "#escaped_char"
+        },
+        {
+          "include": "text.html.markdown"
         }
       ]
     },
@@ -64,6 +70,9 @@
       "patterns": [
         {
           "include": "#escaped_char"
+        },
+        {
+          "include": "text.html.markdown"
         }
       ]
     },
@@ -75,6 +84,9 @@
       "patterns": [
         {
           "include": "#escaped_char"
+        },
+        {
+          "include": "text.html.markdown"
         }
       ]
     },
@@ -87,6 +99,20 @@
       "begin": "@(module|type)?doc \"",
       "comment": "@doc with string is treated as documentation",
       "end": "\"",
+      "name": "comment.documentation.string",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "begin": "@(module|type)?doc '",
+      "comment": "@doc with string is treated as documentation",
+      "end": "'",
       "name": "comment.documentation.string",
       "patterns": [
         {
