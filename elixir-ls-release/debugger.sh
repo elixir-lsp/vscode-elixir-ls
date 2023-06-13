@@ -18,4 +18,6 @@ else
 fi
 
 export ELS_MODE=debugger
+export ELS_SCRIPT="ElixirLS.Debugger.CLI.main()"
+
 exec "${dir}/launch.sh"

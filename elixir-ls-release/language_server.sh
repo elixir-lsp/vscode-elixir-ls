@@ -18,4 +18,6 @@ else
 fi
 
 export ELS_MODE=language_server
+export ELS_SCRIPT="ElixirLS.LanguageServer.CLI.main()"
+
 exec "${dir}/launch.sh"
