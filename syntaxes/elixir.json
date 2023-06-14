@@ -202,7 +202,7 @@
     },
     {
       "comment": " as above, just doesn't need a 'end' and does a logic operation",
-      "match": "(?<!\\.)\\b(and|not|or|when|xor|in)\\b",
+      "match": "(?<!\\.)\\b(and|not|or|when|in)\\b",
       "name": "keyword.operator.elixir"
     },
     {
