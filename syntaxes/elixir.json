@@ -162,12 +162,12 @@
       "name": "constant.language.symbol.elixir"
     },
     {
-      "match": "(?<!\\.)\\b(do|end|case|for|if|cond|with|unless|try|receive|fn|defmodule|defprotocol|defimpl|defrecordp?|defstruct|defcallback|defexception|defoverridable|defguardp?|exit|after|rescue|catch|else|raise|throw|quote|unquote|unquote_splicing|super|when|and|or|not|in)\\b(?![?!])",
+      "match": "(?<!\\.)\\b(do|end|case|for|if|cond|with|unless|try|receive|fn|defmodule|defprotocol|defimpl|defrecordp?|defstruct|defcallback|defexception|defoverridable|exit|after|rescue|catch|else|raise|reraise|throw|quote|unquote|unquote_splicing|super|when|and|or|not|in)\\b(?![?!])",
       "name": "keyword.control.elixir"
     },
     {
       "comment": "Function with parameters",
-      "begin": "\\b(defp?|defmacrop?|defdelegate)\\b\\s*([_$a-z][$\\w]*[!?]?)\\s*\\(",
+      "begin": "\\b(defp?|defmacrop?|defguardp?|defdelegate)\\b\\s*([_$a-z][$\\w]*[!?]?)\\s*\\(",
       "name": "meta.function.definition.elixir",
       "beginCaptures": {
         "1": {
@@ -189,7 +189,7 @@
     },
     {
       "comment": "Function without parameters",
-      "match": "\\b(defp?|defmacrop?|defdelegate)\\b\\s*([_$a-z][$\\w]*[!?]?)",
+      "match": "\\b(defp?|defmacrop?|defguardp?|defdelegate)\\b\\s*([_$a-z][$\\w]*[!?]?)",
       "name": "meta.function.definition.elixir",
       "captures": {
         "1": {
