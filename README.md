@@ -4,22 +4,25 @@ Provides Elixir language support and debugger. This extension is powered by the 
 
 Features include:
 
-- Auto-completion (note that it is not possible to get autocomplete on a variable since we don't have that type of type info)
-- Debugger support
+- Code completion
+- Debugger support [VSCode debugging docs](https://code.visualstudio.com/docs/editor/debugging)
+- Test discovery, running and debugging via Test Explorer [VSCode test API announcment](https://code.visualstudio.com/updates/v1_59#_testing-apis)
 - Automatic, incremental Dialyzer analysis
 - Automatic suggestion for @spec annotations based on Dialyzer's inferred success typings
-- Inline reporting of build warnings and errors
-- Code completion
+- Diagnostic reporting of build warnings and errors
+- Go-to-definition and Go-to-implementation
+- Task provider with collection of mix tasks [VSCode tasks](https://code.visualstudio.com/docs/editor/tasks)
 - Smart automatic closing of code blocks
 - Documentation lookup on hover
-- Go-to-definition
+- Function signature provider
 - Code formatter (Triggered by `Alt + Shift + F` hotkey or enabling `editor.formatOnSave`)
-- Find references to functions and modules (Thanks to @mattbaker)
-- Quick symbol lookup in file (Thanks to @mattbaker)
+- Find references to functions and modules
+- Document and Workspace symbols provider
+- Multi-root workspaces
 
 ![Screenshot](https://raw.githubusercontent.com/elixir-lsp/elixir-ls/master/images/screenshot.png)
 
-## This is now the main vscode-elixir-ls repo
+## This is the main vscode-elixir-ls repo
 
 The [elixir-lsp](https://github.com/elixir-lsp)/[vscode-elixir-ls](https://github.com/elixir-lsp/vscode-elixir-ls) repo began as a fork when the original repo at [JakeBecker](https://github.com/JakeBecker)/[vscode-elixir-ls](https://github.com/JakeBecker/vscode-elixir-ls) became inactive for an extended period of time. So we decided to start an active fork to merge dormant PR's and fix issues where possible. We also believe in an open and shared governance model to share the work instead of relying on one person to shoulder the whole burden.
 
@@ -75,6 +78,9 @@ See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the suppo
 
 If you run into issues with the extension then try these debugging steps:
 
+- Make sure you have hex and git installed
+- Make sure github.com and hex.pm are accessible. You may need to configure proxy
+- If the extension fails to start ElixirLS you can try cleaning the `Mix.install` directory (location on your system can be obtained by calling `Mix.Utils.mix_cache()` from `iex` session)
 - Restart your editor (which will restart ElixirLS) sometimes fixes issues
 - Stop your editor, remove the entire `.elixir_ls` directory, then restart your editor
   - NOTE: This will cause you to have to re-run the entire dialyzer build
@@ -149,13 +155,11 @@ mix deps.get
 MIX_ENV=prod mix compile
 ```
 
-Navigate to elixir-ls-release and uncomment `ELS_LOCAL` environment variable in `launch.sh` or `language_server|debugger.bat`. This will make the install scripts use the local version from `elixir-ls` directory.
-
-To launch the extension from VS Code, run the "Launch Extension" launch configuration from [Run view](https://code.visualstudio.com/docs/editor/debugging#_run-view) or press F5.
+To launch the extension from VS Code, run the "Launch Extension local" launch configuration from [Run and Debug view](https://code.visualstudio.com/docs/editor/debugging#_run-view) or press F5.
 
 Alternatively, you can build and install the extension locally using `vsce` command and `code` CLI.
 
-```
+```shell
 # Navigate to vscode-elixir-ls project root
 cd ..
 
@@ -174,22 +178,7 @@ local install from being replaced with the Marketplace version.
 
 Most of the functionality of this extension comes from ElixirLS which is included as a Git submodule in the `elixir-ls` folder. Make sure you clone the repo using `git clone --recursive` or run `git submodule init && git submodule update` after cloning.
 
-Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to change the code in the `elixir-ls` subdirectory.
-
-Here are the basic steps to make changes to ElixirLS locally:
-
-```shell
-cd vscode-elixir-ls/elixir-ls
-
-# Make your changes in your editor of choice (fair warning, depending on your changes, ElixirLS may act up since your changes will be immediately reflected)
-
-# Update the ElixirLS version in VSCode
-# Make sure to substitute 0.5.0 with the current version before running this command
-mix elixir_ls.release -o ~/.vscode-oss/extensions/jakebecker.elixir-ls-0.5.0/elixir-ls-release/
-
-# Restart VSCode
-# Now you can test your changes on a project
-```
+Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to change the code in the `elixir-ls` subdirectory. Most often you don't need to explicitly build it. ElixirLS launch script should be able to pick up changes and rebuild accordingly via `Mix.install`.
 
 When you're ready to contribute your changes back to ElixirLS then you need to fork the [ElixirLS](https://github.com/elixir-lsp/elixir-ls) repo on Github and push any changes you make to the ElixirLS submodule to your fork. An example of how that might look:
 
@@ -215,10 +204,12 @@ git push my_fork my_new_branch
 You should ensure that the tests run locally before submitting a PR, and if relevant add automated tests in the PR.
 
 ```shell
-npm install
+rm -rf out
 npm run compile
 npm test
 ```
+
+Or use `test.sh`/`test.bat` script that does the above.
 
 ## Acknowledgements and related projects
 
