@@ -27,7 +27,7 @@ jobs:
           elixir-version: 1.14.x
           otp-version: 25.x
       - run: npm ci
-      - run: mix deps.get
+      - run: cd elixir-ls && mix deps.get
         
       - name: set publisher for Open VSX Registry
         run: |
