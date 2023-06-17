@@ -34,7 +34,6 @@ jobs:
         run: |
           cd elixir-ls
           mix deps.get
-          mix compile
         env:
           MIX_ENV: "prod"
       - name: Install local release
@@ -50,6 +49,7 @@ jobs:
         run: |
           npm run lint
           npm run check-formatting
+        if: runner.os == 'Windows'
       - name: Build
         run: |
           npm run compile
