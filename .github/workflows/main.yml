@@ -15,7 +15,6 @@ jobs:
       matrix:
         os: [ubuntu-20.04, windows-2019]
     runs-on: ${{ matrix.os }}
-    # runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout source
@@ -40,15 +39,19 @@ jobs:
           MIX_ENV: "prod"
       - name: Install local release
         run: |
-          elixir "elixir-ls-release/quiet_install.exs"
+          elixir "elixir-ls/scripts/quiet_install.exs"
         env:
           MIX_ENV: "prod"
           ELS_LOCAL: 1
       - name: Resolve vscode-elixir-ls dependencies
         run: |
           npm ci
+      - name: Static analysis
+        run: |
           npm run lint
           npm run check-formatting
+      - name: Build
+        run: |
           npm run compile
       - name: Run tests
         run: |

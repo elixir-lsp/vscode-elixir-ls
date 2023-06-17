@@ -9,12 +9,26 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+      - name: Setup Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.14.x
+          otp-version: 25.x
       - name: install jq
         run: |
           sudo apt-get install jq
+      - name: validate version
+        run: |
+          VERSION=$(jq .version package.json)
+          if [[ "$GITHUB_REF_NAME" != "v$VERSION" ]]; then
+              echo "package.json version $VERSION does not match commit tag $GITHUB_REF_NAME"
+              exit 1
+          fi
       - run: npm ci
       - name: set publisher for Open VSX Registry
         run: |
@@ -25,6 +39,7 @@ jobs:
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
+          preRelease: ${{ contains(github.ref, '-rc.') }}
       - name: set publisher for Open VSX Registry
         run: |
           jq '.publisher = "elixir-lsp"' package.json > package_temp.json
@@ -33,3 +48,4 @@ jobs:
         uses: HaaLeo/publish-vscode-extension@v1
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
+          preRelease: ${{ contains(github.ref, '-rc.') }}
