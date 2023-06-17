@@ -12,6 +12,7 @@ jobs:
   build:
     # TODO test on macos-latest?
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-20.04, windows-2019]
     runs-on: ${{ matrix.os }}
@@ -36,11 +37,11 @@ jobs:
       - name: Build
         run: |
           npm run compile
-          - name: Setup Elixir
-          uses: erlef/setup-beam@v1
-          with:
-            elixir-version: 1.14.x
-            otp-version: 25.x
+      - name: Setup Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.14.x
+          otp-version: 25.x
       - name: Resolve elixir-ls dependencies
         run: |
           cd elixir-ls
