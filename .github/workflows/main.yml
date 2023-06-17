@@ -49,7 +49,7 @@ jobs:
         run: |
           npm run lint
           npm run check-formatting
-        if: runner.os == 'Windows'
+        if: runner.os != 'Windows'
       - name: Build
         run: |
           npm run compile
