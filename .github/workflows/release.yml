@@ -11,6 +11,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
+      - name: validate version
+        run: |
+          VERSION=$(jq .version package.json)
+          if [[ "$GITHUB_REF_NAME" != "v$VERSION" ]]; then
+              echo "package.json version $VERSION does not match commit tag $GITHUB_REF_NAME"
+              exit 1
+          fi
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
@@ -19,16 +26,6 @@ jobs:
         with:
           elixir-version: 1.14.x
           otp-version: 25.x
-      - name: install jq
-        run: |
-          sudo apt-get install jq
-      - name: validate version
-        run: |
-          VERSION=$(jq .version package.json)
-          if [[ "$GITHUB_REF_NAME" != "v$VERSION" ]]; then
-              echo "package.json version $VERSION does not match commit tag $GITHUB_REF_NAME"
-              exit 1
-          fi
       - run: npm ci
       - name: set publisher for Open VSX Registry
         run: |
