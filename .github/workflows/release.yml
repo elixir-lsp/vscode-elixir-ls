@@ -13,7 +13,7 @@ jobs:
           submodules: 'true'
       - name: validate version
         run: |
-          VERSION=$(jq .version package.json)
+          VERSION=$(jq -r .version package.json)
           if [[ "$GITHUB_REF_NAME" != "v$VERSION" ]]; then
               echo "package.json version $VERSION does not match commit tag $GITHUB_REF_NAME"
               exit 1
