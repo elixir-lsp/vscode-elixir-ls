@@ -25,11 +25,22 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "16.x"
-      - name: Setup Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: 1.14.x
-          otp-version: 25.x
+      - name: Resolve vscode-elixir-ls dependencies
+        run: |
+          npm ci
+      - name: Static analysis
+        run: |
+          npm run lint
+          npm run check-formatting
+        if: runner.os != 'Windows'
+      - name: Build
+        run: |
+          npm run compile
+          - name: Setup Elixir
+          uses: erlef/setup-beam@v1
+          with:
+            elixir-version: 1.14.x
+            otp-version: 25.x
       - name: Resolve elixir-ls dependencies
         run: |
           cd elixir-ls
@@ -42,17 +53,6 @@ jobs:
         env:
           MIX_ENV: "prod"
           ELS_LOCAL: 1
-      - name: Resolve vscode-elixir-ls dependencies
-        run: |
-          npm ci
-      - name: Static analysis
-        run: |
-          npm run lint
-          npm run check-formatting
-        if: runner.os != 'Windows'
-      - name: Build
-        run: |
-          npm run compile
       - name: Run tests
         run: |
           xvfb-run -a npm test
