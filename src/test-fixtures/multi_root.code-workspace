@@ -8,6 +8,12 @@
 		},
 		{
 			"path": "single_folder_no_mix"
+		},
+		{
+			"path": "containing_folder"
+		},
+		{
+			"path": "containing_folder/single_folder_mix"
 		}
 	],
 	"settings": {}

@@ -2,6 +2,7 @@
 
 import * as path from "path";
 import * as vscode from "vscode";
+import * as fs from "fs";
 
 export function getProjectDir(workspaceFolder: vscode.WorkspaceFolder): string {
   // check if projectDir is not overridden in workspace
@@ -57,15 +58,33 @@ export class WorkspaceTracker {
       uri = uri + "/";
     }
 
+    let outermostFolder: vscode.WorkspaceFolder | null = null;
+
     for (const element of this.sortedWorkspaceFolders()) {
       if (uri.startsWith(element)) {
         const foundFolder = vscode.workspace.getWorkspaceFolder(
           vscode.Uri.parse(element)
         );
+
         if (foundFolder) {
-          return foundFolder;
+          if (!outermostFolder) {
+            // store outermost no mix.exs candidate
+            // it will be discarded if better one with mix.exs is found
+            outermostFolder = foundFolder;
+          }
+
+          const mixFilePath = path.join(foundFolder.uri.fsPath, "mix.exs");
+          if (fs.existsSync(mixFilePath)) {
+            // outermost workspace folder with mix.exs found
+            return foundFolder;
+          }
         }
       }
+    }
+
+    if (outermostFolder) {
+      // no folder containing mix.exs was found, return the outermost folder
+      return outermostFolder;
     }
 
     // most likely handleDidChangeWorkspaceFolders callback hs not yet run
