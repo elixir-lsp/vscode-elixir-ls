@@ -73,7 +73,8 @@ export class WorkspaceTracker {
             outermostFolder = foundFolder;
           }
 
-          const mixFilePath = path.join(foundFolder.uri.fsPath, "mix.exs");
+          const projectDir = getProjectDir(foundFolder);
+          const mixFilePath = path.join(projectDir, "mix.exs");
           if (fs.existsSync(mixFilePath)) {
             // outermost workspace folder with mix.exs found
             return foundFolder;
