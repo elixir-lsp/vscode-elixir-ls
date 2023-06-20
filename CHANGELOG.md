@@ -10,6 +10,7 @@
 - Treat code in heredocs as markdown. This allows syntax highlighting and delegation to markdown language server in `@moduledoc` `@doc` and `@typedocs`
 - Highlight elixir code in `~L` sigil
 - Improved handling of multi-root workspaces. Now language server is started in outermost workspace directories that contain `mix.exs`.
+- Pass env from launch configuration to debugger. This allows setting node name for remote debugging (e.g. `"env": {"ELS_ELIXIR_OPTS": "--sname mynode"}`)
 
 ### Fixes
 

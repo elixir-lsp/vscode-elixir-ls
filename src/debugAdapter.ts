@@ -15,6 +15,12 @@ class DebugAdapterExecutableFactory
     session: vscode.DebugSession,
     executable: vscode.DebugAdapterExecutable
   ): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
+    console.log(
+      "DebugAdapterExecutableFactory called with session",
+      session,
+      "executable",
+      executable
+    );
     const command = buildCommand(
       this._context,
       "debugger",
@@ -30,6 +36,18 @@ class DebugAdapterExecutableFactory
         options = { ...options, cwd };
       } else {
         options = { cwd };
+      }
+
+      // for some reason env from launch config is not being passed to executable config
+      // by default we need to do that manually
+      if (session.configuration.env) {
+        options = {
+          ...options,
+          env: {
+            ...(options.env ?? {}),
+            ...session.configuration.env,
+          },
+        };
       }
     }
 

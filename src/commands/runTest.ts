@@ -81,7 +81,10 @@ function getDebugConfig(args: RunArgs): vscode.DebugConfiguration {
     ],
   };
 
-  return fileConfiguration ?? fallbackConfiguration;
+  const config = fileConfiguration ?? fallbackConfiguration;
+
+  console.log("Starting debug session with launch config", config);
+  return config;
 }
 
 async function debugTest(args: RunArgs): Promise<string> {
@@ -116,7 +119,7 @@ async function debugTest(args: RunArgs): Promise<string> {
         if (!debugSessionStarted) {
           disposeListeners();
 
-          reject("unable to start debug session");
+          reject("Unable to start debug session");
         }
       });
   });
