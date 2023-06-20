@@ -1,5 +1,35 @@
 ### Unreleased
 
+### v0.15.0
+
+#### Improvements
+
+- ElixirLS updated to [v0.15.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0150)
+- Added support for elixir 1.15 multi-letter sigils
+- Added highlighting of matching `do` `end` pairs
+- Treat code in heredocs as markdown. This allows syntax highlighting and delegation to markdown language server in `@moduledoc` `@doc` and `@typedocs`
+- Highlight elixir code in `~L` sigil
+- Improved handling of multi-root workspaces. Now language server is started in outermost workspace directories that contain `mix.exs`.
+
+### Fixes
+
+- Fixed not working syntax highlighting for `defguard` and `reraise`
+- Reverted changes adding syntax highlighting in `.heex`. This conflicted with [Phoenix Framework extension](https://marketplace.visualstudio.com/items?itemName=phoenixframework.phoenix)
+- `languageServerOverridePath` is correctly handled in debugger
+- Consistently highlight `@moduledoc` `@doc` and `@typedocs` modifiers as documentation
+
+### Refactorings
+
+- The extension code has been split into smaller units
+- Test suite expanded
+- Test suite now passing on unix and windows
+
+### Breaking changes and deprecations
+
+- Removed highlighting of some pre elixir 1.0 operators (`inlist`, `inbits`, `bc`, `lc`, `xor`) that are not supported by the compiler
+- elixir 1.12 is no longer supported
+- Disabled ANSI colors in test output when run from Testing tab. VSCode test output does not support ANSI color markers
+
 ### v0.14.7: 6 May 2023
 
 #### Fixes
