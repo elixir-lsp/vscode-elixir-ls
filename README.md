@@ -79,11 +79,26 @@ See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the suppo
 If you run into issues with the extension then try these debugging steps:
 
 - Make sure you have hex and git installed
-- Make sure github.com and hex.pm are accessible. You may need to configure proxy
-- If the extension fails to start ElixirLS you can try cleaning the `Mix.install` directory (location on your system can be obtained by calling `Mix.Utils.mix_cache()` from `iex` session)
-- Restart your editor (which will restart ElixirLS) sometimes fixes issues
-- Stop your editor, remove the entire `.elixir_ls` directory, then restart your editor
+- Make sure github.com and hex.pm are accessible. You may need to configure HTTPS proxy. If your setup uses TLS man-in-the-middle inspection you may need to set `HEX_UNSAFE_HTTPS=1`.
+- If ElixirLS fails to start you can try cleaning the `Mix.install` directory (location on your system can be obtained by calling `Path.join(Mix.Utils.mix_cache(), "installs")` from `iex` session)
+- Restart ElixirLS with a custom command `restart`
+- Run `mix clean` or `mix clean --deps` in ElixirLS with custom command `mixClean`
+- Restart your editor (which will restart ElixirLS)
+- After stopping your editor, remove the entire `.elixir_ls` directory, then restart your editor
   - NOTE: This will cause you to have to re-run the entire dialyzer build
+
+You may need to set `elixirLS.mixEnv`, `elixirLS.mixTarget` and `elixirLS.projectDir` if your project requires it. By default ElixirLS compiles code with `MIX_ENV=test`, `MIX_TARGET=host` and assumes that `mix.exs` is located in the workspace root directory.
+
+If you get an error like the following immediately on startup:
+
+```
+[Warn  - 1:56:04 PM] ** (exit) exited in: GenServer.call(ElixirLS.LanguageServer.JsonRpc, {:packet, %{...snip...}}, 5000)
+    ** (EXIT) no process: the process is not alive or there's no process currently associated with the given name, possibly because its application isn't started
+```
+
+and you installed Elixir and Erlang from the Erlang Solutions repository, you may not have a full installation of erlang. This can be solved with `sudo apt-get install esl-erlang`. Originally reported in [#208](https://github.com/elixir-lsp/elixir-ls/issues/208).
+
+On fedora if you only install the elixir package you will not have a full erlang installation, this can be fixed by running `sudo dnf install erlang` (reported in [#231](https://github.com/elixir-lsp/elixir-ls/issues/231))
 
 If you are seeing the message "Invalid beam file or no abstract code", you need to make sure that your Mix project is set to use the `elixirc` compiler option `--debug-info`, which can be done by adding the following line to your `mix.exs` `project` section:
 
