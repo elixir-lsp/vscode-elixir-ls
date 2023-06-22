@@ -1,5 +1,12 @@
 ### Unreleased
 
+### v0.15.1: 22 June 2023
+
+### Fixes
+
+- Revert `do` `end` bracket matching. This introduced too many problems and the workarounds did not work for `do:`
+- Revert markdown highlighting in heredocs. `text.html.markdown` interferes with elixir grammar when a list (`*` or `-`) is present. Handling this would require a dedicated grammar for heredoc markdown.
+
 ### v0.15.0: 20 June 2023
 
 #### Improvements
