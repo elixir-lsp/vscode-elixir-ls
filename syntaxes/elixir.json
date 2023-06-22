@@ -29,7 +29,7 @@
       "name": "meta.module.elixir"
     },
     {
-      "begin": "@(module|type)?doc (~s)?\"\"\"",
+      "begin": "@(module|type)?doc\\s*(~s)?\"\"\"",
       "comment": "@doc with interpolated heredocs",
       "end": "\\s*\"\"\"",
       "name": "comment.documentation.heredoc.elixir",
@@ -39,14 +39,11 @@
         },
         {
           "include": "#escaped_char"
-        },
-        {
-          "include": "text.html.markdown"
         }
       ]
     },
     {
-      "begin": "@(module|type)?doc (~s)?'''",
+      "begin": "@(module|type)?doc\\s*(~s)?'''",
       "comment": "@doc with interpolated single quoted heredocs",
       "end": "\\s*'''",
       "name": "comment.documentation.heredoc.elixir",
@@ -56,71 +53,62 @@
         },
         {
           "include": "#escaped_char"
-        },
-        {
-          "include": "text.html.markdown"
         }
       ]
     },
     {
-      "begin": "@(module|type)?doc ~S\"\"\"",
+      "begin": "@(module|type)?doc\\s*~S\"\"\"",
       "comment": "@doc with heredocs is treated as documentation",
       "end": "\\s*\"\"\"",
       "name": "comment.documentation.heredoc.elixir",
       "patterns": [
         {
           "include": "#escaped_char"
-        },
-        {
-          "include": "text.html.markdown"
         }
       ]
     },
     {
-      "begin": "@(module|type)?doc ~S'''",
+      "begin": "@(module|type)?doc\\s*~S'''",
       "comment": "@doc with heredocs is treated as documentation",
       "end": "\\s*'''",
       "name": "comment.documentation.heredoc.elixir",
       "patterns": [
         {
           "include": "#escaped_char"
-        },
-        {
-          "include": "text.html.markdown"
         }
       ]
     },
     {
       "comment": "@doc false is treated as documentation",
-      "match": "@(module|type)?doc false",
+      "match": "@(module|type)?doc\\s*false",
       "name": "comment.documentation.false"
     },
     {
       "comment": "@doc since|deprecated is treated as documentation",
-      "begin": "@(module|type)?doc (since|deprecated): '",
+      "begin": "@(module|type)?doc\\s*(since|deprecated): '",
       "end": "'",
       "name": "comment.documentation.false"
     },
     {
       "comment": "@doc since|deprecated is treated as documentation",
-      "begin": "@(module|type)?doc (since|deprecated): \"",
+      "begin": "@(module|type)?doc\\s*(since|deprecated): \"",
       "end": "\"",
       "name": "comment.documentation.false"
     },
     {
       "comment": "@deprecated is treated as documentation",
-      "begin": "@deprecated '",
+      "begin": "@deprecated\\s*'",
       "end": "'",
       "name": "comment.documentation.false"
     },
     {
       "comment": "@deprecated is treated as documentation",
-      "begin": "@deprecated \"",
+      "begin": "@deprecated\\s*\"",
       "end": "\"",
       "name": "comment.documentation.false"
     },
     {
-      "begin": "@(module|type)?doc \"",
+      "begin": "@(module|type)?doc\\s*\"",
       "comment": "@doc with string is treated as documentation",
       "end": "\"",
       "name": "comment.documentation.string",
@@ -134,7 +122,7 @@
       ]
     },
     {
-      "begin": "@(module|type)?doc '",
+      "begin": "@(module|type)?doc\\s*'",
       "comment": "@doc with string is treated as documentation",
       "end": "'",
       "name": "comment.documentation.string",
