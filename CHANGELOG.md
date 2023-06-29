@@ -1,5 +1,11 @@
 ### Unreleased
 
+### v0.15.1: 29 June 2023
+
+#### Improvements
+
+- ElixirLS updated to [v0.15.1](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0151) with support for OTP 26
+
 ### v0.15.1: 22 June 2023
 
 ### Fixes
