@@ -1,5 +1,9 @@
 ### Unreleased
 
+### v0.15.3: 7 July 2023
+
+No changes since v0.15.2. 0.15.2 failed to publish to Open VSX
+
 ### v0.15.2: 29 June 2023
 
 #### Improvements
