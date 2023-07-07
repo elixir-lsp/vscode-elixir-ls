@@ -203,7 +203,7 @@
     },
     {
       "comment": "Function call without parenthesis",
-      "match": "([A-Z]\\w+)\\s*(\\.)\\s*([a-z_]\\w*[!?]?)",
+      "match": "\\b([A-Z]\\w+)\\s*(\\.)\\s*([a-z_]\\w*[!?]?)",
       "captures": {
         "1": {
           "name": "variable.other.constant.elixir"
