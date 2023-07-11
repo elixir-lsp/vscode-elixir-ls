@@ -5,6 +5,7 @@ type RunArgs = {
   cwd: string;
   filePath: string;
   line?: number;
+  workspaceFolder: vscode.WorkspaceFolder;
 };
 
 export default function runTest(
@@ -40,7 +41,10 @@ async function runTestWithoutDebug(args: RunArgs): Promise<string> {
 
 // Get the configuration for mix test, if it exists
 function getTestConfig(args: RunArgs): vscode.DebugConfiguration | undefined {
-  const launchJson = vscode.workspace.getConfiguration("launch");
+  const launchJson = vscode.workspace.getConfiguration(
+    "launch",
+    args.workspaceFolder
+  );
   const testConfig = launchJson.configurations.findLast(
     (e: { name: string }) => e.name == "mix test"
   );
@@ -113,8 +117,9 @@ async function debugTest(args: RunArgs): Promise<string> {
         resolve("");
       })
     );
+
     vscode.debug
-      .startDebugging(vscode.workspace.workspaceFolders![0], debugConfiguration)
+      .startDebugging(args.workspaceFolder, debugConfiguration)
       .then((debugSessionStarted) => {
         if (!debugSessionStarted) {
           disposeListeners();

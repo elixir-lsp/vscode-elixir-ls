@@ -332,11 +332,15 @@ export function configureTestController(
           try {
             const projectDir = workspaceTracker.getProjectDirForUri(test.uri!)!;
             const relativePath = test.uri!.fsPath.slice(projectDir.length + 1);
+            const workspaceFolder = vscode.workspace.getWorkspaceFolder(
+              test.uri!
+            )!;
             const output = await runTest(
               {
                 cwd: projectDir,
                 filePath: relativePath,
                 line: test.range!.start.line + 1,
+                workspaceFolder,
               },
               shouldDebug
             );

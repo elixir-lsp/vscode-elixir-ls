@@ -71,7 +71,7 @@ class DebugAdapterExecutableFactory
 }
 
 export function configureDebugger(context: vscode.ExtensionContext) {
-  // Use custom DebugAdaptureExecutableFactory that launches the debugger with
+  // Use custom DebugAdapterExecutableFactory that launches the debugger with
   // the current working directory set to the workspace root so asdf can load
   // the correct environment properly.
   const factory = new DebugAdapterExecutableFactory(context);
