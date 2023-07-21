@@ -53,16 +53,16 @@ ElixirLS is opinionated and sets the following default settings for Elixir files
 }
 ```
 
-You can, of course, change them in your user settings, or on a per project basis in `.vscode/settings.json`.
+You can, of course, change these in your user settings, or on a per project basis in `.vscode/settings.json`.
 
 ## Advanced Configuration
 
 ### Add support for emmet
 
-emmet is a plugin that makes it easier to write html: https://code.visualstudio.com/docs/editor/emmet
+`emmet` is a plugin that makes it easier to write HTML: https://code.visualstudio.com/docs/editor/emmet
 
 Open VSCode and hit Ctrl+Shift+P (or Cmd+Shift+P) and type "Preference: Open Settings (JSON)"
-Add or edit your `emmet.includedLanguages` to include the new Language Id:
+Add or edit your `emmet.includedLanguages` to include the new Language ID:
 
 ```json
 "emmet.includeLanguages": {
@@ -76,18 +76,18 @@ See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the suppo
 
 ## Troubleshooting
 
-If you run into issues with the extension then try these debugging steps:
+If you run into issues with the extension, try these debugging steps:
 
-- Make sure you have hex and git installed
-- Make sure github.com and hex.pm are accessible. You may need to configure HTTPS proxy. If your setup uses TLS man-in-the-middle inspection you may need to set `HEX_UNSAFE_HTTPS=1`.
-- If ElixirLS fails to start you can try cleaning the `Mix.install` directory (location on your system can be obtained by calling `Path.join(Mix.Utils.mix_cache(), "installs")` from `iex` session)
+- Make sure you have `hex` and `git` installed.
+- Make sure `github.com` and `hex.pm` are accessible. You may need to configure your HTTPS proxy. If your setup uses TLS man-in-the-middle inspection, you may need to set `HEX_UNSAFE_HTTPS=1`.
+- If ElixirLS fails to start, you can try cleaning the `Mix.install` directory. (The location on your system can be obtained by calling `Path.join(Mix.Utils.mix_cache(), "installs")` from an `iex` session.)
 - Restart ElixirLS with a custom command `restart`
-- Run `mix clean` or `mix clean --deps` in ElixirLS with custom command `mixClean`
-- Restart your editor (which will restart ElixirLS)
-- After stopping your editor, remove the entire `.elixir_ls` directory, then restart your editor
+- Run `mix clean` or `mix clean --deps` in ElixirLS with the custom command `mixClean`.
+- Restart your editor (which will restart ElixirLS).
+- After stopping your editor, remove the entire `.elixir_ls` directory, then restart your editor.
   - NOTE: This will cause you to have to re-run the entire dialyzer build
 
-You may need to set `elixirLS.mixEnv`, `elixirLS.mixTarget` and `elixirLS.projectDir` if your project requires it. By default ElixirLS compiles code with `MIX_ENV=test`, `MIX_TARGET=host` and assumes that `mix.exs` is located in the workspace root directory.
+You may need to set `elixirLS.mixEnv`, `elixirLS.mixTarget`, and `elixirLS.projectDir` if your project requires it. By default, ElixirLS compiles code with `MIX_ENV=test`, `MIX_TARGET=host`, and assumes that `mix.exs` is located in the workspace root directory.
 
 If you get an error like the following immediately on startup:
 
@@ -96,9 +96,9 @@ If you get an error like the following immediately on startup:
     ** (EXIT) no process: the process is not alive or there's no process currently associated with the given name, possibly because its application isn't started
 ```
 
-and you installed Elixir and Erlang from the Erlang Solutions repository, you may not have a full installation of erlang. This can be solved with `sudo apt-get install esl-erlang`. Originally reported in [#208](https://github.com/elixir-lsp/elixir-ls/issues/208).
+and you installed Elixir and Erlang from the Erlang Solutions repository, you may not have a full installation of Erlang. This can be solved with `sudo apt-get install esl-erlang`. (This was originally reported in [#208](https://github.com/elixir-lsp/elixir-ls/issues/208).)
 
-On fedora if you only install the elixir package you will not have a full erlang installation, this can be fixed by running `sudo dnf install erlang` (reported in [#231](https://github.com/elixir-lsp/elixir-ls/issues/231))
+On fedora if you only install the elixir package you will not have a full erlang installation, this can be fixed by running `sudo dnf install erlang` (This was reported in [#231](https://github.com/elixir-lsp/elixir-ls/issues/231).)
 
 If you are seeing the message "Invalid beam file or no abstract code", you need to make sure that your Mix project is set to use the `elixirc` compiler option `--debug-info`, which can be done by adding the following line to your `mix.exs` `project` section:
 
@@ -172,7 +172,7 @@ MIX_ENV=prod mix compile
 
 To launch the extension from VS Code, run the "Launch Extension local" launch configuration from [Run and Debug view](https://code.visualstudio.com/docs/editor/debugging#_run-view) or press F5.
 
-Alternatively, you can build and install the extension locally using `vsce` command and `code` CLI.
+Alternatively, you can build and install the extension locally using the `vsce` command and the `code` CLI.
 
 ```shell
 # Navigate to vscode-elixir-ls project root
@@ -191,11 +191,11 @@ local install from being replaced with the Marketplace version.
 
 ### `elixir-ls` submodule
 
-Most of the functionality of this extension comes from ElixirLS which is included as a Git submodule in the `elixir-ls` folder. Make sure you clone the repo using `git clone --recursive` or run `git submodule init && git submodule update` after cloning.
+Most of the functionality of this extension comes from ElixirLS, which is included as a Git submodule in the `elixir-ls` folder. Make sure you clone the repo using `git clone --recursive` or run `git submodule init && git submodule update` after cloning.
 
-Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to change the code in the `elixir-ls` subdirectory. Most often you don't need to explicitly build it. ElixirLS launch script should be able to pick up changes and rebuild accordingly via `Mix.install`.
+Including `elixir-ls` as a submodule makes it easy to develop and test code changes for ElixirLS itself. If you want to modify ElixirLS, not just its VS Code client code, you'll want to change the code in the `elixir-ls` subdirectory. Most often you don't need to explicitly build it. The ElixirLS launch script should be able to pick up changes and rebuild accordingly via `Mix.install`.
 
-When you're ready to contribute your changes back to ElixirLS then you need to fork the [ElixirLS](https://github.com/elixir-lsp/elixir-ls) repo on Github and push any changes you make to the ElixirLS submodule to your fork. An example of how that might look:
+When you're ready to contribute your changes back to ElixirLS, you need to fork the [ElixirLS](https://github.com/elixir-lsp/elixir-ls) repo on Github and push any changes you make to the ElixirLS submodule to your fork. Here is an example of how that might look:
 
 ```shell
 # Enter the submodule directory. Now, if you run git commands, they run in the submodule
@@ -224,7 +224,7 @@ npm run compile
 npm test
 ```
 
-Or use `test.sh`/`test.bat` script that does the above.
+Alternatively, you can use the `test.sh`/`test.bat` script which does the above.
 
 ## Acknowledgements and related projects
 
