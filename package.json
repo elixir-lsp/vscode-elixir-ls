@@ -7,7 +7,7 @@
     "url": "https://github.com/elixir-lsp/vscode-elixir-ls.git"
   },
   "icon": "images/logo.png",
-  "description": "Elixir support with debugger, autocomplete, and more. Powered by ElixirLS.",
+  "description": "Elixir support with debugger, autocomplete, and more - Powered by ElixirLS.",
   "author": "The Elixir community",
   "license": "MIT",
   "publisher": "JakeBecker",
@@ -64,17 +64,17 @@
           "scope": "resource",
           "type": "boolean",
           "default": true,
-          "description": "Trigger ElixirLS build when code is saved"
+          "description": "Trigger ElixirLS build when code is saved."
         },
         "elixirLS.dialyzerEnabled": {
           "scope": "resource",
           "type": "boolean",
           "default": true,
-          "description": "Run ElixirLS's rapid Dialyzer when code is saved"
+          "description": "Run ElixirLS's rapid Dialyzer when code is saved."
         },
         "elixirLS.dialyzerWarnOpts": {
           "scope": "resource",
-          "description": "Dialyzer options to enable or disable warnings. See Dialyzer's documentation for options. Note that the \"race_conditions\" option is unsupported",
+          "description": "Dialyzer options to enable or disable warnings - See Dialyzer's documentation for options. Note that the \"race_conditions\" option is unsupported",
           "type": "array",
           "uniqueItems": true,
           "items": {
@@ -151,13 +151,13 @@
         "elixirLS.fetchDeps": {
           "scope": "resource",
           "type": "boolean",
-          "description": "Automatically fetch project dependencies when compiling",
+          "description": "Automatically fetch project dependencies when compiling.",
           "default": false
         },
         "elixirLS.suggestSpecs": {
           "scope": "resource",
           "type": "boolean",
-          "description": "Suggest @spec annotations inline using Dialyzer's inferred success typings (Requires Dialyzer)",
+          "description": "Suggest @spec annotations inline using Dialyzer's inferred success typings (Requires Dialyzer).",
           "default": true
         },
         "elixirLS.trace.server": {
@@ -174,19 +174,19 @@
         "elixirLS.autoInsertRequiredAlias": {
           "scope": "window",
           "type": "boolean",
-          "description": "Enable auto-insert required alias. By default, it's true, which means enabled.",
+          "description": "Enable auto-insert required alias. This is true (enabled) by default.",
           "default": true
         },
         "elixirLS.signatureAfterComplete": {
           "scope": "resource",
           "type": "boolean",
-          "description": "Show signature help after confirming autocomplete",
+          "description": "Show signature help after confirming autocomplete.",
           "default": true
         },
         "elixirLS.enableTestLenses": {
           "scope": "resource",
           "type": "boolean",
-          "description": "Show code lenses to run tests in terminal",
+          "description": "Show code lenses to run tests in terminal.",
           "default": false
         },
         "elixirLS.additionalWatchedExtensions": {
@@ -202,7 +202,7 @@
         "elixirLS.languageServerOverridePath": {
           "scope": "resource",
           "type": "string",
-          "description": "Absolute path to alternative ElixirLS release that will override packaged release.",
+          "description": "Absolute path to alternative ElixirLS release that will override the packaged release",
           "minLength": 0
         }
       }
@@ -311,7 +311,7 @@
               },
               "env": {
                 "type": "object",
-                "description": "Environment variables to set before debugging. You may want to set MIX_ENV in here."
+                "description": "Environment variables to set before debugging - You may want to set MIX_ENV in here."
               },
               "debugExpressionTimeoutMs": {
                 "type": "number",
@@ -319,12 +319,12 @@
               },
               "debugAutoInterpretAllModules": {
                 "type": "boolean",
-                "description": "When debugging, interpret all files. Note: Only interpreted files will be part of debugging stack traces. However this has a performance impact on large repositories, so if debugging is too slow, disable debugAutoInterpretFiles and use debugInterpretModulesPatterns to specify which files to interpret.",
+                "description": "When debugging, interpret all files. Note: Only interpreted files will be part of the debugging stack traces. However this has a performance impact on large repositories, so if debugging is too slow, disable debugAutoInterpretFiles and use debugInterpretModulesPatterns to specify which files to interpret.",
                 "default": true
               },
               "debugInterpretModulesPatterns": {
                 "type": "array",
-                "description": "The modules to interpret when debugging. For details of interpreting see the :int module in Erlang. Only modules that are interpreted will show up in the debugger stacktrace. An example of a pattern is: \"MyApp.*\", which will interpret all modules that begin with \"MyApp.\"",
+                "description": "The modules to interpret when debugging - For details of interpreting, see the :int module in Erlang. Only modules that are interpreted will show up in the debugger stacktrace. An example of a pattern is: \"MyApp.*\", which will interpret all modules that begin with \"MyApp.\"",
                 "items": {
                   "type": "string",
                   "minLength": 1
@@ -337,11 +337,11 @@
               },
               "startApps": {
                 "type": "boolean",
-                "description": "Run apps.start before requiring files. This should be set to true for Phoenix tests, but false in most other cases"
+                "description": "Run apps.start before requiring files. This should be set to true for Phoenix tests, but false in most other cases."
               },
               "excludeModules": {
                 "type": "array",
-                "description": "Names of modules not to interpret. If a module contains NIFs, you should exclude it. Examples: Some.Module, :erlang_module",
+                "description": "Names of modules not to interpret - If a module contains NIFs, you should exclude it. Examples: Some.Module, :erlang_module",
                 "items": {
                   "type": "string",
                   "minLength": 1
@@ -350,7 +350,7 @@
               },
               "requireFiles": {
                 "type": "array",
-                "description": "Paths for any .exs files to interpret before debugging in the order they should be loaded. Accepts path wildcards",
+                "description": "Paths for any .exs files to interpret before debugging in the order they should be loaded. Accepts path wildcards.",
                 "items": {
                   "type": "string"
                 }
