@@ -31,7 +31,7 @@ const clientOptions: LanguageClientOptions = {
   // the client will iterate through this list and chose the first matching element
   documentSelector: defaultDocumentSelector,
   // Don't focus the Output pane on errors because request handler errors are no big deal
-  revealOutputChannelOn: RevealOutputChannelOn.Never
+  revealOutputChannelOn: RevealOutputChannelOn.Never,
 };
 
 function startClient(
