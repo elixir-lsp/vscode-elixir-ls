@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 import {
   ExecuteCommandParams,
   LanguageClient,
+  State,
 } from "vscode-languageclient/node";
 import { LanguageClientManager } from "../languageClientManager";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
@@ -27,8 +28,16 @@ export function configureRestart(
         languageClientManager
           .allClients()
           .map(async (client: LanguageClient) => {
+            if (!client.initializeResult) {
+              console.error(
+                `ElixirLS: unable to execute command on server ${
+                  client.name
+                } in state ${State[client.state]}`
+              );
+              return;
+            }
             const command =
-              client.initializeResult!.capabilities.executeCommandProvider!.commands.find(
+              client.initializeResult.capabilities.executeCommandProvider!.commands.find(
                 (c) => c.startsWith("restart:")
               )!;
 

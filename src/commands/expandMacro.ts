@@ -1,7 +1,7 @@
 "use strict";
 
 import * as vscode from "vscode";
-import { ExecuteCommandParams } from "vscode-languageclient";
+import { ExecuteCommandParams, State } from "vscode-languageclient";
 import { LanguageClientManager } from "../languageClientManager";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
 
@@ -44,19 +44,32 @@ export function configureExpandMacro(
         return;
       }
 
+      if (editor.selection.isEmpty) {
+        console.error(`ElixirLS: selection is empty`);
+        return;
+      }
+
       const uri = editor.document.uri;
       const client = languageClientManager.getClientByDocument(editor.document);
 
       if (!client) {
+        console.error(
+          `ElixirLS: no language client for document ${uri.fsPath}`
+        );
         return;
       }
 
-      if (editor.selection.isEmpty) {
+      if (!client.initializeResult) {
+        console.error(
+          `ElixirLS: unable to execute command on server ${
+            client.name
+          } in state ${State[client.state]}`
+        );
         return;
       }
 
       const command =
-        client.initializeResult!.capabilities.executeCommandProvider!.commands.find(
+        client.initializeResult.capabilities.executeCommandProvider!.commands.find(
           (c) => c.startsWith("expandMacro:")
         )!;
 

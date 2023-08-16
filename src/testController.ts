@@ -1,7 +1,7 @@
 "use strict";
 
 import * as vscode from "vscode";
-import { ExecuteCommandParams } from "vscode-languageclient";
+import { ExecuteCommandParams, State } from "vscode-languageclient";
 import runTest from "./commands/runTest";
 import { WorkspaceTracker, getProjectDir } from "./project";
 import { LanguageClientManager } from "./languageClientManager";
@@ -147,8 +147,24 @@ export function configureTestController(
     // read them from disk ourselves.
     const client = languageClientManager.getClientByUri(file.uri!);
 
+    if (!client) {
+      console.error(
+        `ElixirLS: no language client for document ${file.uri!.fsPath}`
+      );
+      return;
+    }
+
+    if (!client.initializeResult) {
+      console.error(
+        `ElixirLS: unable to execute command on server ${
+          client.name
+        } in state ${State[client.state]}`
+      );
+      return;
+    }
+
     const command =
-      client.initializeResult!.capabilities.executeCommandProvider!.commands.find(
+      client.initializeResult.capabilities.executeCommandProvider!.commands.find(
         (c) => c.startsWith("getExUnitTestsInFile:")
       )!;
 
