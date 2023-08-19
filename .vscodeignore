@@ -4,6 +4,7 @@ out/test/**
 test/**
 src/**
 **/*.map
+node_modules
 .gitignore
 tsconfig.json
 elixir-ls/**
