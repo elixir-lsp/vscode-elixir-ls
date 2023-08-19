@@ -20,7 +20,7 @@ jobs:
           fi
       - uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: "18.x"
       - name: Setup Elixir
         uses: erlef/setup-beam@v1
         with:
