@@ -1,5 +1,22 @@
 ### Unreleased
 
+### v0.16.0: 19 August 2023
+
+#### Improvements
+
+- ElixirLS updated to [v0.16.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0160)
+- Migrated to pull based configuration retrieval and removed deprecated configuration sync. This addresses issues in recent VSCode versions when after restart the server would ignore client configuration.
+- Improved handling of language server uninitialized state. This should make Testing UI more stable.
+
+#### Fixes
+
+- Fixed syntax highlighting with camelCase calls [Milo Lee](https://github.com/oo6)
+- Debug now starts in the correct workspace folder. Previously the debug controller incorrectly assumed there is only one workspace.
+
+#### Deprecations and removals
+
+- `<<` and `>>` bracket matching has been removed. It broke syntax highlighting in modules using `<<<` and `>>>` bitwise operators.
+
 ### v0.15.3: 7 July 2023
 
 No changes since v0.15.2. 0.15.2 failed to publish to Open VSX
