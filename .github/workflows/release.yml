@@ -37,7 +37,7 @@ jobs:
           preRelease: true
           dryRun: true
         
-      - name: set publisher for Open VSX Registry
+      - name: set publisher for Visual Studio Marketplace
         if: ${{ !contains(github.ref, '-rc.') }}
         run: |
           jq '.publisher = "JakeBecker"' package.json > package_temp.json
