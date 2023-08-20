@@ -25,7 +25,7 @@
           "name": "entity.name.type.module.elixir"
         }
       },
-      "match": "^\\s*(defmodule)\\s+(([A-Z]\\w*\\s*(\\.)\\s*)*[A-Z]\\w*)",
+      "match": "^\\s*(defmodule|defprotocol|defimpl)\\s+(([A-Z][A-Za-z0-9_]*\\s*(\\.)\\s*)*[A-Z][A-Za-z0-9_]*)",
       "name": "meta.module.elixir"
     },
     {
@@ -146,7 +146,7 @@
         }
       },
       "comment": "symbols",
-      "match": "(?>[a-zA-Z_][\\w@]*(?>[?!])?)(:)(?!:)",
+      "match": "(?:<<<|<<>>|<<~|<~>|<>|<=|<-|<~|<|>>>|>=|>|\\+\\+\\+|\\+\\+|\\+|---|--|->|-|\\*\\*|\\*|\\|\\|\\||\\|\\||\\|>|\\||%{}|%|&&&|&&|&|===|==|=~|=>|=|!==|!=|!|\\.\\.|\\.|~>>|~>|\\^|{}|@|\\/|\\\\\\\\|[\\p{L}_][\\p{L}\\p{N}_@]*[?!]?)(:)(?!:)",
       "name": "constant.language.symbol.elixir"
     },
     {
@@ -155,7 +155,7 @@
     },
     {
       "comment": "Function with parameters",
-      "begin": "\\b(defp?|defmacrop?|defguardp?|defdelegate)\\b\\s*([_$a-z][$\\w]*[!?]?)\\s*\\(",
+      "begin": "\\b(defp?|defmacrop?|defguardp?|defdelegate)\\b\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\s*\\(",
       "name": "meta.function.definition.elixir",
       "beginCaptures": {
         "1": {
@@ -177,7 +177,7 @@
     },
     {
       "comment": "Function without parameters",
-      "match": "\\b(defp?|defmacrop?|defguardp?|defdelegate)\\b\\s*([_$a-z][$\\w]*[!?]?)",
+      "match": "\\b(defp?|defmacrop?|defguardp?|defdelegate)\\b\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "name": "meta.function.definition.elixir",
       "captures": {
         "1": {
@@ -203,7 +203,7 @@
     },
     {
       "comment": "Function call without parenthesis",
-      "match": "\\b([A-Z]\\w+)\\s*(\\.)\\s*([a-z_]\\w*[!?]?)",
+      "match": "\\b([A-Z][A-Za-z0-9_]*)\\s*(\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "captures": {
         "1": {
           "name": "variable.other.constant.elixir"
@@ -218,7 +218,7 @@
     },
     {
       "comment": "Erlang Function call without parenthesis",
-      "match": "(\\:\\w+)\\s*(\\.)\\s*([_]?\\w*[!?]?)",
+      "match": "(:(<<<|<<>>|<<~|<~>|<>|<=|<-|<~|<|>>>|>=|>|\\+\\+\\+|\\+\\+|\\+|---|--|->|-|\\*\\*|\\*|\\|\\|\\||\\|\\||\\|>|\\||%{}|%|&&&|&&|&|===|==|=~|=>|=|!==|!=|!|\\.\\.|\\.|~>>|~>|\\^|{}|@|\\/|\\\\\\\\|[\\p{L}_][\\p{L}\\p{N}_@]*[?!]?))\\s*(\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "captures": {
         "1": {
           "name": "constant.language.symbol.elixir"
@@ -232,11 +232,11 @@
       }
     },
     {
-      "match": "\\b[a-z_]\\w*[!?]?(?=\\s*?\\.?\\s*?\\()",
+      "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)?(?=\\s*?\\.?\\s*?\\()",
       "name": "entity.name.function-call.elixir"
     },
     {
-      "match": "\\b[A-Z]\\w*\\b",
+      "match": "\\b[A-Z][A-Za-z0-9_]*\\b",
       "name": "variable.other.constant.elixir"
     },
     {
@@ -2323,6 +2323,10 @@
       "name": "keyword.operator.logical.elixir"
     },
     {
+      "match": "(\\^)",
+      "name": "keyword.operator.other.elixir"
+    },
+    {
       "match": "(\\*|\\+|\\-|/)",
       "name": "keyword.operator.arithmetic.elixir"
     },
@@ -2364,7 +2368,7 @@
           "name": "punctuation.definition.variable.elixir"
         }
       },
-      "match": "(@)[a-zA-Z_]\\w*",
+      "match": "(@)([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "name": "variable.other.readwrite.module.elixir"
     },
     {
@@ -2373,8 +2377,21 @@
           "name": "punctuation.definition.variable.elixir"
         }
       },
-      "match": "(&)\\d*",
+      "match": "([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
+      "name": "variable.other.readwrite.elixir"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.variable.elixir"
+        }
+      },
+      "match": "(&)\\d+",
       "name": "variable.other.anonymous.elixir"
+    },
+    {
+      "match": "(&)",
+      "name": "keyword.operator.other.elixir"
     },
     {
       "captures": {
@@ -2383,7 +2400,7 @@
         }
       },
       "comment": "symbols",
-      "match": "(?<!:)(:)(?>[a-zA-Z_][\\w@]*(?>[?!]|=(?![>=]))?|\\<\\>|===?|!==?|<<>>|<<<|>>>|~~~|::|<\\-|\\|>|=>|~|~=|=|/|\\\\\\\\|\\*\\*?|\\.\\.?\\.?|>=?|<=?|&&?&?|\\+\\+?|\\-\\-?|\\|\\|?\\|?|\\!|@|\\%?\\{\\}|%|\\[\\]|\\^(\\^\\^)?)",
+      "match": "(?<!:):(?:<<<|<<>>|<<~|<~>|<>|<=|<-|<~|<|>>>|>=|>|\\+\\+\\+|\\+\\+|\\+|---|--|->|-|\\*\\*|\\*|\\|\\|\\||\\|\\||\\|>|\\||%{}|%|&&&|&&|&|===|==|=~|=>|=|!==|!=|!|\\.\\.|\\.|~>>|~>|\\^|{}|@|\\/|\\\\\\\\|[\\p{L}_][\\p{L}\\p{N}_@]*[?!]?)",
       "name": "constant.language.symbol.elixir"
     },
     {
@@ -2397,7 +2414,7 @@
       "name": "constant.character.escape.elixir"
     },
     "function_parameter": {
-      "match": "[_$a-z][$\\w]*[?!]?",
+      "match": "([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "name": "parameter.variable.function.elixir"
     },
     "interpolated_elixir": {
