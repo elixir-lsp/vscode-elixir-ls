@@ -9,9 +9,9 @@
 
     ```shell
     npm install
-    npm install -g vsce@latest
+    npm install -g @vscode/vsce@latest
     vsce package
-    code --install-extension ./elixir-ls-*.vsix  --force
+    code --install-extension ./elixir-ls-*.vsix --force
     ```
 
 5. Push and verify the build is green.

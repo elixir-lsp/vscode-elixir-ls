@@ -14,7 +14,7 @@
       "label": "build",
       "type": "shell",
       "command": "npm",
-      "args": ["run", "compile"],
+      "args": ["run", "esbuild"],
       "group": "build",
       "problemMatcher": "$tsc-watch",
       "presentation": {

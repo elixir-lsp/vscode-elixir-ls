@@ -11,7 +11,7 @@
   "author": "The Elixir community",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "engines": {
     "vscode": "^1.75.0"
   },
@@ -37,7 +37,7 @@
     "workspaceContains:mix.exs",
     "onDebugResolve:elixir"
   ],
-  "main": "./out/extension",
+  "main": "./out/extension.js",
   "contributes": {
     "configurationDefaults": {
       "[elixir]": {
@@ -558,7 +558,7 @@
   },
   "scripts": {
     "release-elixir-ls": "cd elixir-ls && mix elixir_ls.release2 -o ../elixir-ls-release",
-    "vscode:prepublish": "npm-run-all release-elixir-ls compile",
+    "vscode:prepublish": "npm-run-all release-elixir-ls esbuild-release",
     "clean": "rimraf ./out",
     "compile": "tsc -b",
     "watch": "tsc -b -w",
@@ -567,7 +567,11 @@
     "test": "node ./out/test/runTest.js",
     "lint": "eslint . --ext .js,.ts",
     "check-formatting": "prettier --check ./src/ .*.js ",
-    "fix-formatting": "prettier --write ./src/ .*.js "
+    "fix-formatting": "prettier --write ./src/ .*.js ",
+    "esbuild-release": "npm run esbuild-base -- --minify",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
@@ -578,6 +582,7 @@
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
     "@vscode/test-electron": "^2.3.4",
+    "esbuild": "^0.19.2",
     "eslint": "^8.47.0",
     "eslint-config-prettier": "^8.8.0",
     "glob": "^7.2.2",
@@ -588,7 +593,6 @@
     "typescript": "~5.1.6"
   },
   "dependencies": {
-    "shelljs": "^0.8.5",
     "vscode-languageclient": "^8.1.0"
   }
 }

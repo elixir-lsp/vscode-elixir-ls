@@ -2,7 +2,6 @@
 
 import * as vscode from "vscode";
 import { execSync } from "child_process";
-import * as shell from "shelljs";
 
 function testElixirCommand(command: string): false | Buffer {
   try {
@@ -13,14 +12,7 @@ function testElixirCommand(command: string): false | Buffer {
 }
 
 export function testElixir(): boolean {
-  let testResult = testElixirCommand("elixir");
-  if (testResult === false) {
-    // Try finding elixir in the path directly
-    const elixirPath = shell.which("elixir");
-    if (elixirPath) {
-      testResult = testElixirCommand(elixirPath);
-    }
-  }
+  const testResult = testElixirCommand("elixir");
 
   if (!testResult) {
     vscode.window.showErrorMessage(
