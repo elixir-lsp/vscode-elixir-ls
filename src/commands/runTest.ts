@@ -16,7 +16,7 @@ export default function runTest(
 }
 
 async function runTestWithoutDebug(args: RunArgs): Promise<string> {
-  const command = `mix test ${buildTestCommandArgs(args)}`;
+  const command = `mix test ${buildTestCommandArgs(args).join(" ")}`;
   console.log(command, args.cwd);
 
   return new Promise((resolve, reject) => {
@@ -53,9 +53,20 @@ function getTestConfig(args: RunArgs): vscode.DebugConfiguration | undefined {
     return undefined;
   }
 
+  // override configuration with sane defaults
+  testConfig.request = "launch"
+  testConfig.task = "test";
   testConfig.projectDir = args.cwd;
-  testConfig.taskArgs.concat(buildTestCommandArgs(args));
-  testConfig.requireFiles.push(args.filePath);
+  testConfig.env = {
+    MIX_ENV: "test",
+    ...(testConfig.env ?? {})
+  };
+  testConfig.taskArgs = [...buildTestCommandArgs(args), "--raise"];
+  testConfig.requireFiles = [
+    "test/**/test_helper.exs",
+    "apps/*/test/**/test_helper.exs",
+    args.filePath,
+  ];
   return testConfig;
 }
 
@@ -72,7 +83,7 @@ function getDebugConfig(args: RunArgs): vscode.DebugConfiguration {
     env: {
       MIX_ENV: "test",
     },
-    taskArgs: [buildTestCommandArgs(args)],
+    taskArgs: [...buildTestCommandArgs(args), "--raise"],
     startApps: true,
     projectDir: args.cwd,
     // we need to require all test helpers and only the file we need to test
@@ -130,12 +141,12 @@ async function debugTest(args: RunArgs): Promise<string> {
   });
 }
 
-function buildTestCommandArgs(args: RunArgs): string {
+function buildTestCommandArgs(args: RunArgs): string[] {
   let line = "";
   if (typeof args.line === "number") {
     line = `:${args.line}`;
   }
 
   // as of vscode 1.78 ANSI is not fully supported
-  return `${args.filePath}${line} --no-color`;
+  return [`${args.filePath}${line}`, "--no-color"];
 }
