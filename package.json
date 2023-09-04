@@ -313,10 +313,6 @@
                 "type": "object",
                 "description": "Environment variables to set before debugging - You may want to set MIX_ENV in here."
               },
-              "debugExpressionTimeoutMs": {
-                "type": "number",
-                "description": "The timeout (in milliseconds) used in debugging when waiting for a code expression to complete"
-              },
               "debugAutoInterpretAllModules": {
                 "type": "boolean",
                 "description": "When debugging, interpret all files. Note: Only interpreted files will be part of the debugging stack traces. However this has a performance impact on large repositories, so if debugging is too slow, disable debugAutoInterpretFiles and use debugInterpretModulesPatterns to specify which files to interpret.",
