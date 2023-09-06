@@ -1,7 +1,11 @@
 "use strict";
 
 import * as vscode from "vscode";
-import { ExecuteCommandParams, State } from "vscode-languageclient";
+import {
+  ExecuteCommandParams,
+  ExecuteCommandRequest,
+  State,
+} from "vscode-languageclient";
 import { LanguageClientManager } from "../languageClientManager";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
 
@@ -87,7 +91,7 @@ export function configureExpandMacro(
       };
 
       const res: Record<string, string> = await client.sendRequest(
-        "workspace/executeCommand",
+        ExecuteCommandRequest.type,
         params
       );
 

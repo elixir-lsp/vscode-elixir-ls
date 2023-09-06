@@ -3,6 +3,7 @@
 import * as vscode from "vscode";
 import {
   ExecuteCommandParams,
+  ExecuteCommandRequest,
   LanguageClient,
   State,
 } from "vscode-languageclient/node";
@@ -46,7 +47,7 @@ export function configureMixClean(
             arguments: [cleanDeps],
           };
 
-          await client.sendRequest("workspace/executeCommand", params);
+          await client.sendRequest(ExecuteCommandRequest.type, params);
         })
     );
   });

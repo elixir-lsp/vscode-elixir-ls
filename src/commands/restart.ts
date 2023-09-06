@@ -3,6 +3,7 @@
 import * as vscode from "vscode";
 import {
   ExecuteCommandParams,
+  ExecuteCommandRequest,
   LanguageClient,
   State,
 } from "vscode-languageclient/node";
@@ -48,7 +49,7 @@ export function configureRestart(
             };
 
             try {
-              await client.sendRequest("workspace/executeCommand", params);
+              await client.sendRequest(ExecuteCommandRequest.type, params);
             } catch {
               // this command will throw Connection got disposed
               // client reference remains valid as VS will restart server process and the connection

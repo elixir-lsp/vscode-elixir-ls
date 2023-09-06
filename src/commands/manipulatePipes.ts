@@ -1,7 +1,7 @@
 "use strict";
 
 import * as vscode from "vscode";
-import { ExecuteCommandParams, State } from "vscode-languageclient";
+import { ExecuteCommandParams, ExecuteCommandRequest, State } from "vscode-languageclient";
 import { LanguageClientManager } from "../languageClientManager";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
 
@@ -55,7 +55,7 @@ export function configureManipulatePipes(
 
     const params: ExecuteCommandParams = { command, arguments: args };
 
-    await client.sendRequest("workspace/executeCommand", params);
+    await client.sendRequest(ExecuteCommandRequest.type, params);
   });
 
   context.subscriptions.push(disposable);

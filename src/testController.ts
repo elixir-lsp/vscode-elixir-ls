@@ -1,7 +1,11 @@
 "use strict";
 
 import * as vscode from "vscode";
-import { ExecuteCommandParams, State } from "vscode-languageclient";
+import {
+  ExecuteCommandParams,
+  ExecuteCommandRequest,
+  State,
+} from "vscode-languageclient";
 import runTest from "./commands/runTest";
 import { WorkspaceTracker, getProjectDir } from "./project";
 import { LanguageClientManager } from "./languageClientManager";
@@ -195,7 +199,7 @@ export function configureTestController(
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const res: any[] = await client.sendRequest(
-      "workspace/executeCommand",
+      ExecuteCommandRequest.type,
       params
     );
 
