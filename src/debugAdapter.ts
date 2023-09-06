@@ -70,15 +70,105 @@ class DebugAdapterExecutableFactory
   }
 }
 
+export interface DebuggeeExited {
+  sessionId: string;
+  code: number;
+}
+
+export interface DebuggeeOutput {
+  sessionId: string;
+  output: string;
+}
+
+class DebugAdapterTrackerFactory
+  implements vscode.DebugAdapterTrackerFactory, vscode.Disposable
+{
+  private _context: vscode.ExtensionContext;
+  constructor(context: vscode.ExtensionContext) {
+    this._context = context;
+  }
+
+  dispose() {
+    this._onExited.dispose();
+    this._onOutput.dispose();
+  }
+
+  private _onExited = new vscode.EventEmitter<DebuggeeExited>();
+  get onExited(): vscode.Event<DebuggeeExited> {
+    return this._onExited.event;
+  }
+
+  private _onOutput = new vscode.EventEmitter<DebuggeeOutput>();
+  get onOutput(): vscode.Event<DebuggeeOutput> {
+    return this._onOutput.event;
+  }
+
+  public createDebugAdapterTracker(
+    session: vscode.DebugSession
+  ): vscode.ProviderResult<vscode.DebugAdapterTracker> {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
+    return {
+      onError: (error: Error) => {
+        console.warn(`ElixirLS: Debug session ${session.id}: `, error);
+      },
+      onExit: (code: number | undefined, signal: string | undefined) => {
+        if (code == 0) {
+          console.log(
+            `ElixirLS: Debug session ${session.id}: DAP process exited with code `,
+            code
+          );
+        } else {
+          console.error(
+            `ElixirLS: Debug session ${session.id}: DAP process exited with code `,
+            code,
+            " signal ",
+            signal
+          );
+        }
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onDidSendMessage: (message: any) => {
+        if (message.type == "event") {
+          if (
+            message.event == "output" &&
+            (message.body.category == "stdout" ||
+              message.body.category == "stderr")
+          ) {
+            self._onOutput.fire({
+              sessionId: session.id,
+              output: message.body.output,
+            });
+          }
+
+          if (message.event == "exited") {
+            self._onExited.fire({
+              sessionId: session.id,
+              code: message.body.exitCode,
+            });
+          }
+        }
+      },
+    };
+  }
+}
+
+export let trackerFactory: DebugAdapterTrackerFactory;
+
 export function configureDebugger(context: vscode.ExtensionContext) {
   // Use custom DebugAdapterExecutableFactory that launches the debugger with
   // the current working directory set to the workspace root so asdf can load
   // the correct environment properly.
   const factory = new DebugAdapterExecutableFactory(context);
-  const disposable = vscode.debug.registerDebugAdapterDescriptorFactory(
-    "mix_task",
-    factory
+  context.subscriptions.push(
+    vscode.debug.registerDebugAdapterDescriptorFactory("mix_task", factory)
   );
 
-  context.subscriptions.push(disposable);
+  trackerFactory = new DebugAdapterTrackerFactory(context);
+
+  context.subscriptions.push(
+    vscode.debug.registerDebugAdapterTrackerFactory("mix_task", trackerFactory)
+  );
+
+  context.subscriptions.push(trackerFactory);
 }

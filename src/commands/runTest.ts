@@ -1,5 +1,10 @@
 import { ExecOptions, exec } from "child_process";
 import * as vscode from "vscode";
+import {
+  DebuggeeOutput,
+  DebuggeeExited,
+  trackerFactory,
+} from "../debugAdapter";
 
 type RunArgs = {
   cwd: string;
@@ -54,12 +59,12 @@ function getTestConfig(args: RunArgs): vscode.DebugConfiguration | undefined {
   }
 
   // override configuration with sane defaults
-  testConfig.request = "launch"
+  testConfig.request = "launch";
   testConfig.task = "test";
   testConfig.projectDir = args.cwd;
   testConfig.env = {
     MIX_ENV: "test",
-    ...(testConfig.env ?? {})
+    ...(testConfig.env ?? {}),
   };
   testConfig.taskArgs = [...buildTestCommandArgs(args), "--raise"];
   testConfig.requireFiles = [
@@ -112,20 +117,44 @@ async function debugTest(args: RunArgs): Promise<string> {
         listener.dispose();
       }
     };
+    let sessionId = "";
+    // default to error
+    // expect DAP `exited` event with mix test exit code
+    let exitCode = 1;
+    const output: string[] = [];
     listeners.push(
-      vscode.debug.onDidStartDebugSession((_s) => {
-        console.log("Debug session started");
+      trackerFactory.onOutput((outputEvent: DebuggeeOutput) => {
+        if (outputEvent.sessionId == sessionId) {
+          output.push(outputEvent.output);
+        }
       })
     );
     listeners.push(
-      vscode.debug.onDidTerminateDebugSession((_s) => {
-        console.log("Debug session terminated");
+      trackerFactory.onExited((exit: DebuggeeExited) => {
+        console.log(
+          `ElixirLS: Debug session ${exit.sessionId}: debuggee exited wit code ${exit.code}`
+        );
+        if (exit.sessionId == sessionId) {
+          exitCode = exit.code;
+        }
+      })
+    );
+    listeners.push(
+      vscode.debug.onDidStartDebugSession((s) => {
+        console.log(`ElixirLS: Debug session ${s.id} started`);
+        sessionId = s.id;
+      })
+    );
+    listeners.push(
+      vscode.debug.onDidTerminateDebugSession((s) => {
+        console.log(`ElixirLS: Debug session ${s.id} terminated`);
 
         disposeListeners();
-
-        // there is no documented way of getting output from
-        // vscode.debug.activeDebugConsole
-        resolve("");
+        if (exitCode == 0) {
+          resolve(output.join(""));
+        } else {
+          reject(output.join(""));
+        }
       })
     );
 
