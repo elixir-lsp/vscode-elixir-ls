@@ -123,6 +123,16 @@ export class LanguageClientManager {
     return result;
   }
 
+  public allClientsPromises(): Promise<LanguageClient>[] {
+    const result = [...this.clientsPromises.values()];
+
+    if (this.defaultClientPromise) {
+      result.push(this.defaultClientPromise);
+    }
+
+    return result;
+  }
+
   public getClientByUri(uri: vscode.Uri): LanguageClient {
     // Files outside of workspace go to default client when no directory is open
     // otherwise they go to first workspace
@@ -189,6 +199,17 @@ export class LanguageClientManager {
     }
 
     return this.getClientByUri(document.uri);
+  }
+
+  public getClientPromiseByDocument(
+    document: vscode.TextDocument
+  ): Promise<LanguageClient> | null {
+    // We are only interested in elixir files
+    if (document.languageId !== "elixir") {
+      return null;
+    }
+
+    return this.getClientPromiseByUri(document.uri);
   }
 
   public handleDidOpenTextDocument(

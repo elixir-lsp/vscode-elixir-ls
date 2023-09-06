@@ -25,9 +25,21 @@ export function configureTestController(
   // when the user opens the Test Explorer for the first time.
   controller.resolveHandler = async (test) => {
     if (!test) {
-      await discoverAllFilesInWorkspace();
+      try {
+        await discoverAllFilesInWorkspace();
+      } catch (e) {
+        console.error("ElixirLS: unable to resolve tests in workspace", e);
+      }
     } else {
-      await parseTestsInFileContents(test);
+      try {
+        await parseTestsInFileContents(test);
+      } catch (e) {
+        console.error(
+          "ElixirLS: unable to resolve tests in ",
+          test.uri!.fsPath,
+          e
+        );
+      }
     }
   };
 
@@ -138,21 +150,27 @@ export function configureTestController(
     }
   }
 
-  async function parseTestsInFileContents(file: vscode.TestItem) {
+  async function parseTestsInFileContents(
+    file: vscode.TestItem
+  ): Promise<void> {
     if (!file.uri!.toString().endsWith(".exs")) {
       return;
     }
     // If a document is open, VS Code already knows its contents. If this is being
     // called from the resolveHandler when a document isn't open, we'll need to
     // read them from disk ourselves.
-    const client = languageClientManager.getClientByUri(file.uri!);
+    const clientPromise = languageClientManager.getClientPromiseByUri(
+      file.uri!
+    );
 
-    if (!client) {
+    if (!clientPromise) {
       console.error(
         `ElixirLS: no language client for document ${file.uri!.fsPath}`
       );
       return;
     }
+
+    const client = await clientPromise;
 
     if (!client.initializeResult) {
       console.error(
@@ -235,9 +253,9 @@ export function configureTestController(
     }
   }
 
-  async function discoverAllFilesInWorkspace() {
+  async function discoverAllFilesInWorkspace(): Promise<void> {
     if (!vscode.workspace.workspaceFolders) {
-      return []; // handle the case of no open folders
+      return; // handle the case of no open folders
     }
 
     const outerMostWorkspaceFolders = [
@@ -248,7 +266,7 @@ export function configureTestController(
       ),
     ];
 
-    return Promise.all(
+    await Promise.all(
       outerMostWorkspaceFolders.map(async (workspaceFolder) => {
         const projectDir = getProjectDir(workspaceFolder);
         console.log(

@@ -50,14 +50,18 @@ export function configureExpandMacro(
       }
 
       const uri = editor.document.uri;
-      const client = languageClientManager.getClientByDocument(editor.document);
+      const clientPromise = languageClientManager.getClientPromiseByDocument(
+        editor.document
+      );
 
-      if (!client) {
+      if (!clientPromise) {
         console.error(
           `ElixirLS: no language client for document ${uri.fsPath}`
         );
         return;
       }
+
+      const client = await clientPromise;
 
       if (!client.initializeResult) {
         console.error(

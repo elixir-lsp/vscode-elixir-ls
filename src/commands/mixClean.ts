@@ -24,27 +24,30 @@ export function configureMixClean(
     }
 
     await Promise.all(
-      languageClientManager.allClients().map(async (client: LanguageClient) => {
-        if (!client.initializeResult) {
-          console.error(
-            `ElixirLS: unable to execute command on server ${
-              client.name
-            } in state ${State[client.state]}`
-          );
-          return;
-        }
-        const command =
-          client.initializeResult.capabilities.executeCommandProvider!.commands.find(
-            (c) => c.startsWith("mixClean:")
-          )!;
+      languageClientManager
+        .allClientsPromises()
+        .map(async (clientPromise: Promise<LanguageClient>) => {
+          const client = await clientPromise;
+          if (!client.initializeResult) {
+            console.error(
+              `ElixirLS: unable to execute command on server ${
+                client.name
+              } in state ${State[client.state]}`
+            );
+            return;
+          }
+          const command =
+            client.initializeResult.capabilities.executeCommandProvider!.commands.find(
+              (c) => c.startsWith("mixClean:")
+            )!;
 
-        const params: ExecuteCommandParams = {
-          command: command,
-          arguments: [cleanDeps],
-        };
+          const params: ExecuteCommandParams = {
+            command: command,
+            arguments: [cleanDeps],
+          };
 
-        await client.sendRequest("workspace/executeCommand", params);
-      })
+          await client.sendRequest("workspace/executeCommand", params);
+        })
     );
   });
 

@@ -26,8 +26,9 @@ export function configureRestart(
 
       await Promise.all(
         languageClientManager
-          .allClients()
-          .map(async (client: LanguageClient) => {
+          .allClientsPromises()
+          .map(async (clientPromise: Promise<LanguageClient>) => {
+            const client = await clientPromise;
             if (!client.initializeResult) {
               console.error(
                 `ElixirLS: unable to execute command on server ${

@@ -19,13 +19,17 @@ export function configureManipulatePipes(
       return;
     }
 
-    const client = languageClientManager.getClientByDocument(editor.document);
     const uri = editor.document.uri;
+    const clientPromise = languageClientManager.getClientPromiseByDocument(
+      editor.document
+    );
 
-    if (!client) {
+    if (!clientPromise) {
       console.error(`ElixirLS: no language client for document ${uri.fsPath}`);
       return;
     }
+
+    const client = await clientPromise;
 
     if (!client.initializeResult) {
       console.error(
@@ -51,7 +55,7 @@ export function configureManipulatePipes(
 
     const params: ExecuteCommandParams = { command, arguments: args };
 
-    client.sendRequest("workspace/executeCommand", params);
+    await client.sendRequest("workspace/executeCommand", params);
   });
 
   context.subscriptions.push(disposable);
