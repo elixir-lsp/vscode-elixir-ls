@@ -2,6 +2,7 @@
 
 import * as vscode from "vscode";
 import { buildCommand } from "./executable";
+import { DebugProtocol } from "@vscode/debugprotocol";
 
 class DebugAdapterExecutableFactory
   implements vscode.DebugAdapterDescriptorFactory
@@ -127,24 +128,27 @@ class DebugAdapterTrackerFactory
           );
         }
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onDidSendMessage: (message: any) => {
+      onDidSendMessage: (message: DebugProtocol.ProtocolMessage) => {
         if (message.type == "event") {
-          if (
-            message.event == "output" &&
-            (message.body.category == "stdout" ||
-              message.body.category == "stderr")
-          ) {
-            self._onOutput.fire({
-              sessionId: session.id,
-              output: message.body.output,
-            });
+          const event = <DebugProtocol.Event>message;
+          if (event.event == "output") {
+            const outputEvent = <DebugProtocol.OutputEvent>message;
+            if (
+              outputEvent.body.category == "stdout" ||
+              outputEvent.body.category == "stderr"
+            ) {
+              self._onOutput.fire({
+                sessionId: session.id,
+                output: outputEvent.body.output,
+              });
+            }
           }
 
-          if (message.event == "exited") {
+          if (event.event == "exited") {
+            const exitedEvent = <DebugProtocol.ExitedEvent>message;
             self._onExited.fire({
               sessionId: session.id,
-              code: message.body.exitCode,
+              code: exitedEvent.body.exitCode,
             });
           }
         }

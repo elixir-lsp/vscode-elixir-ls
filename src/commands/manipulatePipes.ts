@@ -1,7 +1,11 @@
 "use strict";
 
 import * as vscode from "vscode";
-import { ExecuteCommandParams, ExecuteCommandRequest, State } from "vscode-languageclient";
+import {
+  ExecuteCommandParams,
+  ExecuteCommandRequest,
+  State,
+} from "vscode-languageclient";
 import { LanguageClientManager } from "../languageClientManager";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
 
