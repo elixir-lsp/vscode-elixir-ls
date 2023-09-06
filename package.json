@@ -333,7 +333,8 @@
               },
               "startApps": {
                 "type": "boolean",
-                "description": "Run apps.start before requiring files. This should be set to true for Phoenix tests, but false in most other cases."
+                "description": "Run apps.start before requiring files. This should be set to true for Phoenix tests, but false in most other cases.",
+                "default": false
               },
               "excludeModules": {
                 "type": "array",
@@ -353,13 +354,23 @@
               },
               "stackTraceMode": {
                 "type": "string",
-                "description": ":int.stack_trace/1 option",
+                "description": "Option passed to :int.stack_trace/1. See https://www.erlang.org/doc/man/int#stack_trace-1 for details",
                 "enum": [
                   "all",
                   "no_tail",
                   "false"
                 ],
                 "default": "no_tail"
+              },
+              "exitAfterTaskReturns": {
+                "type": "boolean",
+                "description": "Should the debug session stop when mix task returns. Tasks that return early while the code continues running asynchronously require `false` setting.",
+                "default": true
+              },
+              "breakOnDbg": {
+                "type": "boolean",
+                "description": "Should the debugger break on Kernel.dbg/2 macro.",
+                "default": true
               }
             }
           }
