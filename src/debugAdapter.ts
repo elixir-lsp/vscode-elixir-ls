@@ -27,29 +27,27 @@ class DebugAdapterExecutableFactory
       "debugger",
       session.workspaceFolder
     );
-    let options: vscode.DebugAdapterExecutableOptions | undefined =
-      executable.options;
+
+    const options: vscode.DebugAdapterExecutableOptions =
+      executable.options ?? {};
 
     if (session.workspaceFolder) {
-      const cwd: string = session.workspaceFolder.uri.fsPath;
+      // we starting the session in workspace folder
+      // set cwd to workspace folder path
+      options.cwd = session.workspaceFolder.uri.fsPath;
+    }
 
-      if (options) {
-        options = { ...options, cwd };
-      } else {
-        options = { cwd };
-      }
+    // for folderless session (when `session.workspaceFolder` is `undefined`)
+    // assume that cwd is workspace root and `projectDir` will be used to point
+    // to the root of mix project e.g. `"projectDir": "${workspaceRoot:foo}"`
 
-      // for some reason env from launch config is not being passed to executable config
-      // by default we need to do that manually
-      if (session.configuration.env) {
-        options = {
-          ...options,
-          env: {
-            ...(options.env ?? {}),
-            ...session.configuration.env,
-          },
-        };
-      }
+    // for some reason env from launch config is not being passed to executable config
+    // by default we need to do that manually
+    if (session.configuration.env) {
+      options.env = {
+        ...(options.env ?? {}),
+        ...session.configuration.env,
+      };
     }
 
     const resultExecutable = new vscode.DebugAdapterExecutable(
@@ -60,11 +58,14 @@ class DebugAdapterExecutableFactory
 
     if (session.workspaceFolder) {
       console.log(
-        `ElixirLS: starting DAP for ${session.workspaceFolder.uri.fsPath} with executable`,
+        `ElixirLS: starting DAP session in workspace folder ${session.workspaceFolder.name} with executable`,
         resultExecutable
       );
     } else {
-      console.log("ElixirLS: starting DAP with executable", resultExecutable);
+      console.log(
+        "ElixirLS: starting folderless DAP session with executable",
+        resultExecutable
+      );
     }
 
     return resultExecutable;
