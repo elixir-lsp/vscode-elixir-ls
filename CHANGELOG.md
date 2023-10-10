@@ -1,5 +1,25 @@
 ### Unreleased
 
+### v0.17.0: 11 October 2023
+
+#### Highlights
+
+- Syntax highlighting for Unicode identifiers. Elixir supports Unicode identifiers since v1.5 and now all ElixirLS features should work with them
+- When running a debug session from Test UI test result is now passed to the test controller and UI updates accordingly
+
+#### Improvements
+
+- ElixirLS updated to [v0.17.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0170)
+- The extension is now bundled. This should improve startup time
+- `defprotocol` and `defimpl` are now treated as modules in grammar
+
+#### Fixes
+
+- Task arguments are now correctly passed to debugger when starting debug session from Test UI. This bug made it impossible to debug a single test
+- Fixed race conditions in Test Controller. Previously if Test UI was loaded before the language server starts the extension would error and fail to get the list of tests in project
+- `env` from launch config is now correctly passed to debugger process in folderless setup (i.e. when launch config is bundled in workspace file)
+- Bogus syntax highlighting rules matching function calls removed
+
 ### v0.16.0: 19 August 2023
 
 #### Improvements
