@@ -169,9 +169,6 @@
       "patterns": [
         {
           "include": "$self"
-        },
-        {
-          "include": "#function_parameter"
         }
       ]
     },
@@ -194,42 +191,14 @@
       "name": "keyword.operator.elixir"
     },
     {
+      "comment": "Keyword",
       "match": "\\b(nil|true|false)\\b(?![?!])",
       "name": "constant.language.elixir"
     },
     {
-      "match": "\\b(__(CALLER|ENV|MODULE|DIR|STACKTRACE)__)\\b(?![?!])",
-      "name": "variable.language.elixir"
-    },
-    {
-      "comment": "Elixir module function call",
-      "match": "\\b([A-Z][A-Za-z0-9_]*)\\s*(\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
-      "captures": {
-        "1": {
-          "name": "variable.other.constant.elixir"
-        },
-        "2": {
-          "name": "punctuation.separator.method.elixir"
-        },
-        "3": {
-          "name": "entity.name.function.call.elixir"
-        }
-      }
-    },
-    {
-      "comment": "Erlang module function call",
-      "match": "(:(<<<|<<>>|<<~|<~>|<>|<=|<-|<~|<|>>>|>=|>|\\+\\+\\+|\\+\\+|\\+|---|--|->|-|\\*\\*|\\*|\\|\\|\\||\\|\\||\\|>|\\||%{}|%|&&&|&&|&|===|==|=~|=>|=|!==|!=|!|\\.\\.|\\.|~>>|~>|\\^|{}|@|\\/|\\\\\\\\|[\\p{L}_][\\p{L}\\p{N}_@]*[?!]?))\\s*(\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
-      "captures": {
-        "1": {
-          "name": "constant.language.symbol.elixir"
-        },
-        "3": {
-          "name": "punctuation.separator.method.elixir"
-        },
-        "4": {
-          "name": "entity.name.function.call.elixir"
-        }
-      }
+      "comment": "Dot call",
+      "match": "\\b(?<=\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
+      "name": "entity.name.function.call.elixir"
     },
     {
       "comment": "Local function capture",
@@ -255,8 +224,12 @@
       "name": "entity.name.function.call.elixir"
     },
     {
+      "match": "\\b(__(CALLER|ENV|MODULE|DIR|STACKTRACE)__)\\b(?![?!])",
+      "name": "variable.language.elixir"
+    },
+    {
       "match": "\\b[A-Z][A-Za-z0-9_]*\\b",
-      "name": "variable.other.constant.elixir"
+      "name": "entity.name.type.module.elixir"
     },
     {
       "match": "\\b(0[xX]\\h(?>_?\\h)*|\\d(?>_?\\d)*(\\.(?![^[:space:][:digit:]])(?>_?\\d)*)?([eE][-+]?\\d(?>_?\\d)*)?|0b[01](?:[_01]*[01]+|[01]*)|0o[0-7](?:[_0-7]*[0-7]+|[0-7]*))\\b",
@@ -2382,29 +2355,14 @@
       "name": "punctuation.section.function.elixir"
     },
     {
-      "captures": {
-        "1": {
-          "name": "punctuation.definition.variable.elixir"
-        }
-      },
       "match": "(@)([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
-      "name": "variable.other.readwrite.module.elixir"
+      "name": "variable.other.constant.elixir"
     },
     {
-      "captures": {
-        "1": {
-          "name": "punctuation.definition.variable.elixir"
-        }
-      },
       "match": "([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "name": "variable.other.readwrite.elixir"
     },
     {
-      "captures": {
-        "1": {
-          "name": "punctuation.definition.variable.elixir"
-        }
-      },
       "match": "(&)\\d+",
       "name": "variable.other.anonymous.elixir"
     },
@@ -2431,10 +2389,6 @@
     "escaped_char": {
       "match": "\\\\(?:[0-7]{1,3}|x[\\da-fA-F]{1,2}|.)",
       "name": "constant.character.escape.elixir"
-    },
-    "function_parameter": {
-      "match": "([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
-      "name": "parameter.variable.function.elixir"
     },
     "interpolated_elixir": {
       "patterns": [
