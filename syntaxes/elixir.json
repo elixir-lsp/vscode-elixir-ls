@@ -202,7 +202,7 @@
       "name": "variable.language.elixir"
     },
     {
-      "comment": "Function call without parenthesis",
+      "comment": "Elixir module function call",
       "match": "\\b([A-Z][A-Za-z0-9_]*)\\s*(\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "captures": {
         "1": {
@@ -212,28 +212,29 @@
           "name": "punctuation.separator.method.elixir"
         },
         "3": {
-          "name": "entity.name.function-call.elixir"
+          "name": "entity.name.function.call.elixir"
         }
       }
     },
     {
-      "comment": "Erlang Function call without parenthesis",
-      "match": "(:(<<<|<<>>|<<~|<~>|<>|<=|<-|<~|<|>>>|>=|>|\\+\\+\\+|\\+\\+|\\+|---|--|->|-|\\*\\*|\\*|\\|\\|\\||\\|\\||\\|>|\\||%{}|%|&&&|&&|&|===|==|=~|=>|=|!==|!=|!|\\.\\.|\\.|~>>|~>|\\^|{}|@|\\/|\\\\\\\\|[\\p{L}_][\\p{L}\\p{N}_@]*[?!]?))\\s*(\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
+      "comment": "Erlang module function call",
+      "match": "\\b(:(<<<|<<>>|<<~|<~>|<>|<=|<-|<~|<|>>>|>=|>|\\+\\+\\+|\\+\\+|\\+|---|--|->|-|\\*\\*|\\*|\\|\\|\\||\\|\\||\\|>|\\||%{}|%|&&&|&&|&|===|==|=~|=>|=|!==|!=|!|\\.\\.|\\.|~>>|~>|\\^|{}|@|\\/|\\\\\\\\|[\\p{L}_][\\p{L}\\p{N}_@]*[?!]?))\\s*(\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "captures": {
         "1": {
           "name": "constant.language.symbol.elixir"
         },
-        "2": {
+        "3": {
           "name": "punctuation.separator.method.elixir"
         },
-        "3": {
-          "name": "entity.name.function-call.elixir"
+        "4": {
+          "name": "entity.name.function.call.elixir"
         }
       }
     },
     {
-      "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)?(?=\\s*?\\.?\\s*?\\()",
-      "name": "entity.name.function-call.elixir"
+      "comment": "Local function call",
+      "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)(?=\\s*?\\()",
+      "name": "entity.name.function.call.elixir"
     },
     {
       "match": "\\b[A-Z][A-Za-z0-9_]*\\b",
