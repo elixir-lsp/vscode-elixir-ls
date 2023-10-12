@@ -145,7 +145,7 @@
           "name": "punctuation.definition.constant.elixir"
         }
       },
-      "comment": "symbols",
+      "comment": "Atom key",
       "match": "(?:<<<|<<>>|<<~|<~>|<>|<=|<-|<~|<|>>>|>=|>|\\+\\+\\+|\\+\\+|\\+|---|--|->|-|\\*\\*|\\*|\\|\\|\\||\\|\\||\\|>|\\||%{}|%|&&&|&&|&|===|==|=~|=>|=|!==|!=|!|\\.\\.|\\.|~>>|~>|\\^|{}|@|\\/|\\\\\\\\|[\\p{L}_][\\p{L}\\p{N}_@]*[?!]?)(:)(?!:|\\b)",
       "name": "constant.language.symbol.elixir"
     },
@@ -221,6 +221,11 @@
     {
       "comment": "Local function call",
       "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)(?=\\s*?\\()",
+      "name": "entity.name.function.call.elixir"
+    },
+    {
+      "comment": "Pipe into no parens local function call",
+      "match": "(?<=\\|\\>\\s*)([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "name": "entity.name.function.call.elixir"
     },
     {
@@ -2376,7 +2381,7 @@
           "name": "punctuation.definition.constant.elixir"
         }
       },
-      "comment": "symbols",
+      "comment": "Atom",
       "match": "(?<!:):(?:<<<|<<>>|<<~|<~>|<>|<=|<-|<~|<|>>>|>=|>|\\+\\+\\+|\\+\\+|\\+|---|--|->|-|\\*\\*|\\*|\\|\\|\\||\\|\\||\\|>|\\||%{}|%|&&&|&&|&|===|==|=~|=>|=|!==|!=|!|\\.\\.|\\.|~>>|~>|\\^|{}|@|\\/|\\\\\\\\|[\\p{L}_][\\p{L}\\p{N}_@]*[?!]?)",
       "name": "constant.language.symbol.elixir"
     },
