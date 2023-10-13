@@ -1,5 +1,17 @@
 ### Unreleased
 
+### v0.17.1: 13 October 2023
+
+#### Improvements
+
+- ElixirLS updated to [v0.17.1](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0171)
+
+#### Fixes
+
+- Variables are no longer matched as punctuation in grammar
+- Restored function call matching in grammar
+- Consistently match modules. Previous rules matched them differently in `defmodule`
+
 ### v0.17.0: 11 October 2023
 
 #### Highlights
