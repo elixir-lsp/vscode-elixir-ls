@@ -1,4 +1,8 @@
-# ElixirLS: Elixir support and debugger for VS Code [![Actions Status](https://img.shields.io/github/actions/workflow/status/elixir-lsp/vscode-elixir-ls/main.yml?branch=master)](github/actions/workflow/status/elixir-lsp/vscode-elixir-ls/main.yml?branch=master)
+# ElixirLS: Elixir support and debugger for VS Code
+[![Actions Status](https://img.shields.io/github/actions/workflow/status/elixir-lsp/vscode-elixir-ls/main.yml?branch=master)](github/actions/workflow/status/elixir-lsp/vscode-elixir-ls/main.yml?branch=master)
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/JakeBecker.elixir-ls?label=Visual%20Studio%20Marketplace%20Installs)](https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls)
+[![Open VSX Installs](https://img.shields.io/open-vsx/dt/elixir-lsp/elixir-ls?label=Open%20VSX%20Installs)](https://open-vsx.org/extension/elixir-lsp/elixir-ls)
+[![Slack](https://img.shields.io/badge/slack-join-orange.svg)](https://elixir-lang.slack.com/archives/C7D272G6N)
 
 Provides Elixir language support and debugger. This extension is powered by the [Elixir Language Server (ElixirLS)](https://github.com/elixir-lsp/elixir-ls), an Elixir implementation of Microsoft's IDE-agnostic [Language Server Protocol](https://github.com/Microsoft/language-server-protocol) and [VS Code debug protocol](https://code.visualstudio.com/docs/extensionAPI/api-debugging). Visit its page for more information. For a guide to debugger usage in Elixir, read [this blog post](https://medium.com/@JakeBeckerCode/debugging-elixir-in-vs-code-400e21814614).
 
