@@ -10,6 +10,7 @@ import { LanguageClientManager } from "./languageClientManager";
 import { detectConflictingExtensions } from "./conflictingExtensions";
 import { configureCommands } from "./commands";
 import { WorkspaceTracker } from "./project";
+import { configureTelemetry, reporter } from "./telemetry";
 import { testElixir } from "./testElixir";
 
 console.log("ElixirLS: Loading extension");
@@ -40,6 +41,18 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
     "ElixirLS: Workspace is",
     vscode.workspace.workspaceFile?.toString()
   );
+
+  configureTelemetry(context);
+
+  reporter.sendTelemetryEvent(
+    "elixir_ls.extension_activated",
+    {"elixir_ls.workspace_mode": workspaceTracker.mode}
+  );
+
+  // TODO remove
+  setTimeout(() => {
+		throw new Error("HELLO WORLD");
+	}, 5000);
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeWorkspaceFolders(() => {
@@ -92,6 +105,10 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
 
 export async function deactivate() {
   console.log(`ElixirLS: deactivating extension`);
+  reporter.sendTelemetryEvent(
+    "elixir_ls.extension_deactivated",
+    {"elixir_ls.workspace_mode": workspaceTracker.mode}
+  );
   workspaceTracker.handleDidChangeWorkspaceFolders();
   await languageClientManager.deactivate();
   console.log(`ElixirLS: extension deactivated`);

@@ -5,6 +5,7 @@ import {
   DebuggeeExited,
   trackerFactory,
 } from "../debugAdapter";
+import { reporter } from "../telemetry";
 
 type RunArgs = {
   cwd: string;
@@ -21,8 +22,14 @@ export default function runTest(
 }
 
 async function runTestWithoutDebug(args: RunArgs): Promise<string> {
+  reporter.sendTelemetryEvent(
+    "elixir_ls.run_test",
+    {
+      "elixir_ls.with_debug": "false"
+    }
+  );
+  
   const command = `mix test ${buildTestCommandArgs(args).join(" ")}`;
-  console.log(command, args.cwd);
 
   return new Promise((resolve, reject) => {
     const options: ExecOptions = {
@@ -108,6 +115,13 @@ function getDebugConfig(args: RunArgs): vscode.DebugConfiguration {
 }
 
 async function debugTest(args: RunArgs): Promise<string> {
+  reporter.sendTelemetryEvent(
+    "elixir_ls.run_test",
+    {
+      "elixir_ls.with_debug": "true"
+    }
+  );
+
   const debugConfiguration: vscode.DebugConfiguration = getDebugConfig(args);
 
   return new Promise((resolve, reject) => {
@@ -162,10 +176,29 @@ async function debugTest(args: RunArgs): Promise<string> {
       .startDebugging(args.workspaceFolder, debugConfiguration)
       .then((debugSessionStarted) => {
         if (!debugSessionStarted) {
+          reporter.sendTelemetryErrorEvent(
+            "elixir_ls.run_test_error",
+            {
+              "elixir_ls.with_debug": "true"
+            }
+          );
+
           disposeListeners();
 
           reject("Unable to start debug session");
         }
+      }, (reason) => {
+        reporter.sendTelemetryErrorEvent(
+          "elixir_ls.run_test_error",
+          {
+            "elixir_ls.with_debug": "true",
+            "elixir_ls.run_test_error": String(reason),
+            "elixir_ls.run_test_error_stack": reason.stack ?? ""
+          }
+        );
+
+        disposeListeners();
+        reject("Unable to start debug session");
       });
   });
 }

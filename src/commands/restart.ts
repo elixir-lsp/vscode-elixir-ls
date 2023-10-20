@@ -9,6 +9,7 @@ import {
 } from "vscode-languageclient/node";
 import { LanguageClientManager } from "../languageClientManager";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
+import { reporter } from "../telemetry";
 
 export function configureRestart(
   context: vscode.ExtensionContext,
@@ -25,6 +26,10 @@ export function configureRestart(
         return;
       }
 
+      reporter.sendTelemetryEvent(
+        "elixir_ls.restart_command"
+      );
+
       await Promise.all(
         languageClientManager
           .allClientsPromises()
@@ -38,6 +43,11 @@ export function configureRestart(
               );
               return;
             }
+            // TODO try this?
+            // try {
+            //   client.restart();
+            // } catch {
+            // }
             const command =
               client.initializeResult.capabilities.executeCommandProvider!.commands.find(
                 (c) => c.startsWith("restart:")

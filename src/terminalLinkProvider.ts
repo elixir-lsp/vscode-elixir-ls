@@ -14,15 +14,13 @@ interface TerminalLinkWithData extends vscode.TerminalLink {
 export function configureTerminalLinkProvider(
   context: vscode.ExtensionContext
 ) {
-  function openUri(uri: vscode.Uri, line: number) {
-    vscode.workspace.openTextDocument(uri).then((document) => {
-      vscode.window.showTextDocument(document).then((editor) => {
-        const position = new vscode.Position(line - 1, 0);
-        const selection = new vscode.Selection(position, position);
-        editor.revealRange(selection);
-        editor.selection = selection;
-      });
-    });
+  async function openUri(uri: vscode.Uri, line: number) {
+    const document = await vscode.workspace.openTextDocument(uri);
+    const editor = await vscode.window.showTextDocument(document);
+    const position = new vscode.Position(line - 1, 0);
+    const selection = new vscode.Selection(position, position);
+    editor.revealRange(selection);
+    editor.selection = selection;
   }
 
   const disposable = vscode.window.registerTerminalLinkProvider({
@@ -49,24 +47,22 @@ export function configureTerminalLinkProvider(
         },
       ];
     },
-    handleTerminalLink: ({
+    handleTerminalLink: async ({
       data: { app, file, line },
-    }: TerminalLinkWithData): vscode.ProviderResult<void> => {
+    }: TerminalLinkWithData) => {
       const umbrellaFile = path.join("apps", app, file);
-      vscode.workspace.findFiles(`{${umbrellaFile},${file}}`).then((uris) => {
-        if (uris.length === 1) {
-          openUri(uris[0], line);
-        } else if (uris.length > 1) {
-          const items = uris.map((uri) => ({ label: uri.toString(), uri }));
-          vscode.window.showQuickPick(items).then((selection) => {
-            if (!selection) {
-              return;
-            }
-
-            openUri(selection.uri, line);
-          });
+      const uris = await vscode.workspace.findFiles(`{${umbrellaFile},${file}}`)
+      if (uris.length === 1) {
+        openUri(uris[0], line);
+      } else if (uris.length > 1) {
+        const items = uris.map((uri) => ({ label: uri.toString(), uri }));
+        const selection = await vscode.window.showQuickPick(items);
+        if (!selection) {
+          return;
         }
-      });
+
+        await openUri(selection.uri, line);
+      }
     },
   });
 

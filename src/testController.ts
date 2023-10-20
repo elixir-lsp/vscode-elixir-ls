@@ -10,6 +10,7 @@ import runTest from "./commands/runTest";
 import { WorkspaceTracker, getProjectDir } from "./project";
 import { LanguageClientManager } from "./languageClientManager";
 import { RUN_TEST_FROM_CODELENS } from "./constants";
+import { reporter } from "./telemetry";
 
 export function configureTestController(
   context: vscode.ExtensionContext,
@@ -33,6 +34,13 @@ export function configureTestController(
         await discoverAllFilesInWorkspace();
       } catch (e) {
         console.error("ElixirLS: unable to resolve tests in workspace", e);
+        reporter.sendTelemetryErrorEvent(
+          "elixir_ls.test_controller_resolve_error",
+          {
+            "elixir_ls.test_controller_resolve_error": String(e),
+            "elixir_ls.test_controller_resolve_error_stack": e.stack ?? "",
+          }
+        );
       }
     } else {
       try {
@@ -42,6 +50,13 @@ export function configureTestController(
           "ElixirLS: unable to resolve tests in ",
           test.uri!.fsPath,
           e
+        );
+        reporter.sendTelemetryErrorEvent(
+          "elixir_ls.test_controller_resolve_error",
+          {
+            "elixir_ls.test_controller_resolve_error": String(e),
+            "elixir_ls.test_controller_resolve_error_stack": e.stack ?? "",
+          }
         );
       }
     }
@@ -365,7 +380,7 @@ export function configureTestController(
           // Otherwise, just run the test case. Note that we don't need to manually
           // set the state of parent tests; they'll be set automatically.
           // eslint-disable-next-line no-case-declarations
-          const start = Date.now();
+          const start = performance.now();
           run.started(test);
           try {
             const projectDir = workspaceTracker.getProjectDirForUri(test.uri!)!;
@@ -383,13 +398,13 @@ export function configureTestController(
               shouldDebug
             );
             writeOutput(run, output, test);
-            run.passed(test, Date.now() - start);
+            run.passed(test, performance.now() - start);
           } catch (e) {
             writeOutput(run, e as string, test);
             run.failed(
               test,
               new vscode.TestMessage(e as string),
-              Date.now() - start
+              performance.now() - start
             );
           }
           break;
