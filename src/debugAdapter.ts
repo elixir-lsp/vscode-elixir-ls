@@ -69,10 +69,11 @@ class DebugAdapterExecutableFactory
       );
     }
 
-    reporter.sendTelemetryEvent(
-      "elixir_ls.debug_session_starting",
-      {"elixir_ls.debug_session_mode": session.workspaceFolder ? "workspaceFolder" : "folderless"}
-    );
+    reporter.sendTelemetryEvent("debug_session_starting", {
+      "elixir_ls.debug_session_mode": session.workspaceFolder
+        ? "workspaceFolder"
+        : "folderless",
+    });
 
     return resultExecutable;
   }
@@ -127,15 +128,14 @@ class DebugAdapterTrackerFactory
       },
       onError: (error: Error) => {
         console.warn(`ElixirLS: Debug session ${session.id}: `, error);
-        
-        reporter.sendTelemetryErrorEvent(
-          "elixir_ls.debug_session_error",
-          {
-            "elixir_ls.debug_session_mode": session.workspaceFolder ? "workspaceFolder" : "folderless",
-            "elixir_ls.debug_session_error": String(error),
-            "elixir_ls.debug_session_error_stack": error.stack ?? ""
-          }
-        );
+
+        reporter.sendTelemetryErrorEvent("debug_session_error", {
+          "elixir_ls.debug_session_mode": session.workspaceFolder
+            ? "workspaceFolder"
+            : "folderless",
+          "elixir_ls.debug_session_error": String(error),
+          "elixir_ls.debug_session_error_stack": error.stack ?? "",
+        });
       },
       onExit: (code: number | undefined, signal: string | undefined) => {
         if (code == 0) {
@@ -151,14 +151,13 @@ class DebugAdapterTrackerFactory
             signal
           );
         }
-        reporter.sendTelemetryErrorEvent(
-          "elixir_ls.debug_session_exit",
-          {
-            "elixir_ls.debug_session_mode": session.workspaceFolder ? "workspaceFolder" : "folderless",
-            "elixir_ls.debug_session_exit_code": String(code),
-            "elixir_ls.debug_session_exit_signal": String(code),
-          }
-        );
+        reporter.sendTelemetryErrorEvent("debug_session_exit", {
+          "elixir_ls.debug_session_mode": session.workspaceFolder
+            ? "workspaceFolder"
+            : "folderless",
+          "elixir_ls.debug_session_exit_code": String(code),
+          "elixir_ls.debug_session_exit_signal": String(code),
+        });
       },
       onDidSendMessage: (message: DebugProtocol.ProtocolMessage) => {
         if (message.type == "event") {
@@ -180,7 +179,9 @@ class DebugAdapterTrackerFactory
                 telemetryData.name,
                 {
                   ...telemetryData.properties,
-                  "elixir_ls.debug_session_mode": session.workspaceFolder ? "workspaceFolder" : "folderless"
+                  "elixir_ls.debug_session_mode": session.workspaceFolder
+                    ? "workspaceFolder"
+                    : "folderless",
                 },
                 telemetryData.measurements
               );
@@ -188,25 +189,31 @@ class DebugAdapterTrackerFactory
           }
 
           if (event.event == "initialized") {
-            const elapsed = performance.now() - self.startTimes.get(session.id)!
+            const elapsed =
+              performance.now() - self.startTimes.get(session.id)!;
             reporter.sendTelemetryEvent(
-              "elixir_ls.debug_session_initialized",
-              {"elixir_ls.debug_session_mode": session.workspaceFolder ? "workspaceFolder" : "folderless"},
-              {"elixir_ls.debug_session_initialize_time": elapsed}
+              "debug_session_initialized",
+              {
+                "elixir_ls.debug_session_mode": session.workspaceFolder
+                  ? "workspaceFolder"
+                  : "folderless",
+              },
+              { "elixir_ls.debug_session_initialize_time": elapsed }
             );
           }
 
           if (event.event == "exited") {
             const exitedEvent = <DebugProtocol.ExitedEvent>message;
 
-            reporter.sendTelemetryEvent(
-              "elixir_ls.debug_session_exited",
-              {
-                "elixir_ls.debug_session_mode": session.workspaceFolder ? "workspaceFolder" : "folderless",
-                "elixir_ls.debug_session_exit_code": String(exitedEvent.body.exitCode)
-              }
-            );
-            
+            reporter.sendTelemetryEvent("debug_session_exited", {
+              "elixir_ls.debug_session_mode": session.workspaceFolder
+                ? "workspaceFolder"
+                : "folderless",
+              "elixir_ls.debug_session_exit_code": String(
+                exitedEvent.body.exitCode
+              ),
+            });
+
             self._onExited.fire({
               sessionId: session.id,
               code: exitedEvent.body.exitCode,
@@ -221,15 +228,14 @@ class DebugAdapterTrackerFactory
 
               if (errorMessage.sendTelemetry) {
                 // TODO include errorMessage.variables?
-                reporter.sendTelemetryErrorEvent(
-                  "elixir_ls.dap_request_error",
-                  {
-                    "elixir_ls.debug_session_mode": session.workspaceFolder ? "workspaceFolder" : "folderless",
-                    "elixir_ls.dap_command": errorResponse.command,
-                    "elixir_ls.dap_error": errorResponse.message,
-                    "elixir_ls.dap_error_message": errorMessage.format
-                  }
-                );
+                reporter.sendTelemetryErrorEvent("dap_request_error", {
+                  "elixir_ls.debug_session_mode": session.workspaceFolder
+                    ? "workspaceFolder"
+                    : "folderless",
+                  "elixir_ls.dap_command": errorResponse.command,
+                  "elixir_ls.dap_error": errorResponse.message,
+                  "elixir_ls.dap_error_message": errorMessage.format,
+                });
               }
             }
           }

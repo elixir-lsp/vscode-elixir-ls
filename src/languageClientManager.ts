@@ -64,10 +64,9 @@ function startClient(
       clientOptions
     );
     displayName = `ElixirLS - ${clientOptions.workspaceFolder!.name}`;
-    reporter.sendTelemetryEvent(
-      "elixir_ls.language_client_starting",
-      {"elixir_ls.language_client_mode": "workspaceFolder"}
-    );
+    reporter.sendTelemetryEvent("language_client_starting", {
+      "elixir_ls.language_client_mode": "workspaceFolder",
+    });
   } else {
     console.log(
       `ElixirLS: starting default LSP client with server options`,
@@ -76,10 +75,9 @@ function startClient(
       clientOptions
     );
     displayName = "ElixirLS - (default)";
-    reporter.sendTelemetryEvent(
-      "elixir_ls.language_client_starting",
-      {"elixir_ls.language_client_mode": "default"}
-    );
+    reporter.sendTelemetryEvent("language_client_starting", {
+      "elixir_ls.language_client_mode": "default",
+    });
   }
 
   const client = new LanguageClient(
@@ -103,32 +101,38 @@ function startClient(
 
   const clientPromise = new Promise<LanguageClient>((resolve, reject) => {
     const startTime = performance.now();
-    client.start().then(() => {
-      const elapsed = performance.now() - startTime;
-      if (clientOptions.workspaceFolder) {
-        console.log(
-          `ElixirLS: started LSP client for ${clientOptions.workspaceFolder.uri.toString()}`
-        );
-      } else {
-        console.log(`ElixirLS: started default LSP client`);
-      }
-      reporter.sendTelemetryEvent(
-        "elixir_ls.language_client_started",
-        {"elixir_ls.language_client_mode": clientOptions.workspaceFolder ? "workspaceFolder" : "default"},
-        {"elixir_ls.language_client_activation_time": elapsed}
-      );
-      resolve(client);
-    }).catch((reason) => {
-      reporter.sendTelemetryErrorEvent(
-        "elixir_ls.language_client_start_error",
-        {
-          "elixir_ls.language_client_mode": clientOptions.workspaceFolder ? "workspaceFolder" : "default",
-          "elixir_ls.language_client_start_error": String(reason),
-          "elixir_ls.language_client_start_error_stack": reason.stack ?? ""
+    client
+      .start()
+      .then(() => {
+        const elapsed = performance.now() - startTime;
+        if (clientOptions.workspaceFolder) {
+          console.log(
+            `ElixirLS: started LSP client for ${clientOptions.workspaceFolder.uri.toString()}`
+          );
+        } else {
+          console.log(`ElixirLS: started default LSP client`);
         }
-      )
-      reject(reason);
-    });
+        reporter.sendTelemetryEvent(
+          "language_client_started",
+          {
+            "elixir_ls.language_client_mode": clientOptions.workspaceFolder
+              ? "workspaceFolder"
+              : "default",
+          },
+          { "elixir_ls.language_client_activation_time": elapsed }
+        );
+        resolve(client);
+      })
+      .catch((reason) => {
+        reporter.sendTelemetryErrorEvent("language_client_start_error", {
+          "elixir_ls.language_client_mode": clientOptions.workspaceFolder
+            ? "workspaceFolder"
+            : "default",
+          "elixir_ls.language_client_start_error": String(reason),
+          "elixir_ls.language_client_start_error_stack": reason?.stack ?? "",
+        });
+        reject(reason);
+      });
   });
 
   return [client, clientPromise, clientDisposables];
@@ -411,24 +415,18 @@ export class LanguageClientManager {
           "ElixirLS: error during wait for stoppable LSP client state",
           e
         );
-        reporter.sendTelemetryErrorEvent(
-          "elixir_ls.lsp_client_stop_error",
-          {
-            "elixir_ls.error_message": String(e)
-          }
-        );
+        reporter.sendTelemetryErrorEvent("lsp_client_stop_error", {
+          "elixir_ls.error_message": String(e),
+        });
       }
       try {
         // dispose can timeout
         await client.dispose();
       } catch (e) {
         console.warn("ElixirLS: error during LSP client dispose", e);
-        reporter.sendTelemetryErrorEvent(
-          "elixir_ls.lsp_client_stop_error",
-          {
-            "elixir_ls.error_message": String(e)
-          }
-        );
+        reporter.sendTelemetryErrorEvent("lsp_client_stop_error", {
+          "elixir_ls.error_message": String(e),
+        });
       }
     }
   }

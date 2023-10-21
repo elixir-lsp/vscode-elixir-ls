@@ -26,9 +26,7 @@ export function configureRestart(
         return;
       }
 
-      reporter.sendTelemetryEvent(
-        "elixir_ls.restart_command"
-      );
+      reporter.sendTelemetryEvent("restart_command");
 
       await Promise.all(
         languageClientManager

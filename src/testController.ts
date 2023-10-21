@@ -34,13 +34,12 @@ export function configureTestController(
         await discoverAllFilesInWorkspace();
       } catch (e) {
         console.error("ElixirLS: unable to resolve tests in workspace", e);
-        reporter.sendTelemetryErrorEvent(
-          "elixir_ls.test_controller_resolve_error",
-          {
-            "elixir_ls.test_controller_resolve_error": String(e),
-            "elixir_ls.test_controller_resolve_error_stack": e.stack ?? "",
-          }
-        );
+        reporter.sendTelemetryErrorEvent("test_controller_resolve_error", {
+          "elixir_ls.test_controller_resolve_error": String(e),
+          "elixir_ls.test_controller_resolve_error_stack":
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (<any>e)?.stack ?? "",
+        });
       }
     } else {
       try {
@@ -51,13 +50,12 @@ export function configureTestController(
           test.uri!.fsPath,
           e
         );
-        reporter.sendTelemetryErrorEvent(
-          "elixir_ls.test_controller_resolve_error",
-          {
-            "elixir_ls.test_controller_resolve_error": String(e),
-            "elixir_ls.test_controller_resolve_error_stack": e.stack ?? "",
-          }
-        );
+        reporter.sendTelemetryErrorEvent("test_controller_resolve_error", {
+          "elixir_ls.test_controller_resolve_error": String(e),
+          "elixir_ls.test_controller_resolve_error_stack":
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (<any>e)?.stack ?? "",
+        });
       }
     }
   };
