@@ -131,6 +131,15 @@ function startClient(
           "elixir_ls.language_client_start_error": String(reason),
           "elixir_ls.language_client_start_error_stack": reason?.stack ?? "",
         });
+        if (clientOptions.workspaceFolder) {
+          console.error(
+            `ElixirLS: failed to start LSP client for ${clientOptions.workspaceFolder.uri.toString()}: ${reason}`
+          );
+        } else {
+          console.error(
+            `ElixirLS: failed to start default LSP client: ${reason}`
+          );
+        }
         reject(reason);
       });
   });
@@ -141,10 +150,10 @@ function startClient(
 export class LanguageClientManager {
   defaultClient: LanguageClient | null = null;
   defaultClientPromise: Promise<LanguageClient> | null = null;
-  defaultClientDisposables: Disposable[] | null = null;
+  private defaultClientDisposables: Disposable[] | null = null;
   clients: Map<string, LanguageClient> = new Map();
   clientsPromises: Map<string, Promise<LanguageClient>> = new Map();
-  clientsDisposables: Map<string, Disposable[]> = new Map();
+  private clientsDisposables: Map<string, Disposable[]> = new Map();
   private _onDidChange = new vscode.EventEmitter<void>();
   get onDidChange(): vscode.Event<void> {
     return this._onDidChange.event;
@@ -177,6 +186,70 @@ export class LanguageClientManager {
     }
 
     return result;
+  }
+
+  public restart() {
+    const restartPromise = async (
+      client: LanguageClient,
+      isDefault: boolean,
+      key?: string | undefined
+    ) =>
+      new Promise<LanguageClient>((resolve, reject) => {
+        reporter.sendTelemetryEvent("language_client_restarting", {
+          "elixir_ls.language_client_mode": !isDefault
+            ? "workspaceFolder"
+            : "default",
+        });
+        const startTime = performance.now();
+        client
+          .restart()
+          .then(() => {
+            const elapsed = performance.now() - startTime;
+            reporter.sendTelemetryEvent(
+              "language_client_started",
+              {
+                "elixir_ls.language_client_mode": !isDefault
+                  ? "workspaceFolder"
+                  : "default",
+              },
+              { "elixir_ls.language_client_activation_time": elapsed }
+            );
+            if (!isDefault) {
+              console.log(`ElixirLS: started LSP client for ${key}`);
+            } else {
+              console.log(`ElixirLS: started default LSP client`);
+            }
+            resolve(client);
+          })
+          .catch((e) => {
+            reporter.sendTelemetryErrorEvent("language_client_restart_error", {
+              "elixir_ls.language_client_mode": !isDefault
+                ? "workspaceFolder"
+                : "default",
+              "elixir_ls.language_client_start_error": String(e),
+              "elixir_ls.language_client_start_error_stack": e?.stack ?? "",
+            });
+            if (!isDefault) {
+              console.error(
+                `ElixirLS: failed to start LSP client for ${key}: ${e}`
+              );
+            } else {
+              console.error(
+                `ElixirLS: failed to start default LSP client: ${e}`
+              );
+            }
+            reject(e);
+          });
+      });
+
+    for (const [key, client] of this.clients) {
+      console.log(`ElixirLS: restarting LSP client for ${key}`);
+      this.clientsPromises.set(key, restartPromise(client, false, key));
+    }
+    if (this.defaultClient) {
+      console.log(`ElixirLS: restarting default LSP client`);
+      this.defaultClientPromise = restartPromise(this.defaultClient, true);
+    }
   }
 
   public getClientByUri(uri: vscode.Uri): LanguageClient {
