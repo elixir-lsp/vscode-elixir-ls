@@ -196,9 +196,87 @@
       "name": "constant.language.elixir"
     },
     {
+      "comment": "Access",
+      "match": "((@)[_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b(?!\\s*\\.)",
+      "captures": {
+        "2": {
+          "name": "punctuation.definition.variable.elixir"
+        },
+        "1": {
+          "name": "variable.other.constant.elixir"
+        },
+        "3": {
+          "name": "punctuation.separator.method.elixir"
+        },
+        "4": {
+          "name": "variable.other.readwrite.elixir"
+        },
+        "5": {
+          "name": "punctuation.separator.method.elixir"
+        },
+        "6": {
+          "name": "variable.other.readwrite.elixir"
+        }
+      }
+    },
+    {
+      "comment": "Access",
+      "match": "((@)[_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b",
+      "captures": {
+        "2": {
+          "name": "punctuation.definition.variable.elixir"
+        },
+        "1": {
+          "name": "variable.other.constant.elixir"
+        },
+        "3": {
+          "name": "punctuation.separator.method.elixir"
+        },
+        "4": {
+          "name": "variable.other.readwrite.elixir"
+        }
+      }
+    },
+    {
+      "comment": "Access",
+      "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b(?!\\s*\\.)",
+      "captures": {
+        "1": {
+          "name": "variable.other.readwrite.elixir"
+        },
+        "2": {
+          "name": "punctuation.separator.method.elixir"
+        },
+        "3": {
+          "name": "variable.other.readwrite.elixir"
+        },
+        "4": {
+          "name": "punctuation.separator.method.elixir"
+        },
+        "5": {
+          "name": "variable.other.readwrite.elixir"
+        }
+      }
+    },
+    {
+      "comment": "Access",
+      "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b",
+      "captures": {
+        "1": {
+          "name": "variable.other.readwrite.elixir"
+        },
+        "2": {
+          "name": "punctuation.separator.method.elixir"
+        },
+        "3": {
+          "name": "variable.other.readwrite.elixir"
+        }
+      }
+    },
+    {
       "comment": "Dot call",
-      "match": "\\b(?<=\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
-      "name": "entity.name.function.call.elixir"
+      "match": "\\b(?<=\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b(?!\\s*\\.)",
+      "name": "entity.name.function.call.dot.elixir"
     },
     {
       "comment": "Local function capture",
@@ -208,7 +286,7 @@
           "name": "keyword.operator.other.elixir"
         },
         "2": {
-          "name": "entity.name.function.call.elixir"
+          "name": "entity.name.function.call.capture.elixir"
         },
         "3": {
           "name": "keyword.operator.arithmetic.elixir"
@@ -221,12 +299,12 @@
     {
       "comment": "Local function call",
       "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)(?=\\s*?\\()",
-      "name": "entity.name.function.call.elixir"
+      "name": "entity.name.function.call.local.elixir"
     },
     {
       "comment": "Pipe into no parens local function call",
       "match": "(?<=\\|\\>\\s*)([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
-      "name": "entity.name.function.call.elixir"
+      "name": "entity.name.function.call.local.pipe.elixir"
     },
     {
       "match": "\\b(__(CALLER|ENV|MODULE|DIR|STACKTRACE)__)\\b(?![?!])",
