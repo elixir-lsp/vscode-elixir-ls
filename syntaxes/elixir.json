@@ -2361,7 +2361,12 @@
     },
     {
       "match": "(@)([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
-      "name": "variable.other.constant.elixir"
+      "name": "variable.other.constant.elixir",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.variable.elixir"
+        }
+      }
     },
     {
       "match": "([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
