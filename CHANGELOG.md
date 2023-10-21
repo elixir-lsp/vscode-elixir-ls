@@ -1,5 +1,18 @@
 ### Unreleased
 
+### v0.17.2: 21 October 2023
+
+#### Improvements
+
+- ElixirLS updated to [v0.17.2](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0172)
+- The extension reports errors and usage data via VSCode telemetry
+
+#### Fixes
+
+- Grammar updated - fixed dot access matched as function call. This regression was introduced in v0.17.1
+- Grammar updated - fixed punctuation not matched in atoms and attributes. This regression was introduced in v0.17.0
+- Restart command refactored. Previously it would fail to restart a failed language server client
+
 ### v0.17.1: 13 October 2023
 
 #### Improvements
