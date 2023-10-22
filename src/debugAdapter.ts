@@ -174,17 +174,29 @@ class DebugAdapterTrackerFactory
               });
             } else if (outputEvent.body.category == "telemetry") {
               const telemetryData = <TelemetryEvent>outputEvent.body.data;
-              // TODO remove debug_session_mode?
-              reporter.sendTelemetryEvent(
-                telemetryData.name,
-                {
-                  ...telemetryData.properties,
-                  "elixir_ls.debug_session_mode": session.workspaceFolder
-                    ? "workspaceFolder"
-                    : "folderless",
-                },
-                telemetryData.measurements
-              );
+              if (telemetryData.name.endsWith("_error")) {
+                reporter.sendTelemetryErrorEvent(
+                  telemetryData.name,
+                  {
+                    ...telemetryData.properties,
+                    "elixir_ls.debug_session_mode": session.workspaceFolder
+                      ? "workspaceFolder"
+                      : "folderless",
+                  },
+                  telemetryData.measurements
+                );
+              } else {
+                reporter.sendTelemetryEvent(
+                  telemetryData.name,
+                  {
+                    ...telemetryData.properties,
+                    "elixir_ls.debug_session_mode": session.workspaceFolder
+                      ? "workspaceFolder"
+                      : "folderless",
+                  },
+                  telemetryData.measurements
+                );
+              }
             }
           }
 

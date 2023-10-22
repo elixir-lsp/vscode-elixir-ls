@@ -91,11 +91,19 @@ function startClient(
 
   clientDisposables.push(
     client.onTelemetry((event: TelemetryEvent) => {
-      reporter.sendTelemetryEvent(
-        event.name,
-        event.properties,
-        event.measurements
-      );
+      if (event.name.endsWith("_error")) {
+        reporter.sendTelemetryErrorEvent(
+          event.name,
+          event.properties,
+          event.measurements
+        );
+      } else {
+        reporter.sendTelemetryEvent(
+          event.name,
+          event.properties,
+          event.measurements
+        );
+      }
     })
   );
 
