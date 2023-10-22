@@ -18,6 +18,9 @@ async function main(): Promise<void> {
         ...disableGpu,
         path.resolve(__dirname, "../../src/test-fixtures/elixir_script.exs"),
       ],
+      extensionTestsEnv: {
+        ELS_TEST: "1",
+      },
     });
 
     // single non elixir file no workspace
@@ -28,6 +31,9 @@ async function main(): Promise<void> {
         ...disableGpu,
         path.resolve(__dirname, "../../src/test-fixtures/non_elixir.txt"),
       ],
+      extensionTestsEnv: {
+        ELS_TEST: "1",
+      },
     });
 
     // single folder no mix
@@ -38,6 +44,9 @@ async function main(): Promise<void> {
         ...disableGpu,
         path.resolve(__dirname, "../../src/test-fixtures/single_folder_no_mix"),
       ],
+      extensionTestsEnv: {
+        ELS_TEST: "1",
+      },
     });
 
     // single folder mix
@@ -48,6 +57,9 @@ async function main(): Promise<void> {
         ...disableGpu,
         path.resolve(__dirname, "../../src/test-fixtures/single_folder_mix"),
       ],
+      extensionTestsEnv: {
+        ELS_TEST: "1",
+      },
     });
 
     // multi root
@@ -61,6 +73,9 @@ async function main(): Promise<void> {
           "../../src/test-fixtures/multi_root.code-workspace"
         ),
       ],
+      extensionTestsEnv: {
+        ELS_TEST: "1",
+      },
     });
   } catch (err) {
     console.error(err);

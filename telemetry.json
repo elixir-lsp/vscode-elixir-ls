@@ -1,0 +1,184 @@
+{
+  "events": {
+    "debug_session_starting": {
+      "elixir_ls.debug_session_mode": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Launch configuration mode"}
+    },
+    "debug_session_error": {
+      "elixir_ls.debug_session_mode":        {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Launch configuration mode"},
+      "elixir_ls.debug_session_error":       {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Debug session error"},
+      "elixir_ls.debug_session_error_stack": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Debug session error stacktrace"}
+    },
+    "debug_session_exit": {
+      "elixir_ls.debug_session_mode":        {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Launch configuration mode"},
+      "elixir_ls.debug_session_exit_code":   {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "Debug session exit code"},
+      "elixir_ls.debug_session_exit_signal": {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "Debug session exit signal"}
+    },
+    "debug_session_initialized": {
+      "elixir_ls.debug_session_mode": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Launch configuration mode"}
+    },
+    "debug_session_debuggee_exited": {
+      "elixir_ls.debug_session_mode":               {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Launch configuration mode"},
+      "elixir_ls.debug_session_debuggee_exit_code": {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "Debug session debuggee exit code"}
+    },
+    "debuggee_mix_task_error": {
+      "elixir_ls.debuggee_mix_task_error": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Debuggee mix task stack trace"}
+    },
+
+    "dap_request_error": {
+      "elixir_ls.debug_session_mode": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Launch configuration mode"},
+      "elixir_ls.dap_command":        {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "DAP command issued by client"},
+      "elixir_ls.dap_error":          {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "DAP error code"},
+      "elixir_ls.dap_error_message":  {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "DAP error message"}
+    },
+    "dap_server_error": {
+      "elixir_ls.dap_server_error": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Debugger crash stacktrace"}
+    },
+    "dap_request": {
+      "elixir_ls.dap_command": {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "DAP command issued by client"}
+    },
+
+    "extension_activated": {
+      "elixir_ls.workspace_mode": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "VSCode workspace mode"}
+    },
+    "extension_deactivated": {
+      "elixir_ls.workspace_mode": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "VSCode workspace mode"}
+    },
+
+    "restart_command": { },
+
+    "run_test": {
+      "elixir_ls.with_debug": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Test run mode"}
+    },
+    "run_test_error": {
+      "elixir_ls.with_debug":           {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Test run mode"},
+      "elixir_ls.run_test_error":       {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Run test error"},
+      "elixir_ls.run_test_error_stack": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Run test error stacktrace"}
+    },
+
+    "language_client_starting": {
+      "elixir_ls.language_client_mode": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Language client mode"}
+    },
+    "language_client_start_error": {
+      "elixir_ls.language_client_mode":              {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Language client mode"},
+      "elixir_ls.language_client_start_error":       {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Language client start error"},
+      "elixir_ls.language_client_start_error_stack": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Language client start error stacktrace"}
+    },
+    "language_client_restarting": {
+      "elixir_ls.language_client_mode": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Language client mode"}
+    },
+    "language_client_started": {
+      "elixir_ls.language_client_mode": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Language client mode"}
+    },
+    "language_client_restart_error": {
+      "elixir_ls.language_client_mode":              {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Language client mode"},
+      "elixir_ls.language_client_start_error":       {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Language client start error"},
+      "elixir_ls.language_client_start_error_stack": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Language client start error stacktrace"}
+    },
+    "language_client_stop_error": {
+      "elixir_ls.language_client_stop_error":       {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Language client stop error"},
+      "elixir_ls.language_client_stop_error_stack": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Language client stop error stacktrace"}
+    },
+    "lsp_reload": {
+      "elixir_ls.lsp_reload_reason": {"classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "comment": "Language server reload reason"}
+    },
+    "lsp_server_error": {
+      "elixir_ls.lsp_server_error": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Language server crash stacktrace"}
+    },
+    "lsp_request": {
+      "elixir_ls.lsp_command": {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "LSP command issued by client"}
+    },
+    "lsp_request_error": {
+      "elixir_ls.lsp_command":       {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "LSP command issued by client"},
+      "elixir_ls.lsp_error":         {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "LSP error code"},
+      "elixir_ls.lsp_error_message": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "LSP error message"}
+    },
+    "lsp_reverse_request_error": {
+      "elixir_ls.lsp_reverse_request_error": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "LSP reverse request error message"},
+      "elixir_ls.lsp_reverse_request":       {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "LSP reverse request command"}
+    },
+
+    "parser_error": {
+      "elixir_ls.parser_error": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Parser error message"}
+    },
+
+    "folding_ranges_error": {
+      "elixir_ls.folding_ranges_error": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Folding ranges error message"}
+    },
+
+    "build_error": {
+      "elixir_ls.build_error": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Build error message"}
+    },
+    "build": {
+      "elixir_ls.build_result": {"classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "comment": "Build result kind"}
+    },
+    "mix_clean_error": {
+      "elixir_ls.mix_clean_error": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Mix clean error message"}
+    },
+
+    "dialyzer_error": {
+      "elixir_ls.dialyzer_error": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Dialyzer error message"}
+    },
+    "dialyzer": { },
+
+    "eep48": {
+      "elixir_ls.eep48": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is OTP compiled with EEP48 support"}
+    },
+    "elixir_sources": {
+      "elixir_ls.elixir_sources": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Are elixir sources available"}
+    },
+    "otp_sources": {
+      "elixir_ls.otp_sources": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Are OTP sources available"}
+    },
+    "dialyzer_support": {
+      "elixir_ls.dialyzer_support":        {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is dialyzer supported"},
+      "elixir_ls.dialyzer_support_reason": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Reason why dialyzer is not supported"}
+    },
+    "lsp_config": {
+      "elixir_ls.projectDir":                 {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is project dir overriden"},
+      "elixir_ls.autoBuild":                  {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is auto build enabled"},
+      "elixir_ls.dialyzerEnabled":            {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is dialyzer enabled"},
+      "elixir_ls.fetchDeps":                  {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is auto fetching of dependencies enabled"},
+      "elixir_ls.suggestSpecs":               {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is suggest spec code lense enabled"},
+      "elixir_ls.autoInsertRequiredAlias":    {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is auto alias on complete enabled"},
+      "elixir_ls.signatureAfterComplete":     {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is signature after complete enabled"},
+      "elixir_ls.enableTestLenses":           {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is test code lense enabled"},
+      "elixir_ls.languageServerOverridePath": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is language server binary path overriden"},
+      "elixir_ls.envVariables":               {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Are custom environment variables set"},
+      "elixir_ls.mixEnv":                     {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Mix env setting"},
+      "elixir_ls.mixTarget":                  {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Mix target setting"},
+      "elixir_ls.dialyzerFormat":             {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Selected dialyzer warning format"}
+    },
+    "dap_launch_config": {
+      "elixir_ls.startApps":                     {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is auto start of applications enabled"},
+      "elixir_ls.debugAutoInterpretAllModules":  {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is auto interpreting of modules enabled"},
+      "elixir_ls.stackTraceMode":                {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Debugger stacktrace mode"},
+      "elixir_ls.exitAfterTaskReturns":          {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Should debugger exit after mix task returns"},
+      "elixir_ls.noDebug":                       {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is debug disabled"},
+      "elixir_ls.breakOnDbg":                    {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is auto break on Kernel.dbg enabled"},
+      "elixir_ls.env":                           {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Are environment variables specified"},
+      "elixir_ls.requireFiles":                  {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Are files required"},
+      "elixir_ls.debugInterpretModulesPatterns": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Are module interpret patterns set"},
+      "elixir_ls.excludeModules":                {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Are excluded modules specified"},
+      "elixir_ls.task":                          {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Mix task launched"}
+    }
+  },
+  "commonProperties": {
+    "common.extname":         { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight", "comment": "The name of the ElixirLS extension" },
+    "common.extversion":      { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The version of the ElixirLS extension" },
+    "common.vscodemachineid": { "classification": "EndUserPseudonymizedInformation", "purpose": "PerformanceAndHealth", "comment": "A common machine identifier generated by VS Code" },
+    "common.vscodesessionid": { "classification": "EndUserPseudonymizedInformation", "purpose": "PerformanceAndHealth", "comment": "A session identifier generated by VS Code" },
+    "common.vscodeversion":   { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The version of VS Code running the extension" },
+    "common.os":              { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The OS running VS Code" },
+    "common.platformversion": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The version of the OS/Platform" },
+    "common.product":         { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight", "comment": "What Vs code is hosted in, i.e. desktop, github.dev, codespaces" },
+    "common.uikind":          { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Web or Desktop indicating where VS Code is running" },
+    "common.remotename":      { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "A name to identify the type of remote connection. other indicates a remote connection not from the 3 main extensions (ssh, docker, wsl)" },
+    "common.nodeArch":        { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "What architecture of node is running. i.e. arm or x86. On the web it will just say web" },
+
+    "elixir_ls.elixir_version": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Elixir version"},
+    "elixir_ls.otp_release":    {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "OTP release"},
+    "elixir_ls.erts_version":   {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "OTP version"},
+    "elixir_ls.mix_env":        {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Mix env setting"},
+    "elixir_ls.mix_target":     {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Mix target setting"}
+  }
+}

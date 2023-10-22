@@ -230,6 +230,10 @@ npm test
 
 Alternatively, you can use the `test.sh`/`test.bat` script which does the above.
 
+## Telemetry
+
+This extension collects telemetry information emitted by ElixirLS language server and debugger for feature insight and performance and health monitoring. Collected telemetry data include usage, performance, environment info and error reports. Data is anonymised and not personally identifiable. Data is sent to Azure Application Insights via [@vscode/extension-telemetry](https://www.npmjs.com/package/@vscode/extension-telemetry). The extension respects VSCode `telemetry.telemetryLevel` setting. For transparency [telemetry.json](telemetry.json) details all collected information. If you would like inspect what is being collected or change your telemetry settings, please refer to [VSCode Telemetry documentation](https://code.visualstudio.com/docs/getstarted/telemetry).
+
 ## Acknowledgements and related projects
 
 There is another VS Code extension for Elixir, [VSCode Elixir](https://github.com/fr1zle/vscode-elixir). It's powered by [Elixir Sense](https://github.com/msaraiva/elixir_sense), another language "smartness" server similar to ElixirLS. Much of this extension's client code (such as syntax highlighting) was copied directly from VSCode Elixir, for which they deserve all the credit.
