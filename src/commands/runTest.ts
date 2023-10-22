@@ -140,7 +140,7 @@ async function debugTest(args: RunArgs): Promise<string> {
     listeners.push(
       trackerFactory.onExited((exit: DebuggeeExited) => {
         console.log(
-          `ElixirLS: Debug session ${exit.sessionId}: debuggee exited wit code ${exit.code}`
+          `ElixirLS: Debug session ${exit.sessionId}: debuggee exited with code ${exit.code}`
         );
         if (exit.sessionId == sessionId) {
           exitCode = exit.code;
