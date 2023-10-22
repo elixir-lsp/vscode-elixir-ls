@@ -156,7 +156,7 @@ class DebugAdapterTrackerFactory
             ? "workspaceFolder"
             : "folderless",
           "elixir_ls.debug_session_exit_code": String(code),
-          "elixir_ls.debug_session_exit_signal": String(code),
+          "elixir_ls.debug_session_exit_signal": String(signal),
         });
       },
       onDidSendMessage: (message: DebugProtocol.ProtocolMessage) => {

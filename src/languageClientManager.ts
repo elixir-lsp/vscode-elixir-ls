@@ -488,8 +488,10 @@ export class LanguageClientManager {
           "ElixirLS: error during wait for stoppable LSP client state",
           e
         );
-        reporter.sendTelemetryErrorEvent("lsp_client_stop_error", {
-          "elixir_ls.error_message": String(e),
+        reporter.sendTelemetryErrorEvent("language_client_stop_error", {
+          "elixir_ls.language_client_stop_error": String(e),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          "elixir_ls.language_client_start_error_stack": (<any>e)?.stack ?? "",
         });
       }
       try {
@@ -497,8 +499,10 @@ export class LanguageClientManager {
         await client.dispose();
       } catch (e) {
         console.warn("ElixirLS: error during LSP client dispose", e);
-        reporter.sendTelemetryErrorEvent("lsp_client_stop_error", {
-          "elixir_ls.error_message": String(e),
+        reporter.sendTelemetryErrorEvent("language_client_stop_error", {
+          "elixir_ls.language_client_stop_error": String(e),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          "elixir_ls.language_client_start_error_stack": (<any>e)?.stack ?? "",
         });
       }
     }
