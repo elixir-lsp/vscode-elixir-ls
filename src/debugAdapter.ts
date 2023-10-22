@@ -217,11 +217,11 @@ class DebugAdapterTrackerFactory
           if (event.event == "exited") {
             const exitedEvent = <DebugProtocol.ExitedEvent>message;
 
-            reporter.sendTelemetryEvent("debug_session_exited", {
+            reporter.sendTelemetryEvent("debug_session_debuggee_exited", {
               "elixir_ls.debug_session_mode": session.workspaceFolder
                 ? "workspaceFolder"
                 : "folderless",
-              "elixir_ls.debug_session_exit_code": String(
+              "elixir_ls.debug_session_debuggee_exit_code": String(
                 exitedEvent.body.exitCode
               ),
             });
