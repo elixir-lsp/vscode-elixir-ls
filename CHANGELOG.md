@@ -5,7 +5,7 @@
 #### Improvements
 
 - ElixirLS updated to [v0.17.2](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0172)
-- The extension reports errors and usage data via VSCode telemetry
+- The extension reports errors and usage data via VSCode telemetry. Refer to [README.md#Telemetry](README.md#Telemetry)
 
 #### Fixes
 
