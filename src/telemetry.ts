@@ -141,10 +141,13 @@ export function preprocessStacktrace(stack: string) {
   }
 
   // Sanitize Elixir function arity syntax
-  stack = stack.replace(/\/\d+/g, match => match.replace('/', '_'));
+  stack = stack.replace(/\/\d+/g, (match) => match.replace("/", "_"));
 
   // Sanitize Elixir key errors
-  stack = stack.replace(/\(KeyError\) key (.*?) not found/g, "(KeyError) k_ey $1 not found");
+  stack = stack.replace(
+    /\(KeyError\) key (.*?) not found/g,
+    "(KeyError) k_ey $1 not found"
+  );
 
   return stack;
 }
