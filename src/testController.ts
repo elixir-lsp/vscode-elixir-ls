@@ -211,10 +211,14 @@ export function configureTestController(
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res: any[] = await client.sendRequest(
-      ExecuteCommandRequest.type,
-      params
-    );
+    let res: any[] = [];
+    try {
+      res = await client.sendRequest(ExecuteCommandRequest.type, params);
+    } catch (e) {
+      console.error(
+        `ElixirLS: unable to get tests in file ${file.uri!.fsPath}: ${e}`
+      );
+    }
 
     for (const moduleEntry of res) {
       const moduleTestItem = controller.createTestItem(
