@@ -22,7 +22,11 @@ class EnvironmentReporter extends TelemetryReporter {
     if (process.env.ELS_TEST) {
       return;
     }
-    super.sendTelemetryEvent(eventName, properties, measurements);
+    super.sendTelemetryEvent(
+      eventName,
+      properties,
+      this.appendCount(eventName, measurements)
+    );
   }
 
   override sendTelemetryErrorEvent(
@@ -33,7 +37,12 @@ class EnvironmentReporter extends TelemetryReporter {
     if (process.env.ELS_TEST) {
       return;
     }
-    super.sendTelemetryErrorEvent(eventName, properties, measurements);
+
+    super.sendTelemetryErrorEvent(
+      eventName,
+      properties,
+      this.appendCount(eventName, measurements)
+    );
   }
 
   override sendRawTelemetryEvent(
@@ -44,7 +53,11 @@ class EnvironmentReporter extends TelemetryReporter {
     if (process.env.ELS_TEST) {
       return;
     }
-    super.sendRawTelemetryEvent(eventName, properties, measurements);
+    super.sendRawTelemetryEvent(
+      eventName,
+      properties,
+      this.appendCount(eventName, measurements)
+    );
   }
 
   override sendDangerousTelemetryErrorEvent(
@@ -55,7 +68,11 @@ class EnvironmentReporter extends TelemetryReporter {
     if (process.env.ELS_TEST) {
       return;
     }
-    super.sendDangerousTelemetryErrorEvent(eventName, properties, measurements);
+    super.sendDangerousTelemetryErrorEvent(
+      eventName,
+      properties,
+      this.appendCount(eventName, measurements)
+    );
   }
 
   override sendDangerousTelemetryEvent(
@@ -66,7 +83,26 @@ class EnvironmentReporter extends TelemetryReporter {
     if (process.env.ELS_TEST) {
       return;
     }
-    super.sendDangerousTelemetryEvent(eventName, properties, measurements);
+    super.sendDangerousTelemetryEvent(
+      eventName,
+      properties,
+      this.appendCount(eventName, measurements)
+    );
+  }
+
+  private appendCount(
+    eventName: string,
+    measurements?: TelemetryEventMeasurements | undefined
+  ): TelemetryEventMeasurements {
+    if (!measurements) {
+      const label = `elixir_ls.${eventName}_count`;
+      const measurementsWithCount: TelemetryEventMeasurements = {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (<any>measurementsWithCount)[label] = 1;
+      return measurementsWithCount;
+    } else {
+      return measurements;
+    }
   }
 }
 
