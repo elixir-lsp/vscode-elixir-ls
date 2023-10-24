@@ -1,5 +1,16 @@
 ### Unreleased
 
+### v0.17.3: 24 October 2023
+
+#### Improvements
+
+- ElixirLS updated to [v0.17.3](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0173)
+- Better sanitization of elixir stack traces in error reports
+
+#### Fixes
+
+- Fixed crash when Test UI is not able to parse test file
+
 ### v0.17.2: 23 October 2023
 
 #### Improvements
