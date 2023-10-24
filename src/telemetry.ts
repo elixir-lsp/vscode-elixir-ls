@@ -116,3 +116,50 @@ export function configureTelemetry(context: vscode.ExtensionContext) {
   reporter = new EnvironmentReporter();
   context.subscriptions.push(reporter);
 }
+
+export function preprocessStacktrace(stack: string) {
+  // Define the libraries you want to preserve
+  const libraries = [
+    "elixir_sense",
+    "language_server",
+    "elixir_ls_debugger",
+    "elixir_ls_utils",
+    "elixir",
+    "mix",
+    "eex",
+    "ex_unit",
+  ];
+
+  for (const library of libraries) {
+    // Regular expression to capture paths of the library
+    const libraryPathRegex = new RegExp(`(.*)(/${library}/)([^\\s]+)`, "g");
+
+    stack = stack.replace(libraryPathRegex, (_, before, libraryPath, after) => {
+      const modifiedPath = after.replace(/\//g, "_");
+      return `USER_PATH_${library}_${modifiedPath}`;
+    });
+  }
+
+  // Sanitize Elixir function arity syntax
+  stack = stack.replace(/\/\d+/g, match => match.replace('/', '_'));
+
+  // Sanitize Elixir key errors
+  stack = stack.replace(/\(KeyError\) key (.*?) not found/g, "(KeyError) k_ey $1 not found");
+
+  return stack;
+}
+
+export function preprocessStacktraceInProperties(
+  properties?: TelemetryEventProperties | undefined
+): TelemetryEventProperties | undefined {
+  if (!properties) {
+    return properties;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  for (const key in <any>properties) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (<any>properties)[key] = preprocessStacktrace((<any>properties)[key]);
+  }
+  return properties;
+}

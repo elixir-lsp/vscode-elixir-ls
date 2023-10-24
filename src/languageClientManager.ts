@@ -11,7 +11,11 @@ import {
 } from "vscode-languageclient/node";
 import { WorkspaceMode, WorkspaceTracker } from "./project";
 import { buildCommand } from "./executable";
-import { TelemetryEvent, reporter } from "./telemetry";
+import {
+  TelemetryEvent,
+  preprocessStacktraceInProperties,
+  reporter,
+} from "./telemetry";
 
 const languageIds = ["elixir", "eex", "html-eex", "phoenix-heex", "surface"];
 const defaultDocumentSelector = languageIds.flatMap((language) => [
@@ -94,7 +98,7 @@ function startClient(
       if (event.name.endsWith("_error")) {
         reporter.sendTelemetryErrorEvent(
           event.name,
-          event.properties,
+          preprocessStacktraceInProperties(event.properties),
           event.measurements
         );
       } else {

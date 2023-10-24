@@ -3,7 +3,12 @@
 import * as vscode from "vscode";
 import { buildCommand } from "./executable";
 import { DebugProtocol } from "@vscode/debugprotocol";
-import { TelemetryEvent, reporter } from "./telemetry";
+import {
+  TelemetryEvent,
+  preprocessStacktrace,
+  preprocessStacktraceInProperties,
+  reporter,
+} from "./telemetry";
 
 class DebugAdapterExecutableFactory
   implements vscode.DebugAdapterDescriptorFactory
@@ -178,7 +183,9 @@ class DebugAdapterTrackerFactory
                 reporter.sendTelemetryErrorEvent(
                   telemetryData.name,
                   {
-                    ...telemetryData.properties,
+                    ...preprocessStacktraceInProperties(
+                      telemetryData.properties
+                    ),
                     "elixir_ls.debug_session_mode": session.workspaceFolder
                       ? "workspaceFolder"
                       : "folderless",
@@ -246,7 +253,9 @@ class DebugAdapterTrackerFactory
                     : "folderless",
                   "elixir_ls.dap_command": errorResponse.command,
                   "elixir_ls.dap_error": errorResponse.message,
-                  "elixir_ls.dap_error_message": errorMessage.format,
+                  "elixir_ls.dap_error_message": preprocessStacktrace(
+                    errorMessage.format
+                  ),
                 });
               }
             }
