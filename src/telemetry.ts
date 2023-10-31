@@ -145,8 +145,28 @@ export function preprocessStacktrace(stack: string) {
 
   // Sanitize Elixir key errors
   stack = stack.replace(
-    /\(KeyError\) key (.*?) not found/g,
-    "(KeyError) k_ey $1 not found"
+    /key (.*?) not found/g,
+    "k_ey $1 not found"
+  );
+
+  stack = stack.replace(
+    /badkey/g,
+    "badk_ey"
+  );
+
+  stack = stack.replace(
+    /bad key/g,
+    "bad k_ey"
+  );
+
+  stack = stack.replace(
+    /unknown key/g,
+    "unknown k_ey"
+  );
+
+  stack = stack.replace(
+    /does not have the key/g,
+    "does not have the k_ey"
   );
 
   return stack;
