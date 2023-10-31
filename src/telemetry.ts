@@ -144,30 +144,15 @@ export function preprocessStacktrace(stack: string) {
   stack = stack.replace(/\/\d+/g, (match) => match.replace("/", "_"));
 
   // Sanitize Elixir key errors
-  stack = stack.replace(
-    /key (.*?) not found/g,
-    "k_ey $1 not found"
-  );
+  stack = stack.replace(/key (.*?) not found/g, "k_ey $1 not found");
 
-  stack = stack.replace(
-    /badkey/g,
-    "badk_ey"
-  );
+  stack = stack.replace(/badkey/g, "badk_ey");
 
-  stack = stack.replace(
-    /bad key/g,
-    "bad k_ey"
-  );
+  stack = stack.replace(/bad key/g, "bad k_ey");
 
-  stack = stack.replace(
-    /unknown key/g,
-    "unknown k_ey"
-  );
+  stack = stack.replace(/unknown key/g, "unknown k_ey");
 
-  stack = stack.replace(
-    /does not have the key/g,
-    "does not have the k_ey"
-  );
+  stack = stack.replace(/does not have the key/g, "does not have the k_ey");
 
   return stack;
 }
