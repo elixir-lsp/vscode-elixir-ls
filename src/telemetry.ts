@@ -154,6 +154,14 @@ export function preprocessStacktrace(stack: string) {
 
   stack = stack.replace(/does not have the key/g, "does not have the k_ey");
 
+  stack = stack.replace(/token missing/g, "t_oken missing");
+
+  stack = stack.replace(/unexpected token/g, "unexpected t_oken");
+
+  stack = stack.replace(/Unexpected token/g, "Unexpected t_oken");
+
+  stack = stack.replace(/reserved token/g, "reserved t_oken");
+
   return stack;
 }
 
