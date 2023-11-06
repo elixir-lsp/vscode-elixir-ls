@@ -162,6 +162,23 @@ export function preprocessStacktrace(stack: string) {
 
   stack = stack.replace(/reserved token/g, "reserved t_oken");
 
+  const sensitiveKeywords = [
+    "key",
+    "token",
+    "sig",
+    "secret",
+    "signature",
+    "password",
+    "passwd",
+    "pwd",
+    "android:value",
+  ];
+  sensitiveKeywords.forEach((keyword) => {
+    const regex = new RegExp(`(${keyword})[^a-zA-Z0-9]`, "gi");
+    const encodeKeyword = keyword[0] + "_" + keyword.slice(1);
+    stack = stack.replace(regex, encodeKeyword);
+  });
+
   return stack;
 }
 
