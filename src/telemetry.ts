@@ -7,6 +7,109 @@ import TelemetryReporter, {
 const key = "0979629c-3be4-4b0d-93f2-2be81cccd799";
 const fakeKey = "00000000-0000-0000-0000-000000000000";
 
+interface EventSamplingConfig {
+  eventName: string;
+  propertyKey?: string;
+  propertyValue?: string;
+  samplingFactor: number; // Range 0-1
+}
+
+const samplingConfigs: EventSamplingConfig[] = [
+  {
+    eventName: "JakeBecker.elixir-ls/build",
+    samplingFactor: 0.004,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/dialyzer",
+    samplingFactor: 0.04,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "textDocument_foldingRange",
+    samplingFactor: 0.001,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "textDocument_completion",
+    samplingFactor: 0.002,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "textDocument_hover",
+    samplingFactor: 0.002,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "textDocument_documentSymbol",
+    samplingFactor: 0.002,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "textDocument_codeLens",
+    samplingFactor: 0.003,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "workspace_executeCommand:getExUnitTestsInFile",
+    samplingFactor: 0.003,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "textDocument_signatureHelp",
+    samplingFactor: 0.004,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "textDocument_definition",
+    samplingFactor: 0.004,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "textDocument_onTypeFormatting",
+    samplingFactor: 0.006,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "textDocument_formatting",
+    samplingFactor: 0.008,
+  },
+  {
+    eventName: "JakeBecker.elixir-ls/lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "initialize",
+    samplingFactor: 0.03,
+  },
+];
+
+function shouldSampleEvent(
+  eventName: string,
+  properties: TelemetryEventProperties | undefined,
+  config: EventSamplingConfig
+): boolean {
+  if (eventName !== config.eventName) {
+    return false;
+  }
+
+  if (
+    config.propertyKey &&
+    (!properties || properties[config.propertyKey] !== config.propertyValue)
+  ) {
+    return false;
+  }
+
+  return Math.random() <= config.samplingFactor;
+}
+
 export let reporter: TelemetryReporter;
 
 class EnvironmentReporter extends TelemetryReporter {
@@ -22,11 +125,23 @@ class EnvironmentReporter extends TelemetryReporter {
     if (process.env.ELS_TEST) {
       return;
     }
-    super.sendTelemetryEvent(
-      eventName,
-      properties,
-      this.appendCount(eventName, measurements)
-    );
+
+    let samplingFactor = 1; // Default sampling factor
+
+    for (const config of samplingConfigs) {
+      if (shouldSampleEvent(eventName, properties, config)) {
+        samplingFactor = config.samplingFactor;
+        break;
+      }
+    }
+
+    if (samplingFactor == 1 || Math.random() <= samplingFactor) {
+      super.sendTelemetryEvent(
+        eventName,
+        properties,
+        this.appendCount(eventName, samplingFactor, measurements)
+      );
+    }
   }
 
   override sendTelemetryErrorEvent(
@@ -41,7 +156,7 @@ class EnvironmentReporter extends TelemetryReporter {
     super.sendTelemetryErrorEvent(
       eventName,
       properties,
-      this.appendCount(eventName, measurements)
+      this.appendCount(eventName, 1, measurements)
     );
   }
 
@@ -56,7 +171,7 @@ class EnvironmentReporter extends TelemetryReporter {
     super.sendRawTelemetryEvent(
       eventName,
       properties,
-      this.appendCount(eventName, measurements)
+      this.appendCount(eventName, 1, measurements)
     );
   }
 
@@ -71,7 +186,7 @@ class EnvironmentReporter extends TelemetryReporter {
     super.sendDangerousTelemetryErrorEvent(
       eventName,
       properties,
-      this.appendCount(eventName, measurements)
+      this.appendCount(eventName, 1, measurements)
     );
   }
 
@@ -86,21 +201,34 @@ class EnvironmentReporter extends TelemetryReporter {
     super.sendDangerousTelemetryEvent(
       eventName,
       properties,
-      this.appendCount(eventName, measurements)
+      this.appendCount(eventName, 1, measurements)
     );
   }
 
   private appendCount(
     eventName: string,
+    samplingFactor: number,
     measurements?: TelemetryEventMeasurements | undefined
   ): TelemetryEventMeasurements {
+    const label = `elixir_ls.${eventName}_count`;
     if (!measurements) {
-      const label = `elixir_ls.${eventName}_count`;
       const measurementsWithCount: TelemetryEventMeasurements = {};
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (<any>measurementsWithCount)[label] = 1;
+      (<any>measurementsWithCount)[label] = 1 / samplingFactor;
       return measurementsWithCount;
     } else {
+      let countFound = false;
+      Object.keys(measurements).forEach((key) => {
+        if (key.endsWith("_count")) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (<any>measurements)[key] /= samplingFactor;
+          countFound = true;
+        }
+      });
+      if (!countFound) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (<any>measurements)[label] = 1 / samplingFactor;
+      }
       return measurements;
     }
   }
