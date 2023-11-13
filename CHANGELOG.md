@@ -1,5 +1,12 @@
 ### Unreleased
 
+### v0.17.9: 13 November 2023
+
+#### Improvements
+
+- ElixirLS updated to [v0.17.9](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0179)
+- Introduced sampling for most common telemetry data
+
 ### v0.17.8: 6 November 2023
 
 #### Improvements
