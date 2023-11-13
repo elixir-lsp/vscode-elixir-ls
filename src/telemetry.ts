@@ -307,6 +307,9 @@ export function preprocessStacktrace(stack: string) {
     stack = stack.replace(regex, encodeKeyword);
   });
 
+  // Workaround for Erlang node names being identified as emails
+  stack = stack.replace(/@([a-zA-Z0-9-]+\.[a-zA-Z0-9-]+)/g, "_at_$1");
+
   return stack;
 }
 
