@@ -16,75 +16,75 @@ interface EventSamplingConfig {
 
 const samplingConfigs: EventSamplingConfig[] = [
   {
-    eventName: "JakeBecker.elixir-ls/build",
+    eventName: "build",
     samplingFactor: 0.004,
   },
   {
-    eventName: "JakeBecker.elixir-ls/dialyzer",
+    eventName: "dialyzer",
     samplingFactor: 0.04,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_foldingRange",
     samplingFactor: 0.001,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_completion",
     samplingFactor: 0.002,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_hover",
     samplingFactor: 0.002,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_documentSymbol",
     samplingFactor: 0.002,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_codeLens",
     samplingFactor: 0.003,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "workspace_executeCommand:getExUnitTestsInFile",
     samplingFactor: 0.003,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_signatureHelp",
     samplingFactor: 0.004,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_definition",
     samplingFactor: 0.004,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_onTypeFormatting",
     samplingFactor: 0.006,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_formatting",
     samplingFactor: 0.008,
   },
   {
-    eventName: "JakeBecker.elixir-ls/lsp_request",
+    eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "initialize",
     samplingFactor: 0.03,
@@ -107,7 +107,7 @@ function shouldSampleEvent(
     return false;
   }
 
-  return Math.random() <= config.samplingFactor;
+  return true;
 }
 
 export let reporter: TelemetryReporter;
