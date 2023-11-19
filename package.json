@@ -11,7 +11,7 @@
   "author": "The Elixir community",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.17.9",
+  "version": "0.17.10",
   "engines": {
     "vscode": "^1.75.0"
   },
