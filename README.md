@@ -4,7 +4,7 @@
 [![Open VSX Installs](https://img.shields.io/open-vsx/dt/elixir-lsp/elixir-ls?label=Open%20VSX%20Installs)](https://open-vsx.org/extension/elixir-lsp/elixir-ls)
 [![Slack](https://img.shields.io/badge/slack-join-orange.svg)](https://elixir-lang.slack.com/archives/C7D272G6N)
 
-Provides Elixir language support and debugger. This extension is powered by the [Elixir Language Server (ElixirLS)](https://github.com/elixir-lsp/elixir-ls), an Elixir implementation of Microsoft's IDE-agnostic [Language Server Protocol](https://github.com/Microsoft/language-server-protocol) and [VS Code debug protocol](https://code.visualstudio.com/docs/extensionAPI/api-debugging). Visit its page for more information. For a guide to debugger usage in Elixir, read [this blog post](https://medium.com/@JakeBeckerCode/debugging-elixir-in-vs-code-400e21814614).
+Provides Elixir language server and debug adapter. This extension is powered by the [Elixir Language Server (ElixirLS)](https://github.com/elixir-lsp/elixir-ls), an Elixir implementation of Microsoft's IDE-agnostic [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) and [Debug Adapter Protocol](https://microsoft.github.io/debug-adapter-protocol/). Visit its page for more information. For a guide to debugger usage in Elixir, read [this blog post](https://medium.com/@JakeBeckerCode/debugging-elixir-in-vs-code-400e21814614).
 
 Features include:
 
@@ -232,7 +232,7 @@ Alternatively, you can use the `test.sh`/`test.bat` script which does the above.
 
 ## Telemetry
 
-This extension collects telemetry information emitted by ElixirLS language server and debugger for feature insight and performance and health monitoring. Collected telemetry data include usage, performance, environment info and error reports. Data is anonymised and not personally identifiable. Data is sent to Azure Application Insights via [@vscode/extension-telemetry](https://www.npmjs.com/package/@vscode/extension-telemetry). The extension respects VSCode `telemetry.telemetryLevel` setting. For transparency [telemetry.json](telemetry.json) details all collected information. If you would like inspect what is being collected or change your telemetry settings, please refer to [VSCode Telemetry documentation](https://code.visualstudio.com/docs/getstarted/telemetry).
+This extension collects telemetry information emitted by ElixirLS language server and debug adapter for feature insight and performance and health monitoring. Collected telemetry data include usage, performance, environment info and error reports. Data is anonymised and not personally identifiable. Data is sent to Azure Application Insights via [@vscode/extension-telemetry](https://www.npmjs.com/package/@vscode/extension-telemetry). The extension respects VSCode `telemetry.telemetryLevel` setting. For transparency [telemetry.json](telemetry.json) details all collected information. If you would like inspect what is being collected or change your telemetry settings, please refer to [VSCode Telemetry documentation](https://code.visualstudio.com/docs/getstarted/telemetry).
 
 ## Acknowledgements and related projects
 

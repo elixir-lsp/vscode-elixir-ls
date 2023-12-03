@@ -7,7 +7,7 @@ import * as path from "path";
 const platformCommand = (command: Kind) =>
   command + (os.platform() == "win32" ? ".bat" : ".sh");
 
-export type Kind = "language_server" | "debugger";
+export type Kind = "language_server" | "debug_adapter";
 export function buildCommand(
   context: vscode.ExtensionContext,
   kind: Kind,

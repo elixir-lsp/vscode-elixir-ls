@@ -250,7 +250,7 @@ export function preprocessStacktrace(stack: string) {
   const libraries = [
     "elixir_sense",
     "language_server",
-    "elixir_ls_debugger",
+    "debug_adapter",
     "elixir_ls_utils",
     "elixir",
     "mix",

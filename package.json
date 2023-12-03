@@ -279,13 +279,13 @@
         "type": "mix_task",
         "label": "Mix Task",
         "windows": {
-          "program": "debugger.bat"
+          "program": "debug_adapter.bat"
         },
         "linux": {
-          "program": "debugger.sh"
+          "program": "debug_adapter.sh"
         },
         "osx": {
-          "program": "debugger.sh"
+          "program": "debug_adapter.sh"
         },
         "languages": [
           "elixir"

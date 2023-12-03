@@ -30,7 +30,7 @@ class DebugAdapterExecutableFactory
     );
     const command = buildCommand(
       this._context,
-      "debugger",
+      "debug_adapter",
       session.workspaceFolder
     );
 
@@ -269,7 +269,7 @@ class DebugAdapterTrackerFactory
 export let trackerFactory: DebugAdapterTrackerFactory;
 
 export function configureDebugger(context: vscode.ExtensionContext) {
-  // Use custom DebugAdapterExecutableFactory that launches the debugger with
+  // Use custom DebugAdapterExecutableFactory that launches the debug adapter with
   // the current working directory set to the workspace root so asdf can load
   // the correct environment properly.
   const factory = new DebugAdapterExecutableFactory(context);
