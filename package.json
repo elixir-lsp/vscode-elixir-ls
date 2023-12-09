@@ -11,9 +11,9 @@
   "author": "The Elixir community",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.17.10",
+  "version": "0.18.0",
   "engines": {
-    "vscode": "^1.75.0"
+    "vscode": "^1.80.0"
   },
   "sponsor": {
     "url": "https://github.com/sponsors/elixir-lsp"
@@ -585,7 +585,7 @@
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.0.0",
     "@types/shelljs": "^0.8.0",
-    "@types/vscode": "~1.75.0",
+    "@types/vscode": "~1.80.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vscode/debugprotocol": "^1.64.0",
@@ -601,7 +601,7 @@
     "typescript": "~5.3.0"
   },
   "dependencies": {
-    "@vscode/extension-telemetry": "^0.8.5",
-    "vscode-languageclient": "^8.1.0"
+    "@vscode/extension-telemetry": "^0.9.0",
+    "vscode-languageclient": "^9.0.0"
   }
 }
