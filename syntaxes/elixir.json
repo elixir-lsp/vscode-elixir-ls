@@ -197,7 +197,7 @@
     },
     {
       "comment": "Access",
-      "match": "((@)[_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b(?!\\s*\\.)",
+      "match": "((@)[_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)(?!\\s*\\.)",
       "captures": {
         "2": {
           "name": "punctuation.definition.variable.elixir"
@@ -221,7 +221,7 @@
     },
     {
       "comment": "Access",
-      "match": "((@)[_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b",
+      "match": "((@)[_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "captures": {
         "2": {
           "name": "punctuation.definition.variable.elixir"
@@ -239,7 +239,7 @@
     },
     {
       "comment": "Access",
-      "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b(?!\\s*\\.)",
+      "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)(?!\\s*\\.)",
       "captures": {
         "1": {
           "name": "variable.other.readwrite.elixir"
@@ -260,7 +260,7 @@
     },
     {
       "comment": "Access",
-      "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b",
+      "match": "\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\s*(\\.)\\s*\\b([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "captures": {
         "1": {
           "name": "variable.other.readwrite.elixir"
@@ -275,7 +275,7 @@
     },
     {
       "comment": "Dot call",
-      "match": "\\b(?<=\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\b(?!\\s*\\.)",
+      "match": "\\b(?<=\\.)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)(?!\\s*\\.)",
       "name": "entity.name.function.call.dot.elixir"
     },
     {
