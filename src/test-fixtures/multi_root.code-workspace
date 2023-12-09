@@ -1,20 +1,20 @@
 {
-	"folders": [
-		{
-			"path": "sample_umbrella"
-		},
-		{
-			"path": "sample_umbrella/apps/child1"
-		},
-		{
-			"path": "single_folder_no_mix"
-		},
-		{
-			"path": "containing_folder"
-		},
-		{
-			"path": "containing_folder/single_folder_mix"
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": "sample_umbrella"
+    },
+    {
+      "path": "sample_umbrella/apps/child1"
+    },
+    {
+      "path": "single_folder_no_mix"
+    },
+    {
+      "path": "containing_folder"
+    },
+    {
+      "path": "containing_folder/single_folder_mix"
+    }
+  ],
+  "settings": {}
 }
