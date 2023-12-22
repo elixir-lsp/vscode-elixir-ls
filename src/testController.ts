@@ -143,16 +143,16 @@ export function configureTestController(
     const relativePath = uri.fsPath.slice(projectDir.length);
     const pathSegments = relativePath.split("/");
     const firstSegment = pathSegments[1];
-    if (
-      firstSegment == "_build" ||
-      firstSegment == "deps" ||
-      firstSegment == ".elixir_ls"
-    ) {
+    if (firstSegment == "_build" || firstSegment == "deps") {
       // filter out test files in deps and _build dirs
       return false;
     }
 
-    if (pathSegments.includes("node_modules")) {
+    if (
+      pathSegments.find(
+        (segment) => segment == "node_modules" || segment.startsWith(".")
+      )
+    ) {
       // exclude phoenix tests in node_module
       return false;
     }
