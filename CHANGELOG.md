@@ -1,5 +1,29 @@
 ### Unreleased
 
+### v0.18.0: 2x December 2023
+
+#### Highlights
+
+- Elixir 1.16 support
+- Diagnostics provider now returns related info with code positions. This feature works best with elixir 1.16 allowing for navigation to invalid syntax elements like mismatched brackets
+- On type parser has been improved and extended. It now keeps a cache of parsed AST and extracted document metadata. Most of the providers has been updated to reuse this metadata eliminating the need for on demand parsing. This should make completions, hover, etc more snappy. The previous implementation was particularly not efficient for completions provider that would parse the file twice for each request
+- Phoenix integration improved. Go To Definition can now navigate to controllers when inside a Phoenix scope. Complete suggestions in Phoenix.Router now return controllers and actions[Gustavo Aguiar](https://github.com/gugahoa)
+
+#### Improvements
+
+- ElixirLS updated to [v0.18.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0180)
+- Added suggested configuration for `eex` files
+- Test UI will no longer look for test files in directories starting with `.`
+
+#### Fixes
+
+- Syntax highlighting correctly matches `!` and `?` at the end of function calls. Preciously those was matched as `source.elixir`
+
+### Breaking changes and deprecations
+
+- Minimum vscode engine version is now 1.80.0
+- VSCode language client updated to v9.0.1 updating LSP compatibility to v3.17.5
+
 ### v0.17.10: 19 November 2023
 
 #### Improvements
