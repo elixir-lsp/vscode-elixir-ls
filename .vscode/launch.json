@@ -19,6 +19,21 @@
       "preLaunchTask": "build"
     },
     {
+      "name": "Launch Extension local no disable extensions",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}"
+      ],
+      "env": {
+        "ELS_LOCAL": "1"
+      },
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "preLaunchTask": "build"
+    },
+    {
       "name": "Launch Extension release",
       "type": "extensionHost",
       "request": "launch",
