@@ -1,5 +1,12 @@
 ### Unreleased
 
+### v0.18.1: 28 December 2023
+
+#### Improvements
+
+- ElixirLS updated to [v0.18.1](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0181)
+- Syntax highlighting now correctly matches quoted remote calls (`Mymod."4quo\"ted"()` is valid elixir syntax)
+
 ### v0.18.0: 22 December 2023
 
 #### Highlights
