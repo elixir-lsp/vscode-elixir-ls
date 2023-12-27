@@ -279,6 +279,36 @@
       "name": "entity.name.function.call.dot.elixir"
     },
     {
+      "begin": "(?<=\\.)\\s*\"",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.constant.elixir"
+        }
+      },
+      "end": "\"(?!\\s*\\.)",
+      "name": "entity.name.function.call.dot.elixir",
+      "patterns": [
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "begin": "(?<=\\.)\\s*'",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.constant.elixir"
+        }
+      },
+      "end": "'(?!\\s*\\.)",
+      "name": "entity.name.function.call.dot.elixir",
+      "patterns": [
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
       "comment": "Local function capture",
       "match": "(\\&)([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)(\\/)([0-9]+)",
       "captures": {
