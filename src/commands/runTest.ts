@@ -1,4 +1,3 @@
-import { ExecOptions, exec } from "child_process";
 import * as vscode from "vscode";
 import {
   DebuggeeOutput,
@@ -7,49 +6,27 @@ import {
 } from "../debugAdapter";
 import { reporter } from "../telemetry";
 
-type RunArgs = {
+export type RunTestArgs = {
   cwd: string;
-  filePath: string;
+  filePath?: string;
   line?: number;
+  doctestLine?: number;
+  module?: string;
   workspaceFolder: vscode.WorkspaceFolder;
+  getTest: (
+    file: string,
+    module: string,
+    describe: string | null,
+    name: string,
+    type: string
+  ) => vscode.TestItem | undefined;
 };
 
-export default function runTest(
-  args: RunArgs,
-  debug: boolean
-): Promise<string> {
-  return debug ? debugTest(args) : runTestWithoutDebug(args);
-}
-
-async function runTestWithoutDebug(args: RunArgs): Promise<string> {
-  reporter.sendTelemetryEvent("run_test", {
-    "elixir_ls.with_debug": "false",
-  });
-
-  const command = `mix test ${buildTestCommandArgs(args).join(" ")}`;
-
-  return new Promise((resolve, reject) => {
-    const options: ExecOptions = {
-      cwd: args.cwd,
-      env: {
-        ...process.env,
-        MIX_ENV: "test",
-      },
-    };
-    exec(command, options, (error, stdout, stderr) => {
-      console.log("stdout", stdout);
-      console.log("stderr", stderr);
-      if (!error) {
-        resolve(stdout);
-      } else {
-        reject(stdout + (stderr ? "\n" + stderr : ""));
-      }
-    });
-  });
-}
-
 // Get the configuration for mix test, if it exists
-function getTestConfig(args: RunArgs): vscode.DebugConfiguration | undefined {
+function getExistingLaunchConfig(
+  args: RunTestArgs,
+  debug: boolean
+): vscode.DebugConfiguration | undefined {
   const launchJson = vscode.workspace.getConfiguration(
     "launch",
     args.workspaceFolder
@@ -70,19 +47,24 @@ function getTestConfig(args: RunArgs): vscode.DebugConfiguration | undefined {
     MIX_ENV: "test",
     ...(testConfig.env ?? {}),
   };
-  testConfig.taskArgs = [...buildTestCommandArgs(args), "--raise"];
+  // as of vscode 1.78 ANSI is not fully supported
+  testConfig.taskArgs = buildTestCommandArgs(args);
   testConfig.requireFiles = [
     "test/**/test_helper.exs",
     "apps/*/test/**/test_helper.exs",
     args.filePath,
   ];
+  testConfig.noDebug = !debug;
   return testConfig;
 }
 
 // Get the config to use for debugging
-function getDebugConfig(args: RunArgs): vscode.DebugConfiguration {
+function getLaunchConfig(
+  args: RunTestArgs,
+  debug: boolean
+): vscode.DebugConfiguration {
   const fileConfiguration: vscode.DebugConfiguration | undefined =
-    getTestConfig(args);
+    getExistingLaunchConfig(args, debug);
 
   const fallbackConfiguration: vscode.DebugConfiguration = {
     type: "mix_task",
@@ -92,7 +74,7 @@ function getDebugConfig(args: RunArgs): vscode.DebugConfiguration {
     env: {
       MIX_ENV: "test",
     },
-    taskArgs: [...buildTestCommandArgs(args), "--raise"],
+    taskArgs: buildTestCommandArgs(args),
     startApps: true,
     projectDir: args.cwd,
     // we need to require all test helpers and only the file we need to test
@@ -103,6 +85,7 @@ function getDebugConfig(args: RunArgs): vscode.DebugConfiguration {
       "apps/*/test/**/test_helper.exs",
       args.filePath,
     ],
+    noDebug: !debug,
   };
 
   const config = fileConfiguration ?? fallbackConfiguration;
@@ -111,12 +94,19 @@ function getDebugConfig(args: RunArgs): vscode.DebugConfiguration {
   return config;
 }
 
-async function debugTest(args: RunArgs): Promise<string> {
+export async function runTest(
+  run: vscode.TestRun,
+  args: RunTestArgs,
+  debug: boolean
+): Promise<string> {
   reporter.sendTelemetryEvent("run_test", {
     "elixir_ls.with_debug": "true",
   });
 
-  const debugConfiguration: vscode.DebugConfiguration = getDebugConfig(args);
+  const debugConfiguration: vscode.DebugConfiguration = getLaunchConfig(
+    args,
+    debug
+  );
 
   return new Promise((resolve, reject) => {
     const listeners: Array<vscode.Disposable> = [];
@@ -133,7 +123,47 @@ async function debugTest(args: RunArgs): Promise<string> {
     listeners.push(
       trackerFactory.onOutput((outputEvent: DebuggeeOutput) => {
         if (outputEvent.sessionId == sessionId) {
-          output.push(outputEvent.output);
+          const category = outputEvent.output.body.category;
+          if (category == "stdout" || category == "stderr") {
+            output.push(outputEvent.output.body.output);
+          } else if (category == "ex_unit") {
+            const exUnitEvent = outputEvent.output.body.data.event;
+            const data = outputEvent.output.body.data;
+            const test = args.getTest(
+              data.file,
+              data.module,
+              data.describe,
+              data.name,
+              data.type
+            );
+            if (test) {
+              if (exUnitEvent == "test_started") {
+                run.started(test);
+              } else if (exUnitEvent == "test_passed") {
+                run.passed(test, data.time / 1000);
+              } else if (exUnitEvent == "test_failed") {
+                run.failed(
+                  test,
+                  new vscode.TestMessage(data.message),
+                  data.time / 1000
+                );
+              } else if (exUnitEvent == "test_errored") {
+                // ex_unit does not report duration for invalid tests
+                run.errored(test, new vscode.TestMessage(data.message));
+              } else if (
+                exUnitEvent == "test_skipped" ||
+                exUnitEvent == "test_excluded"
+              ) {
+                run.skipped(test);
+              }
+            } else {
+              if (exUnitEvent != "test_excluded") {
+                console.warn(
+                  `ElixirLS: Test ${data.file} ${data.module} ${data.describe} ${data.name} not found`
+                );
+              }
+            }
+          }
         }
       })
     );
@@ -192,12 +222,35 @@ async function debugTest(args: RunArgs): Promise<string> {
   });
 }
 
-function buildTestCommandArgs(args: RunArgs): string[] {
+// as of vscode 1.78 ANSI is not fully supported
+const COMMON_ARGS = [
+  "--no-color",
+  "--raise",
+  "--formatter",
+  "ElixirLS.DebugAdapter.ExUnitFormatter",
+];
+
+function buildTestCommandArgs(args: RunTestArgs): string[] {
   let line = "";
   if (typeof args.line === "number") {
     line = `:${args.line}`;
   }
 
-  // as of vscode 1.78 ANSI is not fully supported
-  return [`${args.filePath}${line}`, "--no-color"];
+  const result = [];
+
+  if (args.module) {
+    result.push("--only");
+    result.push(`module:${args.module}`);
+  }
+
+  if (args.doctestLine) {
+    result.push("--only");
+    result.push(`doctest_line:${args.doctestLine}`);
+  }
+
+  if (args.filePath) {
+    result.push(`${args.filePath}${line}`);
+  }
+
+  return [...result, ...COMMON_ARGS];
 }

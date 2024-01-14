@@ -6,7 +6,7 @@ import {
   ExecuteCommandRequest,
   State,
 } from "vscode-languageclient";
-import runTest from "./commands/runTest";
+import { runTest, RunTestArgs } from "./commands/runTest";
 import { WorkspaceTracker, getProjectDir } from "./project";
 import { LanguageClientManager } from "./languageClientManager";
 import { RUN_TEST_FROM_CODELENS } from "./constants";
@@ -75,12 +75,15 @@ export function configureTestController(
     Module,
     Describe,
     TestCase,
+    Doctest,
   }
 
   const testData = new WeakMap<vscode.TestItem, ItemType>();
 
   const getType = (testItem: vscode.TestItem) =>
     testData.get(testItem) ?? ItemType.TestCase;
+
+  const testFileUris = new WeakMap<vscode.TestItem, vscode.Uri>();
 
   function getOrCreateWorkspaceFolderTestItem(uri: vscode.Uri) {
     let workspaceFolder = vscode.workspace.getWorkspaceFolder(uri)!;
@@ -229,7 +232,7 @@ export function configureTestController(
       moduleTestItem.range = new vscode.Range(
         moduleEntry.line,
         0,
-        moduleEntry.line,
+        moduleEntry.line + 1,
         0
       );
       testData.set(moduleTestItem, ItemType.Module);
@@ -245,7 +248,7 @@ export function configureTestController(
           describeTestItem.range = new vscode.Range(
             describeEntry.line,
             0,
-            describeEntry.line,
+            describeEntry.line + 1,
             0
           );
           describeTestItem.description = "describe";
@@ -255,7 +258,9 @@ export function configureTestController(
         } else {
           describeCollection = moduleTestItem.children;
         }
-        for (const testEntry of describeEntry.tests) {
+        for (const testEntry of describeEntry.tests.filter(
+          (testEntry: { type: string }) => testEntry.type != "doctest"
+        )) {
           const testItem = controller.createTestItem(
             testEntry.name,
             testEntry.name,
@@ -264,11 +269,61 @@ export function configureTestController(
           testItem.range = new vscode.Range(
             testEntry.line,
             0,
-            testEntry.line,
+            testEntry.line + 1,
             0
           );
           testItem.description = testEntry.type;
+          testItem.tags = testEntry.tags.map(
+            (tag: string) => new vscode.TestTag(tag)
+          );
           describeCollection.add(testItem);
+        }
+        const doctests = describeEntry.tests.filter(
+          (testEntry: { type: string }) => testEntry.type == "doctest"
+        );
+        const grouppedDoctests = new Map<string, vscode.TestItem>();
+        for (const testEntry of doctests) {
+          const doctestModule = testEntry.tags
+            .find((t: string) => t.startsWith("doctest:"))!
+            .replace("doctest:", "");
+          const doctestLine = Number(
+            testEntry.tags
+              .find((t: string) => t.startsWith("doctest_line:"))!
+              .replace("doctest_line:", "")
+          );
+          let doctestGroupItem = grouppedDoctests.get(doctestModule);
+          if (!doctestGroupItem) {
+            doctestGroupItem = controller.createTestItem(
+              doctestModule,
+              doctestModule,
+              file.uri
+            );
+            doctestGroupItem.range = new vscode.Range(
+              testEntry.line,
+              0,
+              testEntry.line + 1,
+              0
+            );
+            doctestGroupItem.description = testEntry.type;
+            testData.set(doctestGroupItem, ItemType.Doctest);
+
+            describeCollection.add(doctestGroupItem);
+            grouppedDoctests.set(doctestModule, doctestGroupItem);
+          }
+
+          const testItem = controller.createTestItem(
+            testEntry.name,
+            testEntry.name,
+            vscode.Uri.file(testEntry.doctest_module_path)
+          );
+          testItem.range = new vscode.Range(doctestLine, 0, doctestLine + 1, 0);
+          testItem.description = testEntry.type;
+          testItem.tags = testEntry.tags.map(
+            (tag: string) => new vscode.TestTag(tag)
+          );
+          testFileUris.set(testItem, file.uri!);
+
+          doctestGroupItem.children.add(testItem);
         }
       }
     }
@@ -339,6 +394,70 @@ export function configureTestController(
     }
   }
 
+  function getTestFromDescribe(
+    describeTest: vscode.TestItem,
+    name: string,
+    type: string
+  ): vscode.TestItem | undefined {
+    if (type == "doctest") {
+      let foundDoctest: vscode.TestItem | undefined;
+      describeTest.children.forEach((doctestGroupItem) => {
+        if (getType(doctestGroupItem) == ItemType.Doctest) {
+          const candidate = doctestGroupItem.children.get(name);
+          if (candidate) {
+            foundDoctest = candidate;
+          }
+        }
+      });
+      return foundDoctest;
+    } else {
+      return describeTest.children.get(name);
+    }
+  }
+
+  function getTestFromModule(
+    moduleTest: vscode.TestItem,
+    describe: string | null,
+    name: string,
+    type: string
+  ): vscode.TestItem | undefined {
+    if (describe) {
+      const describeTest = moduleTest.children.get(describe);
+      if (describeTest) {
+        return getTestFromDescribe(describeTest, name, type);
+      }
+    } else {
+      return getTestFromDescribe(moduleTest, name, type);
+    }
+  }
+
+  function getTestFromFile(
+    fileTest: vscode.TestItem,
+    module: string,
+    describe: string | null,
+    name: string,
+    type: string
+  ): vscode.TestItem | undefined {
+    const moduleTest = fileTest.children.get(module);
+    if (moduleTest) {
+      return getTestFromModule(moduleTest, describe, name, type);
+    }
+  }
+
+  function getTestFromWorkspaceFolder(
+    test: vscode.TestItem,
+    file: string,
+    module: string,
+    describe: string | null,
+    name: string,
+    type: string
+  ): vscode.TestItem | undefined {
+    const fileTest = test.children.get(vscode.Uri.file(file).toString());
+    if (fileTest) {
+      return getTestFromFile(fileTest, module, describe, name, type);
+    }
+  }
+
   async function runHandler(
     shouldDebug: boolean,
     request: vscode.TestRunRequest,
@@ -371,53 +490,197 @@ export function configureTestController(
         continue;
       }
 
+      const includeChildren = false;
+      let runArgs: RunTestArgs;
+
+      const projectDir = workspaceTracker.getProjectDirForUri(test.uri!)!;
+      const relativePath = test.uri!.fsPath.slice(projectDir.length + 1);
+      const workspaceFolder = vscode.workspace.getWorkspaceFolder(test.uri!)!;
+
+      // Note that we don't need to manually
+      // set the state of parent tests; they'll be set automatically.
       switch (getType(test)) {
+        case ItemType.WorkspaceFolder:
+          // If we're running a workspace and any of the files is not parsed yet, parse them now
+          {
+            const childrenToCheck: Array<Promise<void>> = [];
+            test.children.forEach((fileTest) => {
+              if (fileTest.children.size === 0) {
+                childrenToCheck.push(parseTestsInFileContents(fileTest));
+              }
+            });
+
+            await Promise.allSettled(childrenToCheck);
+          }
+
+          runArgs = {
+            cwd: projectDir,
+            workspaceFolder,
+            getTest: (
+              file: string,
+              module: string,
+              describe: string | null,
+              name: string,
+              type: string
+            ) =>
+              getTestFromWorkspaceFolder(
+                test,
+                file,
+                module,
+                describe,
+                name,
+                type
+              ),
+          };
+
+          break;
+
         case ItemType.File:
           // If we're running a file and don't know what it contains yet, parse it now
           if (test.children.size === 0) {
             await parseTestsInFileContents(test);
           }
+
+          runArgs = {
+            cwd: projectDir,
+            filePath: relativePath,
+            workspaceFolder,
+            getTest: (
+              _file: string,
+              module: string,
+              describe: string | null,
+              name: string,
+              type: string
+            ) => getTestFromFile(test, module, describe, name, type),
+          };
+
           break;
+
+        case ItemType.Module:
+          runArgs = {
+            cwd: projectDir,
+            filePath: relativePath,
+            module: test.id,
+            workspaceFolder,
+            getTest: (
+              _file: string,
+              _module: string,
+              describe: string | null,
+              name: string,
+              type: string
+            ) => getTestFromModule(test, describe, name, type),
+          };
+
+          break;
+
+        case ItemType.Describe:
+          runArgs = {
+            cwd: projectDir,
+            filePath: relativePath,
+            line: test.range!.start.line + 1,
+            workspaceFolder,
+            getTest: (
+              _file: string,
+              _module: string,
+              _describe: string | null,
+              name: string,
+              type: string
+            ) => getTestFromDescribe(test, name, type),
+          };
+
+          break;
+
+        case ItemType.Doctest:
+          runArgs = {
+            cwd: projectDir,
+            filePath: relativePath,
+            line: test.range!.start.line + 1,
+            workspaceFolder,
+            getTest: (
+              _file: string,
+              _module: string,
+              _describe: string | null,
+              name: string
+            ) => test.children.get(name),
+          };
+
+          break;
+
         case ItemType.TestCase:
-          // Otherwise, just run the test case. Note that we don't need to manually
-          // set the state of parent tests; they'll be set automatically.
-          // eslint-disable-next-line no-case-declarations
-          const start = performance.now();
-          run.started(test);
-          try {
-            const projectDir = workspaceTracker.getProjectDirForUri(test.uri!)!;
-            const relativePath = test.uri!.fsPath.slice(projectDir.length + 1);
-            const workspaceFolder = vscode.workspace.getWorkspaceFolder(
-              test.uri!
-            )!;
-            const output = await runTest(
-              {
-                cwd: projectDir,
-                filePath: relativePath,
-                line: test.range!.start.line + 1,
-                workspaceFolder,
+          if (test.description == "doctest") {
+            const testFileUri = testFileUris.get(test)!;
+            const projectDir =
+              workspaceTracker.getProjectDirForUri(testFileUri)!;
+            const relativePath = testFileUri.fsPath.slice(
+              projectDir.length + 1
+            );
+            const workspaceFolder =
+              vscode.workspace.getWorkspaceFolder(testFileUri)!;
+
+            runArgs = {
+              cwd: projectDir,
+              filePath: relativePath,
+              doctestLine:
+                Number(
+                  test.tags
+                    .find((t) => t.id.startsWith("doctest_line:"))!
+                    .id.replace("doctest_line:", "")
+                ) + 1,
+              workspaceFolder,
+              getTest: (
+                _file: string,
+                _module: string,
+                _describe: string | null,
+                name: string
+              ) => {
+                if (name == test.id) {
+                  return test;
+                }
               },
-              shouldDebug
-            );
-            writeOutput(run, output, test);
-            run.passed(test, performance.now() - start);
-          } catch (e) {
-            writeOutput(run, e as string, test);
-            run.failed(
-              test,
-              new vscode.TestMessage(e as string),
-              performance.now() - start
-            );
+            };
+          } else {
+            runArgs = {
+              cwd: projectDir,
+              filePath: relativePath,
+              line: test.range!.start.line + 1,
+              workspaceFolder,
+              getTest: (
+                _file: string,
+                _module: string,
+                _describe: string | null,
+                name: string
+              ) => {
+                if (name == test.id) {
+                  return test;
+                }
+              },
+            };
           }
+
           break;
         default:
-          break;
+          throw `unexpected ItemType ${getType(test)}`;
       }
 
-      test.children.forEach((test) => {
-        queue.push(test);
-        run.enqueued(test);
-      });
+      const start = performance.now();
+      try {
+        const output = await runTest(run, runArgs, shouldDebug);
+        writeOutput(run, output, test);
+      } catch (e) {
+        writeOutput(run, e as string, test);
+        run.errored(
+          test,
+          new vscode.TestMessage(e as string),
+          performance.now() - start
+        );
+      }
+
+      if (includeChildren) {
+        test.children.forEach((test) => {
+          queue.push(test);
+          run.enqueued(test);
+        });
+      }
     }
 
     // Make sure to end the run after all tests have been executed:
@@ -500,7 +763,9 @@ export function configureTestController(
         fileTestItemUri.toString()
       );
       if (!fileTestItem) {
-        console.warn(`Test item ${fileTestItemUri.toString()} not found`);
+        console.warn(
+          `ElixirLS: Test item ${fileTestItemUri.toString()} not found`
+        );
         return;
       }
       const testItem = getTestItem(fileTestItem, [

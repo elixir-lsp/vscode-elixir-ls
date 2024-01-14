@@ -91,7 +91,7 @@ export interface DebuggeeExited {
 
 export interface DebuggeeOutput {
   sessionId: string;
-  output: string;
+  output: DebugProtocol.OutputEvent;
 }
 
 class DebugAdapterTrackerFactory
@@ -169,15 +169,12 @@ class DebugAdapterTrackerFactory
           const event = <DebugProtocol.Event>message;
           if (event.event == "output") {
             const outputEvent = <DebugProtocol.OutputEvent>message;
-            if (
-              outputEvent.body.category == "stdout" ||
-              outputEvent.body.category == "stderr"
-            ) {
+            if (outputEvent.body.category != "telemetry") {
               self._onOutput.fire({
                 sessionId: session.id,
-                output: outputEvent.body.output,
+                output: outputEvent,
               });
-            } else if (outputEvent.body.category == "telemetry") {
+            } else {
               const telemetryData = <TelemetryEvent>outputEvent.body.data;
               if (telemetryData.name.endsWith("_error")) {
                 reporter.sendTelemetryErrorEvent(
