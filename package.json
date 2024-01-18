@@ -263,7 +263,7 @@
         "language": "elixir",
         "scopeName": "source.elixir",
         "path": "./syntaxes/elixir.json",
-        "unbalancedBracketScopes": ["keyword.operator.bitwise.elixir"],
+        "unbalancedBracketScopes": ["keyword.operator.bitwise.elixir", "constant.language.symbol.elixir"],
         "embeddedLanguages": {
           "comment.documentation.heredoc.elixir": "markdown"
         }
