@@ -4,6 +4,7 @@ import {
   DebuggeeExited,
   trackerFactory,
 } from "../debugAdapter";
+import * as os from "os";
 import { reporter } from "../telemetry";
 
 export type RunTestArgs = {
@@ -248,7 +249,15 @@ function buildTestCommandArgs(args: RunTestArgs): string[] {
   }
 
   if (args.filePath) {
-    result.push(`${args.filePath}${line}`);
+    // workaround for https://github.com/elixir-lang/elixir/issues/13225
+    // ex_unit file filters with windows path separators are broken on elixir < 1.16.1
+    // fortunately unix separators work correctly
+    // TODO remove this when we require elixir 1.17
+    const path =
+      os.platform() == "win32"
+        ? args.filePath.replace("\\", "/")
+        : args.filePath;
+    result.push(`${path}${line}`);
   }
 
   return [...result, ...COMMON_ARGS];
