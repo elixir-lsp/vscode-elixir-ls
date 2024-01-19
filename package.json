@@ -263,13 +263,18 @@
         "language": "elixir",
         "scopeName": "source.elixir",
         "path": "./syntaxes/elixir.json",
-        "unbalancedBracketScopes": ["keyword.operator.bitwise.elixir", "constant.language.symbol.elixir"],
+        "unbalancedBracketScopes": [
+          "keyword.operator.bitwise.elixir",
+          "keyword.operator.other.unbalanced.elixir",
+          "constant.language.symbol.elixir"
+        ],
         "embeddedLanguages": {
           "comment.documentation.heredoc.elixir": "markdown"
         }
       },
       {
         "language": "eex",
+        "unbalancedBracketScopes": ["meta.embedded.line.elixir"],
         "scopeName": "text.elixir",
         "path": "./syntaxes/eex.json"
       },
@@ -576,6 +581,8 @@
   "scripts": {
     "release-elixir-ls": "cd elixir-ls && mix elixir_ls.release2 -o ../elixir-ls-release",
     "vscode:prepublish": "npm-run-all release-elixir-ls esbuild-release",
+    "mixcompile": "mix compile",
+    "mixcompile-esbuild": "npm-run-all mixcompile esbuild",
     "clean": "rimraf ./out",
     "compile": "tsc -b",
     "watch": "tsc -b -w",
