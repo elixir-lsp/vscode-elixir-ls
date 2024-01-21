@@ -274,7 +274,6 @@
       },
       {
         "language": "eex",
-        "unbalancedBracketScopes": ["meta.embedded.line.elixir"],
         "scopeName": "text.elixir",
         "path": "./syntaxes/eex.json"
       },
