@@ -1,5 +1,33 @@
 ### Unreleased
 
+### v0.19.0: 21 January 2023
+
+#### Highlights
+
+- Test UI is now able to run multiple tests at once. This is made possible with running `mix test` command via debug adapter with a custom ExUnit formatter streaming test suite progress via DAP output events. Running multiple tests is supported on workspace folder, file, module, describe blocka and doctest level
+- On type parsing and diagnostics for phoenix `.heex` files
+- Workspace symbols provider has been reimplemented. Previously the workspace symbols index was build from all available symbols. To make it more focused and helpful now only symbols from the project are considered. This change made it much quicker and improved the quality of returned results. Fuzzy matching engine was also improved and made consistent with how complete provider works.
+
+#### Improvements
+
+- ElixirLS updated to [v0.19.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v01890)
+- Added highlighting of matching `do|fn` `end` pairs. This was added in v0.15.0 and reverted in v0.15.1. The previous attempt broke on `do:` and other atoms. This problem is now resolved with `constant.language.symbol.elixir` added to unbalanced scopes
+- Added highlighting of matching `<<` `>>` pairs. This was added in v0.15.0 and reverted in v0.15.1. The previous attempt broke on bitwise operators. This problem is now resolved with `keyword.operator.bitwise.elixir` and `keyword.operator.other.unbalanced.elixir` added to unbalanced scopes
+- Tests are no longer run with with `--raise` flag
+- Test UI now renders separate doctests making it possible to run or debug them separately
+- Charlists are now classified as `string.quoted.single.elixir` instead of `support.function.variable.quoted.single.elixir`. The previous class was breaking brackets matching algorithm. VSCode treats strings as unbalanced scopes.
+
+#### Fixes
+
+- Test UI is able to correctly run tests with file filter on Windows. This works around https://github.com/elixir-lang/elixir/issues/13225
+- Test UI now finds tests of types other that `test` and `doctest`. Previously the filtering was too aggressive
+
+### Breaking changes and deprecations
+
+- Tests are now always run through debug adapter (with or without `noDebug` flag)
+- Charlists are now classified as `string.quoted.single.elixir` instead of `support.function.variable.quoted.single.elixir`. The previous class was breaking brackets matching algorithm. VSCode treats strings as unbalanced scopes.
+- `~>>` `<<~` operators are now classified as `keyword.operator.other.unbalanced.elixir` instead of `keyword.operator.other.elixir`
+
 ### v0.18.1: 28 December 2023
 
 #### Improvements
