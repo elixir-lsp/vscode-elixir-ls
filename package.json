@@ -266,7 +266,10 @@
         "unbalancedBracketScopes": [
           "keyword.operator.bitwise.elixir",
           "keyword.operator.other.unbalanced.elixir",
-          "constant.language.symbol.elixir"
+          "constant.language.symbol.elixir",
+          "constant.language.symbol.single-quoted.elixir",
+          "constant.language.symbol.double-quoted.elixir",
+          "entity.name.function.call.dot.elixir"
         ],
         "embeddedLanguages": {
           "comment.documentation.heredoc.elixir": "markdown"
