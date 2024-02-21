@@ -1,6 +1,24 @@
 ### Unreleased
 
-### v0.19.0: 21 January 2023
+### v0.20.0: 21 February 2024
+
+#### Highlights
+
+- Selection ranges provider added. This provider handles expand/shrink selection editor commands in a semantic aware way
+- Completions, hover and signature help providers now are able to display `@doc` and other attributes data from the currently edited buffer
+- Hover provider now returns markdown with working links to hexdocs and erlang documentation. Support for [ExDoc autolinking](https://hexdocs.pm/ex_doc/readme.html#auto-linking) and [erlang see tags](https://www.erlang.org/doc/apps/erl_docgen/inline_tags#%3Csee*%3E---see-tags) has been added
+
+#### Improvements
+
+- ElixirLS updated to [v0.20.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0200)
+- Quoted atoms and calls are now treated as unbalanced bracket scopes
+- Improved syntax highlighting of underscored typespecs and typespecs without parens. Previously those were matched as `comment.unused.elixir`, `variable.other.readwrite.elixir`, `entity.name.function.call.local.elixir`. A scope `meta.type.definition.elixir` has been introduced
+
+### Breaking changes and deprecations
+
+- Typespecs are now matched as `entity.name.function.typespec.elixir`. Previously those would match as `comment.unused.elixir`, `variable.other.readwrite.elixir` and `entity.name.function.call.local.elixir`
+
+### v0.19.0: 21 January 2024
 
 #### Highlights
 
@@ -10,7 +28,7 @@
 
 #### Improvements
 
-- ElixirLS updated to [v0.19.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v01890)
+- ElixirLS updated to [v0.19.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0190)
 - Added highlighting of matching `do|fn` `end` pairs. This was added in v0.15.0 and reverted in v0.15.1. The previous attempt broke on `do:` and other atoms. This problem is now resolved with `constant.language.symbol.elixir` added to unbalanced scopes
 - Added highlighting of matching `<<` `>>` pairs. This was added in v0.15.0 and reverted in v0.15.1. The previous attempt broke on bitwise operators. This problem is now resolved with `keyword.operator.bitwise.elixir` and `keyword.operator.other.unbalanced.elixir` added to unbalanced scopes
 - Tests are no longer run with with `--raise` flag
