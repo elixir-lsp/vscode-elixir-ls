@@ -186,6 +186,44 @@
       }
     },
     {
+      "comment": "Typespec with parameters",
+      "begin": "((@)(callback|macrocallback|spec|typep?|opaque))\\b\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)\\s*\\(",
+      "name": "meta.type.definition.elixir",
+      "beginCaptures": {
+        "2": {
+          "name": "punctuation.definition.variable.elixir"
+        },
+        "1": {
+          "name": "variable.other.constant.elixir"
+        },
+        "4": {
+          "name": "entity.name.function.typespec.elixir"
+        }
+      },
+      "end": "\\)",
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    {
+      "comment": "Typespec without parameters",
+      "match": "((@)(callback|macrocallback|spec|typep?|opaque))\\b\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
+      "name": "meta.type.definition.elixir",
+      "captures": {
+        "2": {
+          "name": "punctuation.definition.variable.elixir"
+        },
+        "1": {
+          "name": "variable.other.constant.elixir"
+        },
+        "4": {
+          "name": "entity.name.function.typespec.elixir"
+        }
+      }
+    },
+    {
       "comment": " as above, just doesn't need a 'end' and does a logic operation",
       "match": "(?<!\\.)\\b(and|not|or|when|in)\\b",
       "name": "keyword.operator.elixir"
