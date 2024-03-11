@@ -351,7 +351,7 @@
       "match": "(\\&)([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)(\\/)([0-9]+)",
       "captures": {
         "1": {
-          "name": "keyword.operator.other.elixir"
+          "name": "keyword.operator.other.anonymous.elixir"
         },
         "2": {
           "name": "entity.name.function.call.capture.elixir"
@@ -2529,7 +2529,7 @@
     },
     {
       "match": "(&)",
-      "name": "keyword.operator.other.elixir"
+      "name": "keyword.operator.other.anonymous.elixir"
     },
     {
       "captures": {
