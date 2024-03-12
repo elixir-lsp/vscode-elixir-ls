@@ -23,6 +23,9 @@
         },
         "2": {
           "name": "entity.name.type.module.elixir"
+        },
+        "4": {
+          "name": "punctuation.separator.method.elixir"
         }
       },
       "match": "^\\s*(defmodule|defprotocol|defimpl)\\s+(([A-Z][A-Za-z0-9_]*\\s*(\\.)\\s*)*[A-Z][A-Za-z0-9_]*)",
