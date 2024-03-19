@@ -73,13 +73,19 @@
           "scope": "resource",
           "type": "boolean",
           "default": true,
-          "description": "Trigger ElixirLS build when code is saved."
+          "description": "Trigger ElixirLS build when code is saved"
         },
         "elixirLS.dialyzerEnabled": {
           "scope": "resource",
           "type": "boolean",
           "default": true,
-          "description": "Run ElixirLS's rapid Dialyzer when code is saved."
+          "description": "Run ElixirLS's rapid Dialyzer when code is saved"
+        },
+        "elixirLS.incrementalDialyzer": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": true,
+          "description": "Use OTP incremental dialyzer (available on OTP 26+)"
         },
         "elixirLS.dialyzerWarnOpts": {
           "scope": "resource",
