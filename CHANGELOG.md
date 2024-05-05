@@ -1,5 +1,17 @@
 ### Unreleased
 
+### v0.21.0: 5 May 2024
+
+#### Highlights
+
+- OTP incremental dialyzer is now the default dialyzing engine on OTP 26+. While slower than ElixirLS dialyzer it is much better at tracking module dependencies and should resolve issues with transient dialyzer warning that do not disappear on recompile. ElixirLS dialyzer is still available and incremental dialyzer can be disabled by config setting `elixirLS.incrementalDialyzer`
+- Experimental support for Code actions added. Two code actions are available: Replace unknown remote def, replace an unused variable with an underscore [Samuel Heldak](https://github.com/sheldak)
+
+#### Improvements
+
+- ElixirLS updated to [v0.21.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0210)
+- New logo [Kirills Reunovs](https://github.com/Kirlovon)
+
 ### v0.20.0: 21 February 2024
 
 #### Highlights
