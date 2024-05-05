@@ -10,6 +10,7 @@
 #### Improvements
 
 - ElixirLS updated to [v0.21.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0210)
+- Debug test from Test UI now runs tests in trace mode to disable timeouts
 - New logo [Kirills Reunovs](https://github.com/Kirlovon)
 
 ### v0.20.0: 21 February 2024

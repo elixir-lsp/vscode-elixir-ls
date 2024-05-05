@@ -49,7 +49,7 @@ function getExistingLaunchConfig(
     ...(testConfig.env ?? {}),
   };
   // as of vscode 1.78 ANSI is not fully supported
-  testConfig.taskArgs = buildTestCommandArgs(args);
+  testConfig.taskArgs = buildTestCommandArgs(args, debug);
   testConfig.requireFiles = [
     "test/**/test_helper.exs",
     "apps/*/test/**/test_helper.exs",
@@ -75,7 +75,7 @@ function getLaunchConfig(
     env: {
       MIX_ENV: "test",
     },
-    taskArgs: buildTestCommandArgs(args),
+    taskArgs: buildTestCommandArgs(args, debug),
     startApps: true,
     projectDir: args.cwd,
     // we need to require all test helpers and only the file we need to test
@@ -230,7 +230,7 @@ const COMMON_ARGS = [
   "ElixirLS.DebugAdapter.ExUnitFormatter",
 ];
 
-function buildTestCommandArgs(args: RunTestArgs): string[] {
+function buildTestCommandArgs(args: RunTestArgs, debug: boolean): string[] {
   let line = "";
   if (typeof args.line === "number") {
     line = `:${args.line}`;
@@ -260,5 +260,8 @@ function buildTestCommandArgs(args: RunTestArgs): string[] {
     result.push(`${path}${line}`);
   }
 
-  return [...result, ...COMMON_ARGS];
+  // debug tests in tracing mode to disable timeouts
+  const maybeTrace = debug ? ["--trace"] : [];
+
+  return [...maybeTrace, ...result, ...COMMON_ARGS];
 }
