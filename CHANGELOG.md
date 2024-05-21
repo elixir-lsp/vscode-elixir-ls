@@ -1,5 +1,11 @@
 ### Unreleased
 
+### v0.21.2: 21 May 2024
+
+#### Improvements
+
+- ElixirLS updated to [v0.21.2](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0212)
+
 ### v0.21.1: 8 May 2024
 
 #### Improvements
