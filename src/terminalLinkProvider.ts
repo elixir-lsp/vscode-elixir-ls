@@ -51,8 +51,9 @@ export function configureTerminalLinkProvider(
       data: { app, file, line },
     }: TerminalLinkWithData) => {
       const umbrellaFile = path.join("apps", app, file);
+      const depsFile = path.join("deps", app, file);
       const uris = await vscode.workspace.findFiles(
-        `{${umbrellaFile},${file}}`
+        `{${umbrellaFile},${file},${depsFile}}`
       );
       if (uris.length === 1) {
         openUri(uris[0], line);
