@@ -18,6 +18,10 @@
 6. Tag and push tags. Tag needs to be version prefixed with `v` (e.g. `v0.15.0`). Github action will create and publish the release to Visual Studio Marketplace and Open VSX Registry. Semver prerelease tags (e.g. `v0.1.0-rc.0`) will dry run publish.
 7. Update forum announcement post: https://elixirforum.com/t/introducing-elixirls-the-elixir-language-server/5857
 
+## Updating allowed dialyzer options
+
+The list in [project.json] needs to be updated to accommodate for changes in OTP basing on the list from https://github.com/erlang/otp/blob/412bff5196fc0ab88a61fe37ca30e5226fc7872d/lib/dialyzer/src/dialyzer_options.erl#L495
+
 ## References
 
 https://code.visualstudio.com/api/working-with-extensions/publishing-extension
