@@ -12,6 +12,7 @@
 - ElixirLS updated to [v0.22.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0220)
 - Added support for elixir 1.17 sigils with numerals
 - Added missing OTP 26+ dialyzer options `overlapping_contract` and `no_unknown`
+- Improvements to terminal link provider [Juan Barrios](https://github.com/03juan)
 
 ### v0.21.3: 22 May 2024
 
