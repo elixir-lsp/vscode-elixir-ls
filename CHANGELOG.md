@@ -1,5 +1,18 @@
 ### Unreleased
 
+### v0.22.0: 11 June 2024
+
+#### Highlights
+
+- Support for elixir 1.17
+- Support for OTP 27
+
+#### Improvements
+
+- ElixirLS updated to [v0.22.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0220)
+- Added support for elixir 1.17 sigils with numerals
+- Added missing OTP 26+ dialyzer options `overlapping_contract` and `no_unknown`
+
 ### v0.21.3: 22 May 2024
 
 #### Improvements
