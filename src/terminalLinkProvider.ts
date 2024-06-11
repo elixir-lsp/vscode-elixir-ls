@@ -29,7 +29,7 @@ export function configureTerminalLinkProvider(
       _token: vscode.CancellationToken
     ): vscode.ProviderResult<TerminalLinkWithData[]> => {
       const regex =
-        /(?:\((?<app>[_a-z]+) \d+.\d+.\d+\) )(?<file>[_a-z/]*[_a-z]+.ex):(?<line>\d+)/;
+        /(?:\((?<app>[_a-z0-9]+) \d+.\d+.\d+\) )(?<file>[_a-z0-9/]*[_a-z0-9]+.ex):(?<line>\d+)/;
       const matches = context.line.match(regex);
       if (matches === null) {
         return [];
@@ -50,20 +50,29 @@ export function configureTerminalLinkProvider(
     handleTerminalLink: async ({
       data: { app, file, line },
     }: TerminalLinkWithData) => {
-      const umbrellaFile = path.join("apps", app, file);
-      const uris = await vscode.workspace.findFiles(
-        `{${umbrellaFile},${file}}`
-      );
-      if (uris.length === 1) {
-        openUri(uris[0], line);
-      } else if (uris.length > 1) {
-        const items = uris.map((uri) => ({ label: uri.toString(), uri }));
-        const selection = await vscode.window.showQuickPick(items);
-        if (!selection) {
-          return;
+      if (path.isAbsolute(file)) {
+        const absUri = vscode.Uri.file(file);
+        const meta = await vscode.workspace.fs.stat(absUri);
+        if (meta?.type & (vscode.FileType.File | vscode.FileType.SymbolicLink)) {
+          openUri(absUri, line);
         }
+      } else {
+        const umbrellaFile = path.join("apps", app, file);
+        const depsFile = path.join("deps", app, file);
+        const uris = await vscode.workspace.findFiles(
+          `{${umbrellaFile},${file},${depsFile}}`
+        );
+        if (uris.length === 1) {
+          openUri(uris[0], line);
+        } else if (uris.length > 1) {
+          const items = uris.map((uri) => ({ label: uri.toString(), uri }));
+          const selection = await vscode.window.showQuickPick(items);
+          if (!selection) {
+            return;
+          }
 
-        await openUri(selection.uri, line);
+          await openUri(selection.uri, line);
+        }
       }
     },
   });
