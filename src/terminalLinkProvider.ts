@@ -53,7 +53,10 @@ export function configureTerminalLinkProvider(
       if (path.isAbsolute(file)) {
         const absUri = vscode.Uri.file(file);
         const meta = await vscode.workspace.fs.stat(absUri);
-        if (meta?.type & (vscode.FileType.File | vscode.FileType.SymbolicLink)) {
+        if (
+          meta?.type &
+          (vscode.FileType.File | vscode.FileType.SymbolicLink)
+        ) {
           openUri(absUri, line);
         }
       } else {
