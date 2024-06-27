@@ -11,7 +11,7 @@
   "author": "The Elixir community",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.22.0",
+  "version": "0.23.0",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -164,6 +164,12 @@
           "description": "Subdirectory containing Mix project if not in the project root",
           "minLength": 0,
           "default": ""
+        },
+        "elixirLS.useCurrentRootFolderAsProjectDir": {
+          "scope": "resource",
+          "type": "boolean",
+          "description": "Don't try to look for mix.exs in parent directories",
+          "default": false
         },
         "elixirLS.fetchDeps": {
           "scope": "resource",
