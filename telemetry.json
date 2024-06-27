@@ -135,6 +135,7 @@
     },
     "lsp_config": {
       "elixir_ls.projectDir":                 {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is project dir overriden"},
+      "elixir_ls.useCurrentRootFolderAsProjectDir": {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is project dir set to the current root in multi-root workspace"},
       "elixir_ls.autoBuild":                  {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is auto build enabled"},
       "elixir_ls.dialyzerEnabled":            {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is dialyzer enabled"},
       "elixir_ls.fetchDeps":                  {"classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Is auto fetching of dependencies enabled"},
