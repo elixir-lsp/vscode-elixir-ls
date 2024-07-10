@@ -1,5 +1,12 @@
 ### Unreleased
 
+### v0.22.1: 10 July 2024
+
+#### Improvements
+
+- ElixirLS updated to [v0.22.1](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0221)
+- Enabled ANSI colors in Debug Adapter
+
 ### v0.22.0: 11 June 2024
 
 #### Highlights
