@@ -50,6 +50,7 @@ function startClient(
       "language_server",
       clientOptions.workspaceFolder
     ),
+    options: { shell: true },
   };
 
   // If the extension is launched in debug mode then the `debug` server options are used instead of `run`
