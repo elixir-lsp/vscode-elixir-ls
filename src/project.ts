@@ -62,10 +62,11 @@ export class WorkspaceTracker {
       .getConfiguration("elixirLS", folder)
       .get<boolean>("useCurrentRootFolderAsProjectDir");
 
-
     let outermostFolder: vscode.WorkspaceFolder | null = null;
 
-    const sortedWorkspaceFolders = useCurrentRootFolderAsProjectDir ? [uri] : this.sortedWorkspaceFolders();
+    const sortedWorkspaceFolders = useCurrentRootFolderAsProjectDir
+      ? [uri]
+      : this.sortedWorkspaceFolders();
 
     for (const element of sortedWorkspaceFolders) {
       if (uri.startsWith(element)) {

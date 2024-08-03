@@ -229,7 +229,13 @@ suite("Multi root workspace tests", () => {
   }).timeout(30000);
 
   test("extension starts first client on the same folder with mix.exs if useCurrentRootFolderAsProjectDir is true", async () => {
-    vscode.workspace.getConfiguration("elixirLS").update("useCurrentRootFolderAsProjectDir", true, vscode.ConfigurationTarget.WorkspaceFolder);
+    vscode.workspace
+      .getConfiguration("elixirLS")
+      .update(
+        "useCurrentRootFolderAsProjectDir",
+        true,
+        vscode.ConfigurationTarget.WorkspaceFolder
+      );
 
     const fileUri = vscode.Uri.file(
       path.join(
