@@ -223,10 +223,7 @@ export async function runTest(
   });
 }
 
-const COMMON_ARGS = [
-  "--formatter",
-  "ElixirLS.DebugAdapter.ExUnitFormatter",
-];
+const COMMON_ARGS = ["--formatter", "ElixirLS.DebugAdapter.ExUnitFormatter"];
 
 function buildTestCommandArgs(args: RunTestArgs, debug: boolean): string[] {
   let line = "";

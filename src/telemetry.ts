@@ -38,6 +38,12 @@ const samplingConfigs: EventSamplingConfig[] = [
   {
     eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "textDocument_codeAction",
+    samplingFactor: 0.002,
+  },
+  {
+    eventName: "lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_hover",
     samplingFactor: 0.002,
   },
