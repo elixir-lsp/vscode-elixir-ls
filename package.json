@@ -13,7 +13,7 @@
   "publisher": "JakeBecker",
   "version": "0.23.0",
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.88.0"
   },
   "sponsor": {
     "url": "https://github.com/sponsors/elixir-lsp"
@@ -669,12 +669,12 @@
   "devDependencies": {
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.0.0",
-    "@types/vscode": "~1.85.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "@vscode/debugprotocol": "^1.65.0",
-    "@vscode/test-electron": "^2.3.0",
-    "esbuild": "^0.20.0",
+    "@types/vscode": "~1.88.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@vscode/debugprotocol": "^1.66.0",
+    "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.23.0",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",
     "glob": "^10.0.0",
