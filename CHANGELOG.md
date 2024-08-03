@@ -1,8 +1,16 @@
 ### Unreleased
 
+### v0.23.0: 3 August 2024
+
 #### Improvements
 
-- It is possible to restrict `mix.exs` search (projectDir) to the current root folder only, so in multi-root workspace configurations ElixirLS won't start in the outermost containing the `mix.exs` folder
+- ElixirLS updated to [v0.23.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0230)
+- Added support for remote debugging launch configs (with `attach` request)
+- It is possible to restrict `mix.exs` search (projectDir) to the current root folder only, so in multi-root workspace configurations ElixirLS won't start in the outermost containing the `mix.exs` folder - [Vladimir Drobyshevskiy](https://github.com/vheathen)
+
+#### Fixes
+
+- Addressed breaking change introduced in VSCode 1.92 affecting Windows related to CVE-2024-27980 - [Lars Oehnenamen](https://github.com/wheredoipressnow)
 
 ### v0.22.1: 10 July 2024
 
