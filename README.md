@@ -91,7 +91,7 @@ If you run into issues with the extension, try these debugging steps:
 - After stopping your editor, remove the entire `.elixir_ls` directory, then restart your editor.
   - NOTE: This will cause you to have to re-run the entire dialyzer build
 
-You may need to set `elixirLS.mixEnv`, `elixirLS.mixTarget`, and `elixirLS.projectDir` if your project requires it. By default, ElixirLS compiles code with `MIX_ENV=test`, `MIX_TARGET=host`, and assumes that `mix.exs` is located in the workspace root directory.
+You may need to set `elixirLS.mixEnv`, `elixirLS.mixTarget`, `elixirLS.projectDir` and/or `elixirLS.useCurrentRootFolderAsProjectDir` if your project requires it. By default, ElixirLS compiles code with `MIX_ENV=test`, `MIX_TARGET=host`, and assumes that `mix.exs` is located in the workspace root directory.
 
 If you get an error like the following immediately on startup:
 

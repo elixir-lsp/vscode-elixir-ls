@@ -227,4 +227,36 @@ suite("Multi root workspace tests", () => {
       )
     );
   }).timeout(30000);
+
+  test("extension starts first client on the same folder with mix.exs if useCurrentRootFolderAsProjectDir is true", async () => {
+    vscode.workspace.getConfiguration("elixirLS").update("useCurrentRootFolderAsProjectDir", true, vscode.ConfigurationTarget.WorkspaceFolder);
+
+    const fileUri = vscode.Uri.file(
+      path.join(
+        fixturesPath,
+        "containing_folder",
+        "single_folder_mix",
+        "mix.exs"
+      )
+    );
+
+    const workspaceFolderUri = vscode.Uri.file(
+      path.join(fixturesPath, "containing_folder", "single_folder_mix")
+    );
+
+    await waitForLanguageClientManagerUpdate(extension, async () => {
+      const document = await vscode.workspace.openTextDocument(fileUri);
+      await vscode.window.showTextDocument(document);
+    });
+
+    assert.ok(!extension.exports.languageClientManager.defaultClient);
+    assert.equal(extension.exports.languageClientManager.clients.size, 3);
+
+    assert.equal(
+      extension.exports.languageClientManager.getClientByUri(fileUri),
+      extension.exports.languageClientManager.clients.get(
+        workspaceFolderUri.toString()
+      )
+    );
+  }).timeout(30000);
 });
