@@ -45,11 +45,11 @@ function startClient(
   clientOptions: LanguageClientOptions
 ): [LanguageClient, Promise<LanguageClient>, Disposable[]] {
   const serverOpts: Executable = {
-    command: buildCommand(
+    command: `"${buildCommand(
       context,
       "language_server",
       clientOptions.workspaceFolder
-    ),
+    )}"`,
     options: { shell: true },
   };
 
