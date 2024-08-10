@@ -1,5 +1,11 @@
 ### Unreleased
 
+### v0.23.1: 10 August 2024
+
+#### Fixes
+
+- Addressed regression on Windows affection users with whitespaces in home path - [Alim ul kader T](https://github.com/Aulk98)
+
 ### v0.23.0: 3 August 2024
 
 #### Improvements
