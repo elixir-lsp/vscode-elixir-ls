@@ -16,7 +16,7 @@
       ".vscode",
       "elixir-language-configuration.json",
       "eex-language-configuration.json",
-			"telemetry.json"
+      "telemetry.json"
     ]
   },
   "formatter": {
