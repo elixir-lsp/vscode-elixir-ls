@@ -1,22 +1,19 @@
-"use strict";
-
 import * as vscode from "vscode";
 import {
-  ExecuteCommandParams,
+  type ExecuteCommandParams,
   ExecuteCommandRequest,
-  LanguageClient,
+  type LanguageClient,
   State,
 } from "vscode-languageclient/node";
-import { LanguageClientManager } from "../languageClientManager";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
+import type { LanguageClientManager } from "../languageClientManager";
 
 export function configureMixClean(
   context: vscode.ExtensionContext,
   languageClientManager: LanguageClientManager,
-  cleanDeps: boolean
+  cleanDeps: boolean,
 ) {
-  const commandName =
-    "extension." + (cleanDeps ? "mixCleanIncludeDeps" : "mixClean");
+  const commandName = `extension.${cleanDeps ? "mixCleanIncludeDeps" : "mixClean"}`;
   const disposable = vscode.commands.registerCommand(commandName, async () => {
     const extension = vscode.extensions.getExtension(ELIXIR_LS_EXTENSION_NAME);
 
@@ -33,13 +30,14 @@ export function configureMixClean(
             console.error(
               `ElixirLS: unable to execute command on server ${
                 client.name
-              } in state ${State[client.state]}`
+              } in state ${State[client.state]}`,
             );
             return;
           }
           const command =
-            client.initializeResult.capabilities.executeCommandProvider!.commands.find(
-              (c) => c.startsWith("mixClean:")
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
+            client.initializeResult.capabilities.executeCommandProvider?.commands.find(
+              (c) => c.startsWith("mixClean:"),
             )!;
 
           const params: ExecuteCommandParams = {
@@ -48,7 +46,7 @@ export function configureMixClean(
           };
 
           await client.sendRequest(ExecuteCommandRequest.type, params);
-        })
+        }),
     );
   });
 

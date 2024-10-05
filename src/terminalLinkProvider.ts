@@ -1,6 +1,4 @@
-"use strict";
-
-import * as path from "path";
+import * as path from "node:path";
 import * as vscode from "vscode";
 
 interface TerminalLinkWithData extends vscode.TerminalLink {
@@ -12,7 +10,7 @@ interface TerminalLinkWithData extends vscode.TerminalLink {
 }
 
 export function configureTerminalLinkProvider(
-  context: vscode.ExtensionContext
+  context: vscode.ExtensionContext,
 ) {
   async function openUri(uri: vscode.Uri, line: number) {
     const document = await vscode.workspace.openTextDocument(uri);
@@ -26,7 +24,7 @@ export function configureTerminalLinkProvider(
   const disposable = vscode.window.registerTerminalLinkProvider({
     provideTerminalLinks: (
       context: vscode.TerminalLinkContext,
-      _token: vscode.CancellationToken
+      _token: vscode.CancellationToken,
     ): vscode.ProviderResult<TerminalLinkWithData[]> => {
       const regex =
         /(?:\((?<app>[_a-z0-9]+) \d+.\d+.\d+\) )(?<file>[_a-z0-9/]*[_a-z0-9]+.ex):(?<line>\d+)/;
@@ -37,12 +35,13 @@ export function configureTerminalLinkProvider(
 
       return [
         {
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
           startIndex: matches.index!,
           length: matches[0].length,
           data: {
-            app: matches.groups!.app,
-            file: matches.groups!.file,
-            line: parseInt(matches.groups!.line),
+            app: matches.groups?.app ?? "",
+            file: matches.groups?.file ?? "",
+            line: Number.parseInt(matches.groups?.line ?? "1"),
           },
         },
       ];
@@ -63,7 +62,7 @@ export function configureTerminalLinkProvider(
         const umbrellaFile = path.join("apps", app, file);
         const depsFile = path.join("deps", app, file);
         const uris = await vscode.workspace.findFiles(
-          `{${umbrellaFile},${file},${depsFile}}`
+          `{${umbrellaFile},${file},${depsFile}}`,
         );
         if (uris.length === 1) {
           openUri(uris[0], line);

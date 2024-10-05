@@ -1,15 +1,10 @@
-"use strict";
-
 import * as vscode from "vscode";
 
 function detectConflictingExtension(extensionId: string): void {
   const extension = vscode.extensions.getExtension(extensionId);
   if (extension) {
     vscode.window.showErrorMessage(
-      "Warning: " +
-        extensionId +
-        " is not compatible with ElixirLS, please uninstall " +
-        extensionId
+      `Warning: ${extensionId} is not compatible with ElixirLS, please uninstall ${extensionId}`,
     );
   }
 }

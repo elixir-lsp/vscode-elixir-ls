@@ -1,18 +1,16 @@
-"use strict";
-
 import * as vscode from "vscode";
 import {
-  ExecuteCommandParams,
+  type ExecuteCommandParams,
   ExecuteCommandRequest,
   State,
 } from "vscode-languageclient";
-import { LanguageClientManager } from "../languageClientManager";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
+import type { LanguageClientManager } from "../languageClientManager";
 
 export function configureManipulatePipes(
   context: vscode.ExtensionContext,
   languageClientManager: LanguageClientManager,
-  operation: "toPipe" | "fromPipe"
+  operation: "toPipe" | "fromPipe",
 ) {
   const commandName = `extension.${operation}`;
 
@@ -25,7 +23,7 @@ export function configureManipulatePipes(
 
     const uri = editor.document.uri;
     const clientPromise = languageClientManager.getClientPromiseByDocument(
-      editor.document
+      editor.document,
     );
 
     if (!clientPromise) {
@@ -39,14 +37,15 @@ export function configureManipulatePipes(
       console.error(
         `ElixirLS: unable to execute command on server ${
           client.name
-        } in state ${State[client.state]}`
+        } in state ${State[client.state]}`,
       );
       return;
     }
 
     const command =
-      client.initializeResult.capabilities.executeCommandProvider!.commands.find(
-        (c: string) => c.startsWith("manipulatePipes:")
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      client.initializeResult.capabilities.executeCommandProvider?.commands.find(
+        (c: string) => c.startsWith("manipulatePipes:"),
       )!;
 
     const uriStr = uri.toString();

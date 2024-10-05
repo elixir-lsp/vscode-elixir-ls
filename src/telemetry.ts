@@ -1,8 +1,8 @@
-import * as vscode from "vscode";
 import TelemetryReporter, {
-  TelemetryEventMeasurements,
-  TelemetryEventProperties,
+  type TelemetryEventMeasurements,
+  type TelemetryEventProperties,
 } from "@vscode/extension-telemetry";
+import type * as vscode from "vscode";
 
 const key = "0979629c-3be4-4b0d-93f2-2be81cccd799";
 const fakeKey = "00000000-0000-0000-0000-000000000000";
@@ -100,7 +100,7 @@ const samplingConfigs: EventSamplingConfig[] = [
 function shouldSampleEvent(
   eventName: string,
   properties: TelemetryEventProperties | undefined,
-  config: EventSamplingConfig
+  config: EventSamplingConfig,
 ): boolean {
   if (eventName !== config.eventName) {
     return false;
@@ -126,7 +126,7 @@ class EnvironmentReporter extends TelemetryReporter {
   override sendTelemetryEvent(
     eventName: string,
     properties?: TelemetryEventProperties | undefined,
-    measurements?: TelemetryEventMeasurements | undefined
+    measurements?: TelemetryEventMeasurements | undefined,
   ): void {
     if (process.env.ELS_TEST) {
       return;
@@ -141,11 +141,11 @@ class EnvironmentReporter extends TelemetryReporter {
       }
     }
 
-    if (samplingFactor == 1 || Math.random() <= samplingFactor) {
+    if (samplingFactor === 1 || Math.random() <= samplingFactor) {
       super.sendTelemetryEvent(
         eventName,
         properties,
-        this.appendCount(eventName, samplingFactor, measurements)
+        this.appendCount(eventName, samplingFactor, measurements),
       );
     }
   }
@@ -153,7 +153,7 @@ class EnvironmentReporter extends TelemetryReporter {
   override sendTelemetryErrorEvent(
     eventName: string,
     properties?: TelemetryEventProperties | undefined,
-    measurements?: TelemetryEventMeasurements | undefined
+    measurements?: TelemetryEventMeasurements | undefined,
   ): void {
     if (process.env.ELS_TEST) {
       return;
@@ -162,14 +162,14 @@ class EnvironmentReporter extends TelemetryReporter {
     super.sendTelemetryErrorEvent(
       eventName,
       properties,
-      this.appendCount(eventName, 1, measurements)
+      this.appendCount(eventName, 1, measurements),
     );
   }
 
   override sendRawTelemetryEvent(
     eventName: string,
     properties?: TelemetryEventProperties | undefined,
-    measurements?: TelemetryEventMeasurements | undefined
+    measurements?: TelemetryEventMeasurements | undefined,
   ): void {
     if (process.env.ELS_TEST) {
       return;
@@ -177,14 +177,14 @@ class EnvironmentReporter extends TelemetryReporter {
     super.sendRawTelemetryEvent(
       eventName,
       properties,
-      this.appendCount(eventName, 1, measurements)
+      this.appendCount(eventName, 1, measurements),
     );
   }
 
   override sendDangerousTelemetryErrorEvent(
     eventName: string,
     properties?: TelemetryEventProperties | undefined,
-    measurements?: TelemetryEventMeasurements | undefined
+    measurements?: TelemetryEventMeasurements | undefined,
   ): void {
     if (process.env.ELS_TEST) {
       return;
@@ -192,14 +192,14 @@ class EnvironmentReporter extends TelemetryReporter {
     super.sendDangerousTelemetryErrorEvent(
       eventName,
       properties,
-      this.appendCount(eventName, 1, measurements)
+      this.appendCount(eventName, 1, measurements),
     );
   }
 
   override sendDangerousTelemetryEvent(
     eventName: string,
     properties?: TelemetryEventProperties | undefined,
-    measurements?: TelemetryEventMeasurements | undefined
+    measurements?: TelemetryEventMeasurements | undefined,
   ): void {
     if (process.env.ELS_TEST) {
       return;
@@ -207,36 +207,36 @@ class EnvironmentReporter extends TelemetryReporter {
     super.sendDangerousTelemetryEvent(
       eventName,
       properties,
-      this.appendCount(eventName, 1, measurements)
+      this.appendCount(eventName, 1, measurements),
     );
   }
 
   private appendCount(
     eventName: string,
     samplingFactor: number,
-    measurements?: TelemetryEventMeasurements | undefined
+    measurements?: TelemetryEventMeasurements | undefined,
   ): TelemetryEventMeasurements {
     const label = `elixir_ls.${eventName}_count`;
     if (!measurements) {
       const measurementsWithCount: TelemetryEventMeasurements = {};
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       (<any>measurementsWithCount)[label] = 1 / samplingFactor;
       return measurementsWithCount;
-    } else {
-      let countFound = false;
-      Object.keys(measurements).forEach((key) => {
-        if (key.endsWith("_count")) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (<any>measurements)[key] /= samplingFactor;
-          countFound = true;
-        }
-      });
-      if (!countFound) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (<any>measurements)[label] = 1 / samplingFactor;
-      }
-      return measurements;
     }
+    let countFound = false;
+    // biome-ignore lint/complexity/noForEach: <explanation>
+    Object.keys(measurements).forEach((key) => {
+      if (key.endsWith("_count")) {
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        (<any>measurements)[key] /= samplingFactor;
+        countFound = true;
+      }
+    });
+    if (!countFound) {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      (<any>measurements)[label] = 1 / samplingFactor;
+    }
+    return measurements;
   }
 }
 
@@ -251,7 +251,8 @@ export function configureTelemetry(context: vscode.ExtensionContext) {
   context.subscriptions.push(reporter);
 }
 
-export function preprocessStacktrace(stack: string) {
+export function preprocessStacktrace(originalStack: string) {
+  let stack = originalStack;
   // Define the libraries you want to preserve
   const libraries = [
     "elixir_sense",
@@ -307,9 +308,10 @@ export function preprocessStacktrace(stack: string) {
     "pwd",
     "android:value",
   ];
+  // biome-ignore lint/complexity/noForEach: <explanation>
   sensitiveKeywords.forEach((keyword) => {
     const regex = new RegExp(`(${keyword})[^a-zA-Z0-9]`, "gi");
-    const encodeKeyword = keyword[0] + "_" + keyword.slice(1);
+    const encodeKeyword = `${keyword[0]}_${keyword.slice(1)}`;
     stack = stack.replace(regex, encodeKeyword);
   });
 
@@ -320,15 +322,15 @@ export function preprocessStacktrace(stack: string) {
 }
 
 export function preprocessStacktraceInProperties(
-  properties?: TelemetryEventProperties | undefined
+  properties?: TelemetryEventProperties | undefined,
 ): TelemetryEventProperties | undefined {
   if (!properties) {
     return properties;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   for (const key in <any>properties) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     (<any>properties)[key] = preprocessStacktrace((<any>properties)[key]);
   }
   return properties;

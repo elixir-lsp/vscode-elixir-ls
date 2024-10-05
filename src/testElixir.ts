@@ -1,7 +1,5 @@
-"use strict";
-
+import { execSync } from "node:child_process";
 import * as vscode from "vscode";
-import { execSync } from "child_process";
 
 function testElixirCommand(command: string): false | Buffer {
   try {
@@ -16,21 +14,21 @@ export function testElixir(): boolean {
 
   if (!testResult) {
     vscode.window.showErrorMessage(
-      "Failed to run 'elixir' command. ElixirLS will probably fail to launch. Logged PATH to Development Console."
+      "Failed to run 'elixir' command. ElixirLS will probably fail to launch. Logged PATH to Development Console.",
     );
     console.warn(
-      `Failed to run 'elixir' command. Current process's PATH: ${process.env["PATH"]}`
+      `Failed to run 'elixir' command. Current process's PATH: ${process.env.PATH}`,
     );
     return false;
-  } else if (testResult.length > 0) {
-    vscode.window.showErrorMessage(
-      "Running 'elixir' command caused extraneous print to stdout. See VS Code's developer console for details."
-    );
-    console.warn(
-      "Running 'elixir -e \"\"' printed to stdout:\n" + testResult.toString()
-    );
-    return false;
-  } else {
-    return true;
   }
+  if (testResult.length > 0) {
+    vscode.window.showErrorMessage(
+      "Running 'elixir' command caused extraneous print to stdout. See VS Code's developer console for details.",
+    );
+    console.warn(
+      `Running 'elixir -e \"\"' printed to stdout:\n${testResult.toString()}`,
+    );
+    return false;
+  }
+  return true;
 }

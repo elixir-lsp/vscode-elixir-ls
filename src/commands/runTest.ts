@@ -1,10 +1,10 @@
+import * as os from "node:os";
 import * as vscode from "vscode";
 import {
-  DebuggeeOutput,
-  DebuggeeExited,
+  type DebuggeeExited,
+  type DebuggeeOutput,
   trackerFactory,
 } from "../debugAdapter";
-import * as os from "os";
 import { reporter } from "../telemetry";
 
 export type RunTestArgs = {
@@ -19,24 +19,24 @@ export type RunTestArgs = {
     module: string,
     describe: string | null,
     name: string,
-    type: string
+    type: string,
   ) => vscode.TestItem | undefined;
 };
 
 // Get the configuration for mix test, if it exists
 function getExistingLaunchConfig(
   args: RunTestArgs,
-  debug: boolean
+  debug: boolean,
 ): vscode.DebugConfiguration | undefined {
   const launchJson = vscode.workspace.getConfiguration(
     "launch",
-    args.workspaceFolder
+    args.workspaceFolder,
   );
   const testConfig = launchJson.configurations.findLast(
-    (e: { name: string }) => e.name == "mix test"
+    (e: { name: string }) => e.name === "mix test",
   );
 
-  if (testConfig == undefined) {
+  if (testConfig === undefined) {
     return undefined;
   }
 
@@ -62,7 +62,7 @@ function getExistingLaunchConfig(
 // Get the config to use for debugging
 function getLaunchConfig(
   args: RunTestArgs,
-  debug: boolean
+  debug: boolean,
 ): vscode.DebugConfiguration {
   const fileConfiguration: vscode.DebugConfiguration | undefined =
     getExistingLaunchConfig(args, debug);
@@ -98,7 +98,7 @@ function getLaunchConfig(
 export async function runTest(
   run: vscode.TestRun,
   args: RunTestArgs,
-  debug: boolean
+  debug: boolean,
 ): Promise<string> {
   reporter.sendTelemetryEvent("run_test", {
     "elixir_ls.with_debug": "true",
@@ -106,7 +106,7 @@ export async function runTest(
 
   const debugConfiguration: vscode.DebugConfiguration = getLaunchConfig(
     args,
-    debug
+    debug,
   );
 
   return new Promise((resolve, reject) => {
@@ -123,11 +123,11 @@ export async function runTest(
     const output: string[] = [];
     listeners.push(
       trackerFactory.onOutput((outputEvent: DebuggeeOutput) => {
-        if (outputEvent.sessionId == sessionId) {
+        if (outputEvent.sessionId === sessionId) {
           const category = outputEvent.output.body.category;
-          if (category == "stdout" || category == "stderr") {
+          if (category === "stdout" || category === "stderr") {
             output.push(outputEvent.output.body.output);
-          } else if (category == "ex_unit") {
+          } else if (category === "ex_unit") {
             const exUnitEvent = outputEvent.output.body.data.event;
             const data = outputEvent.output.body.data;
             const test = args.getTest(
@@ -135,66 +135,66 @@ export async function runTest(
               data.module,
               data.describe,
               data.name,
-              data.type
+              data.type,
             );
             if (test) {
-              if (exUnitEvent == "test_started") {
+              if (exUnitEvent === "test_started") {
                 run.started(test);
-              } else if (exUnitEvent == "test_passed") {
+              } else if (exUnitEvent === "test_passed") {
                 run.passed(test, data.time / 1000);
-              } else if (exUnitEvent == "test_failed") {
+              } else if (exUnitEvent === "test_failed") {
                 run.failed(
                   test,
                   new vscode.TestMessage(data.message),
-                  data.time / 1000
+                  data.time / 1000,
                 );
-              } else if (exUnitEvent == "test_errored") {
+              } else if (exUnitEvent === "test_errored") {
                 // ex_unit does not report duration for invalid tests
                 run.errored(test, new vscode.TestMessage(data.message));
               } else if (
-                exUnitEvent == "test_skipped" ||
-                exUnitEvent == "test_excluded"
+                exUnitEvent === "test_skipped" ||
+                exUnitEvent === "test_excluded"
               ) {
                 run.skipped(test);
               }
             } else {
-              if (exUnitEvent != "test_excluded") {
+              if (exUnitEvent !== "test_excluded") {
                 console.warn(
-                  `ElixirLS: Test ${data.file} ${data.module} ${data.describe} ${data.name} not found`
+                  `ElixirLS: Test ${data.file} ${data.module} ${data.describe} ${data.name} not found`,
                 );
               }
             }
           }
         }
-      })
+      }),
     );
     listeners.push(
       trackerFactory.onExited((exit: DebuggeeExited) => {
         console.log(
-          `ElixirLS: Debug session ${exit.sessionId}: debuggee exited with code ${exit.code}`
+          `ElixirLS: Debug session ${exit.sessionId}: debuggee exited with code ${exit.code}`,
         );
-        if (exit.sessionId == sessionId) {
+        if (exit.sessionId === sessionId) {
           exitCode = exit.code;
         }
-      })
+      }),
     );
     listeners.push(
       vscode.debug.onDidStartDebugSession((s) => {
         console.log(`ElixirLS: Debug session ${s.id} started`);
         sessionId = s.id;
-      })
+      }),
     );
     listeners.push(
       vscode.debug.onDidTerminateDebugSession((s) => {
         console.log(`ElixirLS: Debug session ${s.id} terminated`);
 
         disposeListeners();
-        if (exitCode == 0) {
+        if (exitCode === 0) {
           resolve(output.join(""));
         } else {
           reject(output.join(""));
         }
-      })
+      }),
     );
 
     vscode.debug.startDebugging(args.workspaceFolder, debugConfiguration).then(
@@ -218,7 +218,7 @@ export async function runTest(
 
         disposeListeners();
         reject("Unable to start debug session");
-      }
+      },
     );
   });
 }
@@ -249,7 +249,7 @@ function buildTestCommandArgs(args: RunTestArgs, debug: boolean): string[] {
     // fortunately unix separators work correctly
     // TODO remove this when we require elixir 1.17
     const path =
-      os.platform() == "win32"
+      os.platform() === "win32"
         ? args.filePath.replace("\\", "/")
         : args.filePath;
     result.push(`${path}${line}`);

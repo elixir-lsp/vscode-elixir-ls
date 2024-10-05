@@ -1,10 +1,10 @@
-import * as assert from "assert";
+import * as assert from "node:assert";
 
+import * as path from "node:path";
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from "vscode";
-import * as path from "path";
-import { ElixirLS } from "../../extension";
+import type { ElixirLS } from "../../extension";
 import { WorkspaceMode } from "../../project";
 import { getExtension, waitForLanguageClientManagerUpdate } from "../utils";
 
@@ -13,7 +13,7 @@ const fixturesPath = path.resolve(__dirname, "../../../src/test-fixtures");
 
 suite("Single folder no mix tests", () => {
   vscode.window.showInformationMessage(
-    "Start single folder mix project tests."
+    "Start single folder mix project tests.",
   );
 
   suiteSetup(async () => {
@@ -24,7 +24,7 @@ suite("Single folder no mix tests", () => {
     assert.ok(extension.isActive);
     assert.equal(
       extension.exports.workspaceTracker.mode,
-      WorkspaceMode.SINGLE_FOLDER
+      WorkspaceMode.SINGLE_FOLDER,
     );
     assert.ok(!extension.exports.languageClientManager.defaultClient);
     // TODO start client?
@@ -37,8 +37,8 @@ suite("Single folder no mix tests", () => {
         fixturesPath,
         "single_folder_mix",
         "lib",
-        "single_folder_mix.ex"
-      )
+        "single_folder_mix.ex",
+      ),
     );
 
     await waitForLanguageClientManagerUpdate(extension, async () => {
@@ -55,8 +55,8 @@ suite("Single folder no mix tests", () => {
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(sampleFileUri),
       extension.exports.languageClientManager.clients.get(
-        vscode.workspace.workspaceFolders![0].uri.toString()
-      )
+        vscode.workspace.workspaceFolders?.[0].uri.toString() ?? "",
+      ),
     );
   });
 
@@ -66,14 +66,14 @@ suite("Single folder no mix tests", () => {
         fixturesPath,
         "single_folder_mix",
         "lib",
-        "single_folder_mix.ex"
-      )
+        "single_folder_mix.ex",
+      ),
     );
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(fileUri),
       extension.exports.languageClientManager.clients.get(
-        vscode.workspace.workspaceFolders![0].uri.toString()
-      )
+        vscode.workspace.workspaceFolders?.[0].uri.toString() ?? "",
+      ),
     );
   });
 
@@ -82,8 +82,8 @@ suite("Single folder no mix tests", () => {
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(fileUri),
       extension.exports.languageClientManager.clients.get(
-        vscode.workspace.workspaceFolders![0].uri.toString()
-      )
+        vscode.workspace.workspaceFolders?.[0].uri.toString() ?? "",
+      ),
     );
   });
 });

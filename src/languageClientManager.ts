@@ -1,18 +1,16 @@
-"use strict";
-
 import * as vscode from "vscode";
 import {
-  Disposable,
-  Executable,
+  type Disposable,
+  type Executable,
   LanguageClient,
-  LanguageClientOptions,
+  type LanguageClientOptions,
   RevealOutputChannelOn,
-  ServerOptions,
+  type ServerOptions,
 } from "vscode-languageclient/node";
-import { WorkspaceMode, WorkspaceTracker } from "./project";
 import { buildCommand } from "./executable";
+import { WorkspaceMode, type WorkspaceTracker } from "./project";
 import {
-  TelemetryEvent,
+  type TelemetryEvent,
   preprocessStacktraceInProperties,
   reporter,
 } from "./telemetry";
@@ -42,13 +40,13 @@ const clientOptions: LanguageClientOptions = {
 
 function startClient(
   context: vscode.ExtensionContext,
-  clientOptions: LanguageClientOptions
+  clientOptions: LanguageClientOptions,
 ): [LanguageClient, Promise<LanguageClient>, Disposable[]] {
   const serverOpts: Executable = {
     command: `"${buildCommand(
       context,
       "language_server",
-      clientOptions.workspaceFolder
+      clientOptions.workspaceFolder,
     )}"`,
     options: { shell: true },
   };
@@ -60,24 +58,25 @@ function startClient(
     debug: serverOpts,
   };
 
+  // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
   let displayName;
   if (clientOptions.workspaceFolder) {
     console.log(
       `ElixirLS: starting LSP client for ${clientOptions.workspaceFolder.uri.fsPath} with server options`,
       serverOptions,
       "client options",
-      clientOptions
+      clientOptions,
     );
-    displayName = `ElixirLS - ${clientOptions.workspaceFolder!.name}`;
+    displayName = `ElixirLS - ${clientOptions.workspaceFolder?.name}`;
     reporter.sendTelemetryEvent("language_client_starting", {
       "elixir_ls.language_client_mode": "workspaceFolder",
     });
   } else {
     console.log(
-      `ElixirLS: starting default LSP client with server options`,
+      "ElixirLS: starting default LSP client with server options",
       serverOptions,
       "client options",
-      clientOptions
+      clientOptions,
     );
     displayName = "ElixirLS - (default)";
     reporter.sendTelemetryEvent("language_client_starting", {
@@ -89,7 +88,7 @@ function startClient(
     "elixirLS", // langId
     displayName, // display name
     serverOptions,
-    clientOptions
+    clientOptions,
   );
 
   const clientDisposables: Disposable[] = [];
@@ -100,16 +99,16 @@ function startClient(
         reporter.sendTelemetryErrorEvent(
           event.name,
           preprocessStacktraceInProperties(event.properties),
-          event.measurements
+          event.measurements,
         );
       } else {
         reporter.sendTelemetryEvent(
           event.name,
           event.properties,
-          event.measurements
+          event.measurements,
         );
       }
-    })
+    }),
   );
 
   const clientPromise = new Promise<LanguageClient>((resolve, reject) => {
@@ -120,10 +119,10 @@ function startClient(
         const elapsed = performance.now() - startTime;
         if (clientOptions.workspaceFolder) {
           console.log(
-            `ElixirLS: started LSP client for ${clientOptions.workspaceFolder.uri.toString()}`
+            `ElixirLS: started LSP client for ${clientOptions.workspaceFolder.uri.toString()}`,
           );
         } else {
-          console.log(`ElixirLS: started default LSP client`);
+          console.log("ElixirLS: started default LSP client");
         }
         reporter.sendTelemetryEvent(
           "language_client_started",
@@ -132,7 +131,7 @@ function startClient(
               ? "workspaceFolder"
               : "default",
           },
-          { "elixir_ls.language_client_activation_time": elapsed }
+          { "elixir_ls.language_client_activation_time": elapsed },
         );
         resolve(client);
       })
@@ -146,11 +145,11 @@ function startClient(
         });
         if (clientOptions.workspaceFolder) {
           console.error(
-            `ElixirLS: failed to start LSP client for ${clientOptions.workspaceFolder.uri.toString()}: ${reason}`
+            `ElixirLS: failed to start LSP client for ${clientOptions.workspaceFolder.uri.toString()}: ${reason}`,
           );
         } else {
           console.error(
-            `ElixirLS: failed to start default LSP client: ${reason}`
+            `ElixirLS: failed to start default LSP client: ${reason}`,
           );
         }
         reject(reason);
@@ -205,7 +204,7 @@ export class LanguageClientManager {
     const restartPromise = async (
       client: LanguageClient,
       isDefault: boolean,
-      key?: string | undefined
+      key?: string | undefined,
     ) =>
       new Promise<LanguageClient>((resolve, reject) => {
         reporter.sendTelemetryEvent("language_client_restarting", {
@@ -225,12 +224,12 @@ export class LanguageClientManager {
                   ? "workspaceFolder"
                   : "default",
               },
-              { "elixir_ls.language_client_activation_time": elapsed }
+              { "elixir_ls.language_client_activation_time": elapsed },
             );
             if (!isDefault) {
               console.log(`ElixirLS: started LSP client for ${key}`);
             } else {
-              console.log(`ElixirLS: started default LSP client`);
+              console.log("ElixirLS: started default LSP client");
             }
             resolve(client);
           })
@@ -244,11 +243,11 @@ export class LanguageClientManager {
             });
             if (!isDefault) {
               console.error(
-                `ElixirLS: failed to start LSP client for ${key}: ${e}`
+                `ElixirLS: failed to start LSP client for ${key}: ${e}`,
               );
             } else {
               console.error(
-                `ElixirLS: failed to start default LSP client: ${e}`
+                `ElixirLS: failed to start default LSP client: ${e}`,
               );
             }
             reject(e);
@@ -260,7 +259,7 @@ export class LanguageClientManager {
       this.clientsPromises.set(key, restartPromise(client, false, key));
     }
     if (this.defaultClient) {
-      console.log(`ElixirLS: restarting default LSP client`);
+      console.log("ElixirLS: restarting default LSP client");
       this.defaultClientPromise = restartPromise(this.defaultClient, true);
     }
   }
@@ -281,9 +280,8 @@ export class LanguageClientManager {
         // no workspace folders - use default client
         if (this.defaultClient) {
           return this.defaultClient;
-        } else {
-          throw "default client LSP not started";
         }
+        throw "default client LSP not started";
       }
     }
 
@@ -293,9 +291,8 @@ export class LanguageClientManager {
     const client = this.clients.get(folder.uri.toString());
     if (client) {
       return client;
-    } else {
-      throw `LSP client for ${folder.uri.toString()} not started`;
     }
+    throw `LSP client for ${folder.uri.toString()} not started`;
   }
 
   public getClientPromiseByUri(uri: vscode.Uri): Promise<LanguageClient> {
@@ -312,6 +309,7 @@ export class LanguageClientManager {
         folder = vscode.workspace.workspaceFolders[0];
       } else {
         // no folders - use default client
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
         return this.defaultClientPromise!;
       }
     }
@@ -319,11 +317,12 @@ export class LanguageClientManager {
     // If we have nested workspace folders we only start a server on the outer most workspace folder.
     folder = this._workspaceTracker.getOuterMostWorkspaceFolder(folder);
 
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     return this.clientsPromises.get(folder.uri.toString())!;
   }
 
   public getClientByDocument(
-    document: vscode.TextDocument
+    document: vscode.TextDocument,
   ): LanguageClient | null {
     // We are only interested in elixir files
     if (document.languageId !== "elixir") {
@@ -334,7 +333,7 @@ export class LanguageClientManager {
   }
 
   public getClientPromiseByDocument(
-    document: vscode.TextDocument
+    document: vscode.TextDocument,
   ): Promise<LanguageClient> | null {
     // We are only interested in elixir files
     if (document.languageId !== "elixir") {
@@ -346,7 +345,7 @@ export class LanguageClientManager {
 
   public handleDidOpenTextDocument(
     document: vscode.TextDocument,
-    context: vscode.ExtensionContext
+    context: vscode.ExtensionContext,
   ) {
     // We are only interested in elixir related files
     if (!languageIds.includes(document.languageId)) {
@@ -389,6 +388,7 @@ export class LanguageClientManager {
     folder = this._workspaceTracker.getOuterMostWorkspaceFolder(folder);
 
     if (!this.clients.has(folder.uri.toString())) {
+      // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
       let documentSelector;
       if (this._workspaceTracker.mode === WorkspaceMode.MULTI_ROOT) {
         // multi-root workspace
@@ -425,7 +425,7 @@ export class LanguageClientManager {
 
       const [client, clientPromise, clientDisposables] = startClient(
         context,
-        workspaceClientOptions
+        workspaceClientOptions,
       );
       this.clients.set(folder.uri.toString(), client);
       this.clientsPromises.set(folder.uri.toString(), clientPromise);
@@ -439,7 +439,9 @@ export class LanguageClientManager {
     const clientsToDispose: LanguageClient[] = [];
     let changed = false;
     if (this.defaultClient) {
-      this.defaultClientDisposables!.forEach((d) => d.dispose());
+      // biome-ignore lint/complexity/noForEach: <explanation>
+      this.defaultClientDisposables?.forEach((d) => d.dispose());
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       clientStartPromises.push(this.defaultClientPromise!);
       clientsToDispose.push(this.defaultClient);
       this.defaultClient = null;
@@ -449,7 +451,9 @@ export class LanguageClientManager {
     }
 
     for (const [uri, client] of this.clients.entries()) {
-      this.clientsDisposables.get(uri)!.forEach((d) => d.dispose());
+      // biome-ignore lint/complexity/noForEach: <explanation>
+      this.clientsDisposables.get(uri)?.forEach((d) => d.dispose());
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       clientStartPromises.push(this.clientsPromises.get(uri)!);
       clientsToDispose.push(client);
       changed = true;
@@ -483,7 +487,9 @@ export class LanguageClientManager {
     const client = this.clients.get(uri);
     if (client) {
       console.log("ElixirLS: Stopping LSP client for", folder.uri.fsPath);
-      this.clientsDisposables.get(uri)!.forEach((d) => d.dispose());
+      // biome-ignore lint/complexity/noForEach: <explanation>
+      this.clientsDisposables.get(uri)?.forEach((d) => d.dispose());
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       const clientPromise = this.clientsPromises.get(uri)!;
 
       this.clients.delete(uri);
@@ -499,11 +505,11 @@ export class LanguageClientManager {
       } catch (e) {
         console.warn(
           "ElixirLS: error during wait for stoppable LSP client state",
-          e
+          e,
         );
         reporter.sendTelemetryErrorEvent("language_client_stop_error", {
           "elixir_ls.language_client_stop_error": String(e),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
           "elixir_ls.language_client_start_error_stack": (<any>e)?.stack ?? "",
         });
       }
@@ -514,7 +520,7 @@ export class LanguageClientManager {
         console.warn("ElixirLS: error during LSP client dispose", e);
         reporter.sendTelemetryErrorEvent("language_client_stop_error", {
           "elixir_ls.language_client_stop_error": String(e),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
           "elixir_ls.language_client_start_error_stack": (<any>e)?.stack ?? "",
         });
       }

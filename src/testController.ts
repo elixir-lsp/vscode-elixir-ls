@@ -1,26 +1,24 @@
-"use strict";
-
 import * as vscode from "vscode";
 import {
-  ExecuteCommandParams,
+  type ExecuteCommandParams,
   ExecuteCommandRequest,
   State,
 } from "vscode-languageclient";
-import { runTest, RunTestArgs } from "./commands/runTest";
-import { WorkspaceTracker, getProjectDir } from "./project";
-import { LanguageClientManager } from "./languageClientManager";
+import { type RunTestArgs, runTest } from "./commands/runTest";
 import { RUN_TEST_FROM_CODELENS } from "./constants";
+import type { LanguageClientManager } from "./languageClientManager";
+import { type WorkspaceTracker, getProjectDir } from "./project";
 import { reporter } from "./telemetry";
 
 export function configureTestController(
   context: vscode.ExtensionContext,
   languageClientManager: LanguageClientManager,
-  workspaceTracker: WorkspaceTracker
+  workspaceTracker: WorkspaceTracker,
 ) {
   console.log("ElixirLS: creating test controller");
   const controller = vscode.tests.createTestController(
     "elixirLSExUnitTests",
-    "ExUnit Tests"
+    "ExUnit Tests",
   );
 
   context.subscriptions.push(controller);
@@ -37,7 +35,7 @@ export function configureTestController(
         reporter.sendTelemetryErrorEvent("test_controller_resolve_error", {
           "elixir_ls.test_controller_resolve_error": String(e),
           "elixir_ls.test_controller_resolve_error_stack":
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             (<any>e)?.stack ?? "",
         });
       }
@@ -47,13 +45,13 @@ export function configureTestController(
       } catch (e) {
         console.error(
           "ElixirLS: unable to resolve tests in ",
-          test.uri!.fsPath,
-          e
+          test.uri?.fsPath,
+          e,
         );
         reporter.sendTelemetryErrorEvent("test_controller_resolve_error", {
           "elixir_ls.test_controller_resolve_error": String(e),
           "elixir_ls.test_controller_resolve_error_stack":
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             (<any>e)?.stack ?? "",
         });
       }
@@ -65,17 +63,17 @@ export function configureTestController(
     vscode.workspace.onDidOpenTextDocument(parseTestsInDocument),
     // We could also listen to document changes to re-parse unsaved changes:
     vscode.workspace.onDidChangeTextDocument((e) =>
-      parseTestsInDocument(e.document)
-    )
+      parseTestsInDocument(e.document),
+    ),
   );
 
   enum ItemType {
-    WorkspaceFolder,
-    File,
-    Module,
-    Describe,
-    TestCase,
-    Doctest,
+    WorkspaceFolder = 0,
+    File = 1,
+    Module = 2,
+    Describe = 3,
+    TestCase = 4,
+    Doctest = 5,
   }
 
   const testData = new WeakMap<vscode.TestItem, ItemType>();
@@ -86,6 +84,7 @@ export function configureTestController(
   const testFileUris = new WeakMap<vscode.TestItem, vscode.Uri>();
 
   function getOrCreateWorkspaceFolderTestItem(uri: vscode.Uri) {
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     let workspaceFolder = vscode.workspace.getWorkspaceFolder(uri)!;
     workspaceFolder =
       workspaceTracker.getOuterMostWorkspaceFolder(workspaceFolder);
@@ -98,7 +97,7 @@ export function configureTestController(
     const workspaceFolderTestItem = controller.createTestItem(
       workspaceFolder.uri.toString(),
       workspaceFolder.name,
-      workspaceFolder.uri
+      workspaceFolder.uri,
     );
     workspaceFolderTestItem.canResolveChildren = true;
     workspaceFolderTestItem.range = new vscode.Range(0, 0, 0, 0);
@@ -120,7 +119,7 @@ export function configureTestController(
     const fileTestItem = controller.createTestItem(
       uri.toString(),
       relativePath,
-      uri
+      uri,
     );
     fileTestItem.canResolveChildren = true;
     fileTestItem.range = new vscode.Range(0, 0, 0, 0);
@@ -146,14 +145,14 @@ export function configureTestController(
     const relativePath = uri.fsPath.slice(projectDir.length);
     const pathSegments = relativePath.split("/");
     const firstSegment = pathSegments[1];
-    if (firstSegment == "_build" || firstSegment == "deps") {
+    if (firstSegment === "_build" || firstSegment === "deps") {
       // filter out test files in deps and _build dirs
       return false;
     }
 
     if (
       pathSegments.find(
-        (segment) => segment == "node_modules" || segment.startsWith(".")
+        (segment) => segment === "node_modules" || segment.startsWith("."),
       )
     ) {
       // exclude phoenix tests in node_module
@@ -171,21 +170,22 @@ export function configureTestController(
   }
 
   async function parseTestsInFileContents(
-    file: vscode.TestItem
+    file: vscode.TestItem,
   ): Promise<void> {
-    if (!file.uri!.toString().endsWith(".exs")) {
+    if (!file.uri?.toString().endsWith(".exs")) {
       return;
     }
     // If a document is open, VS Code already knows its contents. If this is being
     // called from the resolveHandler when a document isn't open, we'll need to
     // read them from disk ourselves.
     const clientPromise = languageClientManager.getClientPromiseByUri(
-      file.uri!
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      file.uri!,
     );
 
     if (!clientPromise) {
       console.error(
-        `ElixirLS: no language client for document ${file.uri!.fsPath}`
+        `ElixirLS: no language client for document ${file.uri?.fsPath}`,
       );
       return;
     }
@@ -196,30 +196,31 @@ export function configureTestController(
       console.error(
         `ElixirLS: unable to execute command on server ${
           client.name
-        } in state ${State[client.state]}`
+        } in state ${State[client.state]}`,
       );
       return;
     }
 
     const command =
-      client.initializeResult.capabilities.executeCommandProvider!.commands.find(
-        (c) => c.startsWith("getExUnitTestsInFile:")
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      client.initializeResult.capabilities.executeCommandProvider?.commands.find(
+        (c) => c.startsWith("getExUnitTestsInFile:"),
       )!;
 
-    console.log("ElixirLS: Finding tests in ", file.uri!.toString());
+    console.log("ElixirLS: Finding tests in ", file.uri?.toString());
 
     const params: ExecuteCommandParams = {
       command: command,
-      arguments: [file.uri!.toString()],
+      arguments: [file.uri?.toString()],
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     let res: any[] = [];
     try {
       res = await client.sendRequest(ExecuteCommandRequest.type, params);
     } catch (e) {
       console.error(
-        `ElixirLS: unable to get tests in file ${file.uri!.fsPath}: ${e}`
+        `ElixirLS: unable to get tests in file ${file.uri?.fsPath}: ${e}`,
       );
     }
 
@@ -227,13 +228,14 @@ export function configureTestController(
       const moduleTestItem = controller.createTestItem(
         moduleEntry.module,
         moduleEntry.module,
-        file.uri!
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        file.uri!,
       );
       moduleTestItem.range = new vscode.Range(
         moduleEntry.line,
         0,
         moduleEntry.line + 1,
-        0
+        0,
       );
       testData.set(moduleTestItem, ItemType.Module);
       file.children.add(moduleTestItem);
@@ -243,13 +245,14 @@ export function configureTestController(
           const describeTestItem = controller.createTestItem(
             describeEntry.describe,
             describeEntry.describe,
-            file.uri!
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
+            file.uri!,
           );
           describeTestItem.range = new vscode.Range(
             describeEntry.line,
             0,
             describeEntry.line + 1,
-            0
+            0,
           );
           describeTestItem.description = "describe";
           testData.set(describeTestItem, ItemType.Describe);
@@ -259,50 +262,50 @@ export function configureTestController(
           describeCollection = moduleTestItem.children;
         }
         for (const testEntry of describeEntry.tests.filter(
-          (testEntry: { type: string }) => testEntry.type != "doctest"
+          (testEntry: { type: string }) => testEntry.type !== "doctest",
         )) {
           const testItem = controller.createTestItem(
             testEntry.name,
             testEntry.name,
-            file.uri
+            file.uri,
           );
           testItem.range = new vscode.Range(
             testEntry.line,
             0,
             testEntry.line + 1,
-            0
+            0,
           );
           testItem.description = testEntry.type;
           testItem.tags = testEntry.tags.map(
-            (tag: string) => new vscode.TestTag(tag)
+            (tag: string) => new vscode.TestTag(tag),
           );
           describeCollection.add(testItem);
         }
         const doctests = describeEntry.tests.filter(
-          (testEntry: { type: string }) => testEntry.type == "doctest"
+          (testEntry: { type: string }) => testEntry.type === "doctest",
         );
         const grouppedDoctests = new Map<string, vscode.TestItem>();
         for (const testEntry of doctests) {
           const doctestModule = testEntry.tags
-            .find((t: string) => t.startsWith("doctest:"))!
-            .replace("doctest:", "");
+            .find((t: string) => t.startsWith("doctest:"))
+            ?.replace("doctest:", "");
           const doctestLine = Number(
             testEntry.tags
-              .find((t: string) => t.startsWith("doctest_line:"))!
-              .replace("doctest_line:", "")
+              .find((t: string) => t.startsWith("doctest_line:"))
+              ?.replace("doctest_line:", ""),
           );
           let doctestGroupItem = grouppedDoctests.get(doctestModule);
           if (!doctestGroupItem) {
             doctestGroupItem = controller.createTestItem(
               doctestModule,
               doctestModule,
-              file.uri
+              file.uri,
             );
             doctestGroupItem.range = new vscode.Range(
               testEntry.line,
               0,
               testEntry.line + 1,
-              0
+              0,
             );
             doctestGroupItem.description = testEntry.type;
             testData.set(doctestGroupItem, ItemType.Doctest);
@@ -314,13 +317,14 @@ export function configureTestController(
           const testItem = controller.createTestItem(
             testEntry.name,
             testEntry.name,
-            vscode.Uri.file(testEntry.doctest_module_path)
+            vscode.Uri.file(testEntry.doctest_module_path),
           );
           testItem.range = new vscode.Range(doctestLine, 0, doctestLine + 1, 0);
           testItem.description = testEntry.type;
           testItem.tags = testEntry.tags.map(
-            (tag: string) => new vscode.TestTag(tag)
+            (tag: string) => new vscode.TestTag(tag),
           );
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
           testFileUris.set(testItem, file.uri!);
 
           doctestGroupItem.children.add(testItem);
@@ -337,8 +341,8 @@ export function configureTestController(
     const outerMostWorkspaceFolders = [
       ...new Set(
         vscode.workspace.workspaceFolders.map((workspaceFolder) =>
-          workspaceTracker.getOuterMostWorkspaceFolder(workspaceFolder)
-        )
+          workspaceTracker.getOuterMostWorkspaceFolder(workspaceFolder),
+        ),
       ),
     ];
 
@@ -349,7 +353,7 @@ export function configureTestController(
           "ElixirLS: registering watcher in",
           workspaceFolder.name,
           "projectDir",
-          projectDir
+          projectDir,
         );
 
         const pattern = new vscode.RelativePattern(projectDir, "**/*_test.exs");
@@ -362,7 +366,7 @@ export function configureTestController(
         // When files change, re-parse them. Note that you could optimize this so
         // that you only re-parse children that have been resolved in the past.
         watcher.onDidChange((uri) =>
-          parseTestsInFileContents(getOrCreateFile(uri, projectDir))
+          parseTestsInFileContents(getOrCreateFile(uri, projectDir)),
         );
         // And, finally, delete TestItems for removed files. This is simple, since
         // we use the URI as the TestItem's ID.
@@ -377,14 +381,14 @@ export function configureTestController(
         }
 
         return watcher;
-      })
+      }),
     );
   }
 
   function writeOutput(
     run: vscode.TestRun,
     output: string,
-    test: vscode.TestItem
+    test: vscode.TestItem,
   ) {
     // output is a raw terminal, we need to wrap lines with CRLF
     // note replace("\n", "\r\n") is not working correctly
@@ -397,12 +401,13 @@ export function configureTestController(
   function getTestFromDescribe(
     describeTest: vscode.TestItem,
     name: string,
-    type: string
+    type: string,
   ): vscode.TestItem | undefined {
-    if (type == "doctest") {
+    if (type === "doctest") {
       let foundDoctest: vscode.TestItem | undefined;
+      // biome-ignore lint/complexity/noForEach: <explanation>
       describeTest.children.forEach((doctestGroupItem) => {
-        if (getType(doctestGroupItem) == ItemType.Doctest) {
+        if (getType(doctestGroupItem) === ItemType.Doctest) {
           const candidate = doctestGroupItem.children.get(name);
           if (candidate) {
             foundDoctest = candidate;
@@ -410,16 +415,15 @@ export function configureTestController(
         }
       });
       return foundDoctest;
-    } else {
-      return describeTest.children.get(name);
     }
+    return describeTest.children.get(name);
   }
 
   function getTestFromModule(
     moduleTest: vscode.TestItem,
     describe: string | null,
     name: string,
-    type: string
+    type: string,
   ): vscode.TestItem | undefined {
     if (describe) {
       const describeTest = moduleTest.children.get(describe);
@@ -436,7 +440,7 @@ export function configureTestController(
     module: string,
     describe: string | null,
     name: string,
-    type: string
+    type: string,
   ): vscode.TestItem | undefined {
     const moduleTest = fileTest.children.get(module);
     if (moduleTest) {
@@ -450,7 +454,7 @@ export function configureTestController(
     module: string,
     describe: string | null,
     name: string,
-    type: string
+    type: string,
   ): vscode.TestItem | undefined {
     const fileTest = test.children.get(vscode.Uri.file(file).toString());
     if (fileTest) {
@@ -461,18 +465,20 @@ export function configureTestController(
   async function runHandler(
     shouldDebug: boolean,
     request: vscode.TestRunRequest,
-    token: vscode.CancellationToken
+    token: vscode.CancellationToken,
   ) {
     const run = controller.createTestRun(request);
     const queue: vscode.TestItem[] = [];
 
     // Loop through all included tests, or all known tests, and add them to our queue
     if (request.include) {
+      // biome-ignore lint/complexity/noForEach: <explanation>
       request.include.forEach((test) => {
         queue.push(test);
         run.enqueued(test);
       });
     } else {
+      // biome-ignore lint/complexity/noForEach: <explanation>
       controller.items.forEach((test) => {
         queue.push(test);
         run.enqueued(test);
@@ -483,6 +489,7 @@ export function configureTestController(
     // The `TestMessage` can contain extra information, like a failing location or
     // a diff output. But here we'll just give it a textual message.
     while (queue.length > 0 && !token.isCancellationRequested) {
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       const test = queue.pop()!;
 
       // Skip tests the user asked to exclude
@@ -493,8 +500,10 @@ export function configureTestController(
       const includeChildren = false;
       let runArgs: RunTestArgs;
 
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       const projectDir = workspaceTracker.getProjectDirForUri(test.uri!)!;
-      const relativePath = test.uri!.fsPath.slice(projectDir.length + 1);
+      const relativePath = test.uri?.fsPath.slice(projectDir.length + 1);
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       const workspaceFolder = vscode.workspace.getWorkspaceFolder(test.uri!)!;
 
       // Note that we don't need to manually
@@ -504,6 +513,7 @@ export function configureTestController(
           // If we're running a workspace and any of the files is not parsed yet, parse them now
           {
             const childrenToCheck: Array<Promise<void>> = [];
+            // biome-ignore lint/complexity/noForEach: <explanation>
             test.children.forEach((fileTest) => {
               if (fileTest.children.size === 0) {
                 childrenToCheck.push(parseTestsInFileContents(fileTest));
@@ -521,7 +531,7 @@ export function configureTestController(
               module: string,
               describe: string | null,
               name: string,
-              type: string
+              type: string,
             ) =>
               getTestFromWorkspaceFolder(
                 test,
@@ -529,7 +539,7 @@ export function configureTestController(
                 module,
                 describe,
                 name,
-                type
+                type,
               ),
           };
 
@@ -550,7 +560,7 @@ export function configureTestController(
               module: string,
               describe: string | null,
               name: string,
-              type: string
+              type: string,
             ) => getTestFromFile(test, module, describe, name, type),
           };
 
@@ -567,7 +577,7 @@ export function configureTestController(
               _module: string,
               describe: string | null,
               name: string,
-              type: string
+              type: string,
             ) => getTestFromModule(test, describe, name, type),
           };
 
@@ -577,14 +587,14 @@ export function configureTestController(
           runArgs = {
             cwd: projectDir,
             filePath: relativePath,
-            line: test.range!.start.line + 1,
+            line: (test.range?.start.line ?? 0) + 1,
             workspaceFolder,
             getTest: (
               _file: string,
               _module: string,
               _describe: string | null,
               name: string,
-              type: string
+              type: string,
             ) => getTestFromDescribe(test, name, type),
           };
 
@@ -594,27 +604,30 @@ export function configureTestController(
           runArgs = {
             cwd: projectDir,
             filePath: relativePath,
-            line: test.range!.start.line + 1,
+            line: (test.range?.start.line ?? 0) + 1,
             workspaceFolder,
             getTest: (
               _file: string,
               _module: string,
               _describe: string | null,
-              name: string
+              name: string,
             ) => test.children.get(name),
           };
 
           break;
 
         case ItemType.TestCase:
-          if (test.description == "doctest") {
+          if (test.description === "doctest") {
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
             const testFileUri = testFileUris.get(test)!;
             const projectDir =
+              // biome-ignore lint/style/noNonNullAssertion: <explanation>
               workspaceTracker.getProjectDirForUri(testFileUri)!;
             const relativePath = testFileUri.fsPath.slice(
-              projectDir.length + 1
+              projectDir.length + 1,
             );
             const workspaceFolder =
+              // biome-ignore lint/style/noNonNullAssertion: <explanation>
               vscode.workspace.getWorkspaceFolder(testFileUri)!;
 
             runArgs = {
@@ -623,17 +636,17 @@ export function configureTestController(
               doctestLine:
                 Number(
                   test.tags
-                    .find((t) => t.id.startsWith("doctest_line:"))!
-                    .id.replace("doctest_line:", "")
+                    .find((t) => t.id.startsWith("doctest_line:"))
+                    ?.id.replace("doctest_line:", ""),
                 ) + 1,
               workspaceFolder,
               getTest: (
                 _file: string,
                 _module: string,
                 _describe: string | null,
-                name: string
+                name: string,
               ) => {
-                if (name == test.id) {
+                if (name === test.id) {
                   return test;
                 }
               },
@@ -642,15 +655,15 @@ export function configureTestController(
             runArgs = {
               cwd: projectDir,
               filePath: relativePath,
-              line: test.range!.start.line + 1,
+              line: (test.range?.start.line ?? 0) + 1,
               workspaceFolder,
               getTest: (
                 _file: string,
                 _module: string,
                 _describe: string | null,
-                name: string
+                name: string,
               ) => {
-                if (name == test.id) {
+                if (name === test.id) {
                   return test;
                 }
               },
@@ -671,11 +684,12 @@ export function configureTestController(
         run.errored(
           test,
           new vscode.TestMessage(e as string),
-          performance.now() - start
+          performance.now() - start,
         );
       }
 
       if (includeChildren) {
+        // biome-ignore lint/complexity/noForEach: <explanation>
         test.children.forEach((test) => {
           queue.push(test);
           run.enqueued(test);
@@ -692,7 +706,7 @@ export function configureTestController(
     vscode.TestRunProfileKind.Run,
     (request, token) => {
       runHandler(false, request, token);
-    }
+    },
   );
 
   context.subscriptions.push(runProfile);
@@ -702,7 +716,7 @@ export function configureTestController(
     vscode.TestRunProfileKind.Debug,
     (request, token) => {
       runHandler(true, request, token);
-    }
+    },
   );
 
   context.subscriptions.push(debugProfile);
@@ -719,13 +733,14 @@ export function configureTestController(
     RUN_TEST_FROM_CODELENS,
     async (args: RunArgs) => {
       const fileTestItemUri = vscode.Uri.file(args.filePath);
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       const projectDir = workspaceTracker.getProjectDirForUri(fileTestItemUri)!;
       await parseTestsInFileContents(
-        getOrCreateFile(fileTestItemUri, projectDir)
+        getOrCreateFile(fileTestItemUri, projectDir),
       );
       function getTestItem(
         item: vscode.TestItem,
-        ids: (string | undefined)[]
+        ids: (string | undefined)[],
       ): vscode.TestItem {
         if (ids.length === 0) {
           return item;
@@ -743,7 +758,7 @@ export function configureTestController(
       }
       function getFileTestItemRecursive(
         items: vscode.TestItemCollection,
-        id: string
+        id: string,
       ): vscode.TestItem | undefined {
         let item = items.get(id);
         if (item) {
@@ -760,11 +775,11 @@ export function configureTestController(
 
       const fileTestItem = getFileTestItemRecursive(
         controller.items,
-        fileTestItemUri.toString()
+        fileTestItemUri.toString(),
       );
       if (!fileTestItem) {
         console.warn(
-          `ElixirLS: Test item ${fileTestItemUri.toString()} not found`
+          `ElixirLS: Test item ${fileTestItemUri.toString()} not found`,
         );
         return;
       }
@@ -776,10 +791,10 @@ export function configureTestController(
       runHandler(
         false,
         new vscode.TestRunRequest([testItem]),
-        new vscode.CancellationTokenSource().token
+        new vscode.CancellationTokenSource().token,
       );
       vscode.commands.executeCommand("vscode.revealTestInExplorer", testItem);
-    }
+    },
   );
 
   context.subscriptions.push(testCommand);

@@ -1,5 +1,3 @@
-"use strict";
-
 import * as vscode from "vscode";
 
 export class TaskProvider implements vscode.TaskProvider {
@@ -24,7 +22,7 @@ export class TaskProvider implements vscode.TaskProvider {
       "Run tests",
       TaskProvider.TaskType,
       new vscode.ShellExecution("mix test"),
-      ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"]
+      ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"],
     );
 
     test.group = vscode.TaskGroup.Test;
@@ -37,7 +35,7 @@ export class TaskProvider implements vscode.TaskProvider {
       "Run tests with coverage",
       TaskProvider.TaskType,
       new vscode.ShellExecution("mix test.coverage"),
-      ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"]
+      ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"],
     );
 
     testCoverage.group = vscode.TaskGroup.Test;
@@ -50,7 +48,7 @@ export class TaskProvider implements vscode.TaskProvider {
       "Run test at cursor",
       TaskProvider.TaskType,
       new vscode.ShellExecution("mix test ${relativeFile}:${lineNumber}"),
-      ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"]
+      ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"],
     );
 
     testUnderCursorTask.group = vscode.TaskGroup.Test;
@@ -63,7 +61,7 @@ export class TaskProvider implements vscode.TaskProvider {
       "Run tests in current file",
       TaskProvider.TaskType,
       new vscode.ShellExecution("mix test ${relativeFile}"),
-      ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"]
+      ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"],
     );
 
     testsInFileTask.group = vscode.TaskGroup.Test;
@@ -76,7 +74,7 @@ export class TaskProvider implements vscode.TaskProvider {
       "Build",
       TaskProvider.TaskType,
       new vscode.ShellExecution("mix compile"),
-      ["$mixCompileError", "$mixCompileWarning"]
+      ["$mixCompileError", "$mixCompileWarning"],
     );
 
     compile.group = vscode.TaskGroup.Build;
@@ -89,7 +87,7 @@ export class TaskProvider implements vscode.TaskProvider {
       "Build dependencies",
       TaskProvider.TaskType,
       new vscode.ShellExecution("mix deps.compile"),
-      ["$mixCompileError", "$mixCompileWarning"]
+      ["$mixCompileError", "$mixCompileWarning"],
     );
 
     depsCompile.group = vscode.TaskGroup.Build;
@@ -101,7 +99,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Clean project",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix clean")
+      new vscode.ShellExecution("mix clean"),
     );
 
     clean.group = vscode.TaskGroup.Clean;
@@ -113,7 +111,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Clean project and deps",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix clean --deps")
+      new vscode.ShellExecution("mix clean --deps"),
     );
 
     cleanWithDeps.group = vscode.TaskGroup.Clean;
@@ -125,7 +123,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Print app tree",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix app.tree")
+      new vscode.ShellExecution("mix app.tree"),
     );
 
     tasks.push(appTree);
@@ -135,7 +133,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "List deps",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix deps")
+      new vscode.ShellExecution("mix deps"),
     );
 
     tasks.push(deps);
@@ -145,7 +143,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Clean all deps",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix deps.clean --all")
+      new vscode.ShellExecution("mix deps.clean --all"),
     );
 
     depsCleanAll.group = vscode.TaskGroup.Clean;
@@ -157,7 +155,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Clean all unused deps",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix deps.clean --unlock --unused")
+      new vscode.ShellExecution("mix deps.clean --unlock --unused"),
     );
 
     depsCleanUnused.group = vscode.TaskGroup.Clean;
@@ -169,7 +167,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Get deps",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix deps.get")
+      new vscode.ShellExecution("mix deps.get"),
     );
 
     tasks.push(depsGet);
@@ -179,7 +177,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Update all deps",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix deps.update --all")
+      new vscode.ShellExecution("mix deps.update --all"),
     );
 
     tasks.push(depsUpdateAll);
@@ -189,7 +187,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Format",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix format")
+      new vscode.ShellExecution("mix format"),
     );
 
     tasks.push(format);
@@ -199,7 +197,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Run",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix run")
+      new vscode.ShellExecution("mix run"),
     );
 
     tasks.push(run);
@@ -209,7 +207,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Run no halt",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix run --no-halt")
+      new vscode.ShellExecution("mix run --no-halt"),
     );
 
     tasks.push(runNoHalt);
@@ -222,7 +220,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Generates sample files for releases",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix release.init")
+      new vscode.ShellExecution("mix release.init"),
     );
 
     tasks.push(releaseInit);
@@ -232,7 +230,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Trace file dependencies",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix xref trace ${relativeFile}")
+      new vscode.ShellExecution("mix xref trace ${relativeFile}"),
     );
 
     tasks.push(xrefTraceFile);
@@ -242,7 +240,7 @@ export class TaskProvider implements vscode.TaskProvider {
       wsFolders[0],
       "Print file dependency graph",
       TaskProvider.TaskType,
-      new vscode.ShellExecution("mix xref graph")
+      new vscode.ShellExecution("mix xref graph"),
     );
 
     tasks.push(xrefGraph);

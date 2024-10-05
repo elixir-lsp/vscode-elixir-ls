@@ -1,4 +1,4 @@
-import * as assert from "assert";
+import * as assert from "node:assert";
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
@@ -18,7 +18,7 @@ suite("No workspace non elixir file opened tests", () => {
 
     assert.equal(
       extension.exports.workspaceTracker.mode,
-      WorkspaceMode.NO_WORKSPACE
+      WorkspaceMode.NO_WORKSPACE,
     );
     assert.ok(extension.exports.languageClientManager.defaultClientPromise);
     assert.equal(extension.exports.languageClientManager.clients.size, 0);

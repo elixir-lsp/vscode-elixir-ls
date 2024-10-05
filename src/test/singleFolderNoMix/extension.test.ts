@@ -1,9 +1,9 @@
-import * as assert from "assert";
+import * as assert from "node:assert";
 
+import * as path from "node:path";
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from "vscode";
-import * as path from "path";
 
 import { getActiveExtensionAsync } from "../utils";
 
@@ -14,7 +14,7 @@ suite("Single folder no mix tests", () => {
 
   test("extension activates on file open", async () => {
     const fileUri = vscode.Uri.file(
-      path.join(fixturesPath, "single_folder_no_mix", "elixir_file.ex")
+      path.join(fixturesPath, "single_folder_no_mix", "elixir_file.ex"),
     );
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
@@ -33,21 +33,21 @@ suite("Single folder no mix tests", () => {
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(sampleFileUri),
       extension.exports.languageClientManager.clients.get(
-        vscode.workspace.workspaceFolders![0].uri.toString()
-      )
+        vscode.workspace.workspaceFolders?.[0].uri.toString() ?? "",
+      ),
     );
   });
 
   test("requests from workspace file: docs go to first workspace client", async () => {
     const fileUri = vscode.Uri.file(
-      path.join(fixturesPath, "single_folder_no_mix", "elixir_file.ex")
+      path.join(fixturesPath, "single_folder_no_mix", "elixir_file.ex"),
     );
     const extension = await getActiveExtensionAsync();
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(fileUri),
       extension.exports.languageClientManager.clients.get(
-        vscode.workspace.workspaceFolders![0].uri.toString()
-      )
+        vscode.workspace.workspaceFolders?.[0].uri.toString() ?? "",
+      ),
     );
   });
 
@@ -57,8 +57,8 @@ suite("Single folder no mix tests", () => {
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(fileUri),
       extension.exports.languageClientManager.clients.get(
-        vscode.workspace.workspaceFolders![0].uri.toString()
-      )
+        vscode.workspace.workspaceFolders?.[0].uri.toString() ?? "",
+      ),
     );
   });
 });

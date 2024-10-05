@@ -1,4 +1,4 @@
-import * as path from "path";
+import * as path from "node:path";
 
 import { runTests } from "@vscode/test-electron";
 
@@ -8,7 +8,7 @@ async function main(): Promise<void> {
     // Passed to `--extensionDevelopmentPath`
     const extensionDevelopmentPath = path.resolve(__dirname, "../../");
 
-    const disableGpu = process.env.DISABLE_GPU == "1" ? ["--disable-gpu"] : [];
+    const disableGpu = process.env.DISABLE_GPU === "1" ? ["--disable-gpu"] : [];
 
     // single elixir file no workspace
     await runTests({
@@ -70,7 +70,7 @@ async function main(): Promise<void> {
         ...disableGpu,
         path.resolve(
           __dirname,
-          "../../src/test-fixtures/multi_root.code-workspace"
+          "../../src/test-fixtures/multi_root.code-workspace",
         ),
       ],
       extensionTestsEnv: {

@@ -1,10 +1,8 @@
-"use strict";
-
+import type { DebugProtocol } from "@vscode/debugprotocol";
 import * as vscode from "vscode";
 import { buildCommand } from "./executable";
-import { DebugProtocol } from "@vscode/debugprotocol";
 import {
-  TelemetryEvent,
+  type TelemetryEvent,
   preprocessStacktrace,
   preprocessStacktraceInProperties,
   reporter,
@@ -20,18 +18,18 @@ class DebugAdapterExecutableFactory
 
   public createDebugAdapterDescriptor(
     session: vscode.DebugSession,
-    executable: vscode.DebugAdapterExecutable
+    executable: vscode.DebugAdapterExecutable,
   ): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
     console.log(
       "DebugAdapterExecutableFactory called with session",
       session,
       "executable",
-      executable
+      executable,
     );
     const command = buildCommand(
       this._context,
       "debug_adapter",
-      session.workspaceFolder
+      session.workspaceFolder,
     );
 
     const options: vscode.DebugAdapterExecutableOptions =
@@ -59,18 +57,18 @@ class DebugAdapterExecutableFactory
     const resultExecutable = new vscode.DebugAdapterExecutable(
       command,
       executable.args,
-      options
+      options,
     );
 
     if (session.workspaceFolder) {
       console.log(
         `ElixirLS: starting DAP session in workspace folder ${session.workspaceFolder.name} with executable`,
-        resultExecutable
+        resultExecutable,
       );
     } else {
       console.log(
         "ElixirLS: starting folderless DAP session with executable",
-        resultExecutable
+        resultExecutable,
       );
     }
 
@@ -119,17 +117,14 @@ class DebugAdapterTrackerFactory
   }
 
   public createDebugAdapterTracker(
-    session: vscode.DebugSession
+    session: vscode.DebugSession,
   ): vscode.ProviderResult<vscode.DebugAdapterTracker> {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-
     return {
       onWillStartSession: () => {
-        self.startTimes.set(session.id, performance.now());
+        this.startTimes.set(session.id, performance.now());
       },
       onWillStopSession: () => {
-        self.startTimes.delete(session.id);
+        this.startTimes.delete(session.id);
       },
       onError: (error: Error) => {
         console.warn(`ElixirLS: Debug session ${session.id}: `, error);
@@ -143,17 +138,17 @@ class DebugAdapterTrackerFactory
         });
       },
       onExit: (code: number | undefined, signal: string | undefined) => {
-        if (code == 0) {
+        if (code === 0) {
           console.log(
             `ElixirLS: Debug session ${session.id}: DAP process exited with code `,
-            code
+            code,
           );
         } else {
           console.error(
             `ElixirLS: Debug session ${session.id}: DAP process exited with code `,
             code,
             " signal ",
-            signal
+            signal,
           );
         }
         reporter.sendTelemetryErrorEvent("debug_session_exit", {
@@ -165,12 +160,12 @@ class DebugAdapterTrackerFactory
         });
       },
       onDidSendMessage: (message: DebugProtocol.ProtocolMessage) => {
-        if (message.type == "event") {
+        if (message.type === "event") {
           const event = <DebugProtocol.Event>message;
-          if (event.event == "output") {
+          if (event.event === "output") {
             const outputEvent = <DebugProtocol.OutputEvent>message;
-            if (outputEvent.body.category != "telemetry") {
-              self._onOutput.fire({
+            if (outputEvent.body.category !== "telemetry") {
+              this._onOutput.fire({
                 sessionId: session.id,
                 output: outputEvent,
               });
@@ -181,13 +176,13 @@ class DebugAdapterTrackerFactory
                   telemetryData.name,
                   {
                     ...preprocessStacktraceInProperties(
-                      telemetryData.properties
+                      telemetryData.properties,
                     ),
                     "elixir_ls.debug_session_mode": session.workspaceFolder
                       ? "workspaceFolder"
                       : "folderless",
                   },
-                  telemetryData.measurements
+                  telemetryData.measurements,
                 );
               } else {
                 reporter.sendTelemetryEvent(
@@ -198,15 +193,16 @@ class DebugAdapterTrackerFactory
                       ? "workspaceFolder"
                       : "folderless",
                   },
-                  telemetryData.measurements
+                  telemetryData.measurements,
                 );
               }
             }
           }
 
-          if (event.event == "initialized") {
+          if (event.event === "initialized") {
             const elapsed =
-              performance.now() - self.startTimes.get(session.id)!;
+              // biome-ignore lint/style/noNonNullAssertion: <explanation>
+              performance.now() - this.startTimes.get(session.id)!;
             reporter.sendTelemetryEvent(
               "debug_session_initialized",
               {
@@ -214,11 +210,11 @@ class DebugAdapterTrackerFactory
                   ? "workspaceFolder"
                   : "folderless",
               },
-              { "elixir_ls.debug_session_initialize_time": elapsed }
+              { "elixir_ls.debug_session_initialize_time": elapsed },
             );
           }
 
-          if (event.event == "exited") {
+          if (event.event === "exited") {
             const exitedEvent = <DebugProtocol.ExitedEvent>message;
 
             reporter.sendTelemetryEvent("debug_session_debuggee_exited", {
@@ -226,16 +222,16 @@ class DebugAdapterTrackerFactory
                 ? "workspaceFolder"
                 : "folderless",
               "elixir_ls.debug_session_debuggee_exit_code": String(
-                exitedEvent.body.exitCode
+                exitedEvent.body.exitCode,
               ),
             });
 
-            self._onExited.fire({
+            this._onExited.fire({
               sessionId: session.id,
               code: exitedEvent.body.exitCode,
             });
           }
-        } else if (message.type == "response") {
+        } else if (message.type === "response") {
           const response = <DebugProtocol.Response>message;
           if (!response.success) {
             const errorResponse = <DebugProtocol.ErrorResponse>message;
@@ -251,7 +247,7 @@ class DebugAdapterTrackerFactory
                   "elixir_ls.dap_command": errorResponse.command,
                   "elixir_ls.dap_error": errorResponse.message,
                   "elixir_ls.dap_error_message": preprocessStacktrace(
-                    errorMessage.format
+                    errorMessage.format,
                   ),
                 });
               }
@@ -271,13 +267,13 @@ export function configureDebugger(context: vscode.ExtensionContext) {
   // the correct environment properly.
   const factory = new DebugAdapterExecutableFactory(context);
   context.subscriptions.push(
-    vscode.debug.registerDebugAdapterDescriptorFactory("mix_task", factory)
+    vscode.debug.registerDebugAdapterDescriptorFactory("mix_task", factory),
   );
 
   trackerFactory = new DebugAdapterTrackerFactory(context);
 
   context.subscriptions.push(
-    vscode.debug.registerDebugAdapterTrackerFactory("mix_task", trackerFactory)
+    vscode.debug.registerDebugAdapterTrackerFactory("mix_task", trackerFactory),
   );
 
   context.subscriptions.push(trackerFactory);

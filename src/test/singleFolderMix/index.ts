@@ -1,10 +1,10 @@
-import * as path from "path";
-import * as Mocha from "mocha";
+import * as path from "node:path";
 import { glob } from "glob";
+import * as Mocha from "mocha";
 
 export async function run(
   testsRoot: string,
-  cb: (error: unknown, failures?: number) => void
+  cb: (error: unknown, failures?: number) => void,
 ) {
   // Create the mocha test
   const mocha = new Mocha({
@@ -15,6 +15,7 @@ export async function run(
   try {
     const files = await glob("**/**.test.js", { cwd: testsRoot });
     // Add files to the test suite
+    // biome-ignore lint/complexity/noForEach: <explanation>
     files.forEach((f) => mocha.addFile(path.resolve(testsRoot, f)));
 
     try {

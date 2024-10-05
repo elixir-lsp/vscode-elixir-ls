@@ -1,8 +1,6 @@
-"use strict";
-
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import * as vscode from "vscode";
-import * as fs from "fs";
 
 export function getProjectDir(workspaceFolder: vscode.WorkspaceFolder): string {
   // check if projectDir is not overridden in workspace
@@ -31,7 +29,7 @@ export class WorkspaceTracker {
             .map((folder) => {
               let result = folder.uri.toString();
               if (result.charAt(result.length - 1) !== "/") {
-                result = result + "/";
+                result = `${result}/`;
               }
               return result;
             })
@@ -44,18 +42,18 @@ export class WorkspaceTracker {
   }
 
   public getOuterMostWorkspaceFolder(
-    folder: vscode.WorkspaceFolder
+    folder: vscode.WorkspaceFolder,
   ): vscode.WorkspaceFolder {
     return this._getOuterMostWorkspaceFolder(folder, false);
   }
 
   private _getOuterMostWorkspaceFolder(
     folder: vscode.WorkspaceFolder,
-    isRetry: boolean
+    isRetry: boolean,
   ): vscode.WorkspaceFolder {
     let uri = folder.uri.toString();
     if (uri.charAt(uri.length - 1) !== "/") {
-      uri = uri + "/";
+      uri = `${uri}/`;
     }
 
     const useCurrentRootFolderAsProjectDir = vscode.workspace
@@ -71,7 +69,7 @@ export class WorkspaceTracker {
     for (const element of sortedWorkspaceFolders) {
       if (uri.startsWith(element)) {
         const foundFolder = vscode.workspace.getWorkspaceFolder(
-          vscode.Uri.parse(element)
+          vscode.Uri.parse(element),
         );
 
         if (foundFolder) {
@@ -101,9 +99,8 @@ export class WorkspaceTracker {
     if (!isRetry) {
       this.handleDidChangeWorkspaceFolders();
       return this._getOuterMostWorkspaceFolder(folder, true);
-    } else {
-      throw `not able to find outermost workspace folder for ${folder.uri.fsPath}`;
     }
+    throw `not able to find outermost workspace folder for ${folder.uri.fsPath}`;
   }
 
   public handleDidChangeWorkspaceFolders() {
@@ -122,13 +119,13 @@ export class WorkspaceTracker {
   public get mode(): WorkspaceMode {
     if (vscode.workspace.workspaceFile) {
       return WorkspaceMode.MULTI_ROOT;
-    } else if (
+    }
+    if (
       vscode.workspace.workspaceFolders &&
       vscode.workspace.workspaceFolders.length !== 0
     ) {
       return WorkspaceMode.SINGLE_FOLDER;
-    } else {
-      return WorkspaceMode.NO_WORKSPACE;
     }
+    return WorkspaceMode.NO_WORKSPACE;
   }
 }

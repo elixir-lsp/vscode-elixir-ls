@@ -1,17 +1,15 @@
-"use strict";
-
+import { execSync } from "node:child_process";
+import * as os from "node:os";
 import * as vscode from "vscode";
-import * as os from "os";
-import { execSync } from "child_process";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
 
 export function configureCopyDebugInfo(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
     "extension.copyDebugInfo",
     () => {
-      const elixirVersion = execSync(`elixir --version`);
+      const elixirVersion = execSync("elixir --version");
       const extension = vscode.extensions.getExtension(
-        ELIXIR_LS_EXTENSION_NAME
+        ELIXIR_LS_EXTENSION_NAME,
       );
       if (!extension) {
         return;
@@ -25,7 +23,7 @@ export function configureCopyDebugInfo(context: vscode.ExtensionContext) {
 
       vscode.window.showInformationMessage(`Copied to clipboard: ${message}`);
       vscode.env.clipboard.writeText(message);
-    }
+    },
   );
   context.subscriptions.push(disposable);
 }

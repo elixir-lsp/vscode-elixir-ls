@@ -1,13 +1,11 @@
-"use strict";
-
 import * as vscode from "vscode";
 import {
-  ExecuteCommandParams,
+  type ExecuteCommandParams,
   ExecuteCommandRequest,
   State,
 } from "vscode-languageclient";
-import { LanguageClientManager } from "../languageClientManager";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
+import type { LanguageClientManager } from "../languageClientManager";
 
 const ExpandMacroTitle = "Expand macro result";
 
@@ -35,13 +33,13 @@ function getExpandMacroWebviewContent(content: Record<string, string>) {
 
 export function configureExpandMacro(
   context: vscode.ExtensionContext,
-  languageClientManager: LanguageClientManager
+  languageClientManager: LanguageClientManager,
 ) {
   const disposable = vscode.commands.registerCommand(
     "extension.expandMacro",
     async () => {
       const extension = vscode.extensions.getExtension(
-        ELIXIR_LS_EXTENSION_NAME
+        ELIXIR_LS_EXTENSION_NAME,
       );
       const editor = vscode.window.activeTextEditor;
       if (!extension || !editor) {
@@ -49,18 +47,18 @@ export function configureExpandMacro(
       }
 
       if (editor.selection.isEmpty) {
-        console.error(`ElixirLS: selection is empty`);
+        console.error("ElixirLS: selection is empty");
         return;
       }
 
       const uri = editor.document.uri;
       const clientPromise = languageClientManager.getClientPromiseByDocument(
-        editor.document
+        editor.document,
       );
 
       if (!clientPromise) {
         console.error(
-          `ElixirLS: no language client for document ${uri.fsPath}`
+          `ElixirLS: no language client for document ${uri.fsPath}`,
         );
         return;
       }
@@ -71,14 +69,15 @@ export function configureExpandMacro(
         console.error(
           `ElixirLS: unable to execute command on server ${
             client.name
-          } in state ${State[client.state]}`
+          } in state ${State[client.state]}`,
         );
         return;
       }
 
       const command =
-        client.initializeResult.capabilities.executeCommandProvider!.commands.find(
-          (c) => c.startsWith("expandMacro:")
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        client.initializeResult.capabilities.executeCommandProvider?.commands.find(
+          (c) => c.startsWith("expandMacro:"),
         )!;
 
       const params: ExecuteCommandParams = {
@@ -92,17 +91,17 @@ export function configureExpandMacro(
 
       const res: Record<string, string> = await client.sendRequest(
         ExecuteCommandRequest.type,
-        params
+        params,
       );
 
       const panel = vscode.window.createWebviewPanel(
         "expandMacro",
         ExpandMacroTitle,
         vscode.ViewColumn.One,
-        {}
+        {},
       );
       panel.webview.html = getExpandMacroWebviewContent(res);
-    }
+    },
   );
 
   context.subscriptions.push(disposable);

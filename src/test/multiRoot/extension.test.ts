@@ -1,10 +1,10 @@
-import * as assert from "assert";
+import * as assert from "node:assert";
 
+import * as path from "node:path";
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from "vscode";
-import * as path from "path";
-import { ElixirLS } from "../../extension";
+import type { ElixirLS } from "../../extension";
 import { WorkspaceMode } from "../../project";
 import {
   getExtension,
@@ -27,7 +27,7 @@ suite("Multi root workspace tests", () => {
     assert.ok(extension.isActive);
     assert.equal(
       extension.exports.workspaceTracker.mode,
-      WorkspaceMode.MULTI_ROOT
+      WorkspaceMode.MULTI_ROOT,
     );
     assert.ok(!extension.exports.languageClientManager.defaultClient);
     assert.equal(extension.exports.languageClientManager.clients.size, 0);
@@ -35,7 +35,7 @@ suite("Multi root workspace tests", () => {
 
   test("extension starts first client on file open", async () => {
     const fileUri = vscode.Uri.file(
-      path.join(fixturesPath, "sample_umbrella", "mix.exs")
+      path.join(fixturesPath, "sample_umbrella", "mix.exs"),
     );
 
     await waitForLanguageClientManagerUpdate(extension, async () => {
@@ -49,22 +49,22 @@ suite("Multi root workspace tests", () => {
 
   test("requests from workspace file: docs go to outermost folder client", async () => {
     const parentWorkspaceUri = vscode.Uri.file(
-      path.join(fixturesPath, "sample_umbrella")
+      path.join(fixturesPath, "sample_umbrella"),
     );
     const fileUri = vscode.Uri.file(
-      path.join(fixturesPath, "sample_umbrella", "mix.exs")
+      path.join(fixturesPath, "sample_umbrella", "mix.exs"),
     );
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(fileUri),
       extension.exports.languageClientManager.clients.get(
-        parentWorkspaceUri.toString()
-      )
+        parentWorkspaceUri.toString(),
+      ),
     );
   });
 
   test("extension does not start client for nested workspace", async () => {
     const fileUri = vscode.Uri.file(
-      path.join(fixturesPath, "sample_umbrella", "apps", "child1", "mix.exs")
+      path.join(fixturesPath, "sample_umbrella", "apps", "child1", "mix.exs"),
     );
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
@@ -77,16 +77,16 @@ suite("Multi root workspace tests", () => {
 
   test("requests from nested workspace file: docs go to outermost folder client", async () => {
     const parentWorkspaceUri = vscode.Uri.file(
-      path.join(fixturesPath, "sample_umbrella")
+      path.join(fixturesPath, "sample_umbrella"),
     );
     const fileUri = vscode.Uri.file(
-      path.join(fixturesPath, "sample_umbrella", "apps", "child1", "mix.exs")
+      path.join(fixturesPath, "sample_umbrella", "apps", "child1", "mix.exs"),
     );
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(fileUri),
       extension.exports.languageClientManager.clients.get(
-        parentWorkspaceUri.toString()
-      )
+        parentWorkspaceUri.toString(),
+      ),
     );
   });
 
@@ -95,8 +95,8 @@ suite("Multi root workspace tests", () => {
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(sampleFileUri),
       extension.exports.languageClientManager.clients.get(
-        vscode.workspace.workspaceFolders![0].uri.toString()
-      )
+        vscode.workspace.workspaceFolders?.[0].uri.toString() ?? "",
+      ),
     );
   });
 
@@ -111,7 +111,7 @@ suite("Multi root workspace tests", () => {
 
   test("extension starts second client on file open from different outermost folder", async () => {
     const fileUri = vscode.Uri.file(
-      path.join(fixturesPath, "single_folder_no_mix", "elixir_script.exs")
+      path.join(fixturesPath, "single_folder_no_mix", "elixir_script.exs"),
     );
 
     await waitForLanguageClientManagerUpdate(extension, async () => {
@@ -125,21 +125,21 @@ suite("Multi root workspace tests", () => {
 
   test("extension reacts to added and removed workspace folder", async () => {
     const addedFolderUri = vscode.Uri.file(
-      path.join(fixturesPath, "single_folder_mix")
+      path.join(fixturesPath, "single_folder_mix"),
     );
     await waitForWorkspaceUpdate(() => {
       vscode.workspace.updateWorkspaceFolders(
-        vscode.workspace.workspaceFolders!.length,
+        vscode.workspace.workspaceFolders?.length ?? 0,
         null,
         {
           uri: addedFolderUri,
           name: "single_folder_mix",
-        }
+        },
       );
     });
 
     const fileUri = vscode.Uri.file(
-      path.join(fixturesPath, "single_folder_mix", "mix.exs")
+      path.join(fixturesPath, "single_folder_mix", "mix.exs"),
     );
 
     await waitForLanguageClientManagerUpdate(extension, async () => {
@@ -151,6 +151,7 @@ suite("Multi root workspace tests", () => {
     assert.equal(extension.exports.languageClientManager.clients.size, 3);
 
     const addedWorkspaceFolder =
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       vscode.workspace.getWorkspaceFolder(addedFolderUri)!;
 
     await waitForLanguageClientManagerUpdate(extension, async () => {
@@ -162,21 +163,21 @@ suite("Multi root workspace tests", () => {
 
   test("extension does not react to added and removed nested workspace folder", async () => {
     const addedFolderUri = vscode.Uri.file(
-      path.join(fixturesPath, "sample_umbrella", "apps", "child2")
+      path.join(fixturesPath, "sample_umbrella", "apps", "child2"),
     );
     await waitForWorkspaceUpdate(() => {
       vscode.workspace.updateWorkspaceFolders(
-        vscode.workspace.workspaceFolders!.length,
+        vscode.workspace.workspaceFolders?.length ?? 0,
         null,
         {
           uri: addedFolderUri,
           name: "single_folder_mix",
-        }
+        },
       );
     });
 
     const fileUri = vscode.Uri.file(
-      path.join(fixturesPath, "sample_umbrella", "apps", "child2", "mix.exs")
+      path.join(fixturesPath, "sample_umbrella", "apps", "child2", "mix.exs"),
     );
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
@@ -187,6 +188,7 @@ suite("Multi root workspace tests", () => {
     assert.equal(extension.exports.languageClientManager.clients.size, 2);
 
     const addedWorkspaceFolder =
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       vscode.workspace.getWorkspaceFolder(addedFolderUri)!;
 
     await waitForWorkspaceUpdate(() => {
@@ -204,12 +206,12 @@ suite("Multi root workspace tests", () => {
         fixturesPath,
         "containing_folder",
         "single_folder_mix",
-        "mix.exs"
-      )
+        "mix.exs",
+      ),
     );
 
     const workspaceFolderUri = vscode.Uri.file(
-      path.join(fixturesPath, "containing_folder", "single_folder_mix")
+      path.join(fixturesPath, "containing_folder", "single_folder_mix"),
     );
 
     await waitForLanguageClientManagerUpdate(extension, async () => {
@@ -223,8 +225,8 @@ suite("Multi root workspace tests", () => {
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(fileUri),
       extension.exports.languageClientManager.clients.get(
-        workspaceFolderUri.toString()
-      )
+        workspaceFolderUri.toString(),
+      ),
     );
   }).timeout(30000);
 
@@ -234,7 +236,7 @@ suite("Multi root workspace tests", () => {
       .update(
         "useCurrentRootFolderAsProjectDir",
         true,
-        vscode.ConfigurationTarget.WorkspaceFolder
+        vscode.ConfigurationTarget.WorkspaceFolder,
       );
 
     const fileUri = vscode.Uri.file(
@@ -242,12 +244,12 @@ suite("Multi root workspace tests", () => {
         fixturesPath,
         "containing_folder",
         "single_folder_mix",
-        "mix.exs"
-      )
+        "mix.exs",
+      ),
     );
 
     const workspaceFolderUri = vscode.Uri.file(
-      path.join(fixturesPath, "containing_folder", "single_folder_mix")
+      path.join(fixturesPath, "containing_folder", "single_folder_mix"),
     );
 
     await waitForLanguageClientManagerUpdate(extension, async () => {
@@ -261,8 +263,8 @@ suite("Multi root workspace tests", () => {
     assert.equal(
       extension.exports.languageClientManager.getClientByUri(fileUri),
       extension.exports.languageClientManager.clients.get(
-        workspaceFolderUri.toString()
-      )
+        workspaceFolderUri.toString(),
+      ),
     );
   }).timeout(30000);
 });

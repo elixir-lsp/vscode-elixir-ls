@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import { ELIXIR_LS_EXTENSION_NAME } from "../constants";
-import { ElixirLS } from "../extension";
+import type { ElixirLS } from "../extension";
 
 export const getExtension = () =>
   vscode.extensions.getExtension(
-    ELIXIR_LS_EXTENSION_NAME
+    ELIXIR_LS_EXTENSION_NAME,
   ) as vscode.Extension<ElixirLS>;
 
 const exponentialTimeouts = [
@@ -13,7 +13,7 @@ const exponentialTimeouts = [
 
 export const getActiveExtensionAsync = async () => {
   const ext = vscode.extensions.getExtension(
-    ELIXIR_LS_EXTENSION_NAME
+    ELIXIR_LS_EXTENSION_NAME,
   ) as vscode.Extension<ElixirLS>;
   if (ext.isActive) {
     return ext;
@@ -48,14 +48,14 @@ export const waitForWorkspaceUpdate = (fun: () => void) =>
 
 export const waitForLanguageClientManagerUpdate = (
   extension: vscode.Extension<ElixirLS>,
-  fun: () => void
+  fun: () => void,
 ) =>
   new Promise((resolve, reject) => {
     const disposable = extension.exports.languageClientManager.onDidChange(
       () => {
         disposable.dispose();
         resolve(undefined);
-      }
+      },
     );
     try {
       fun();
