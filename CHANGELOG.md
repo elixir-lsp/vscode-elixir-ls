@@ -1,5 +1,11 @@
 ### Unreleased
 
+### v0.24.1: 6 October 2024
+
+#### Fixes
+
+- fixed a crash in telemetry init caused by breaking change in @vscode/extension-telemetry library
+
 ### v0.24.0: 6 October 2024
 
 #### Improvements

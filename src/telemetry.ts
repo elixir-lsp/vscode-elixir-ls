@@ -4,7 +4,8 @@ import TelemetryReporter, {
 } from "@vscode/extension-telemetry";
 import type * as vscode from "vscode";
 
-const key = "0979629c-3be4-4b0d-93f2-2be81cccd799";
+const key =
+  "InstrumentationKey=0979629c-3be4-4b0d-93f2-2be81cccd799;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/;ApplicationId=7ad820f6-e2a9-4df6-97d8-d72ce90b8460";
 const fakeKey = "00000000-0000-0000-0000-000000000000";
 
 interface EventSamplingConfig {
