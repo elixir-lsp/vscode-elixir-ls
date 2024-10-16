@@ -15,10 +15,21 @@ import {
   reporter,
 } from "./telemetry";
 
-const languageIds = ["elixir", "eex", "html-eex", "phoenix-heex", "surface"];
+// Languages fully handled by this extension
+const languageIds = ["elixir", "eex", "html-eex", "phoenix-heex"];
+
+// Template languages handled by their own extensions but require activation of this
+// one for compiler diagnostics. Template languages that compile down to Elixir AST
+// and embed other languages (e.g. HTML, CSS, JS and Elixir itself), should be moved
+// here for proper language service forwarding via "embedded-content".
+const templateLanguageIds = ["surface"];
+
+const activationLanguageIds = languageIds.concat(templateLanguageIds);
+
 const defaultDocumentSelector = languageIds.flatMap((language) => [
   { language, scheme: "file" },
   { language, scheme: "untitled" },
+  { language, scheme: "embedded-content" },
 ]);
 
 const untitledDocumentSelector = languageIds.map((language) => ({
@@ -348,7 +359,7 @@ export class LanguageClientManager {
     context: vscode.ExtensionContext,
   ) {
     // We are only interested in elixir related files
-    if (!languageIds.includes(document.languageId)) {
+    if (!activationLanguageIds.includes(document.languageId)) {
       return;
     }
 
