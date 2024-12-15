@@ -1,5 +1,12 @@
 ### Unreleased
 
+### v0.25.0: 15 December 2024
+
+#### Improvements
+
+- ElixirLS updated to [v0.25.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0250)
+- Added support for `embedded-content` scheme to the list of documentSelector for all languages handled by this extension. This allows any other extension to properly forward any elixir-related command to be handled by ElixirLS only when actually necessary [Marlus Saraiva](https://github.com/msaraiva)
+
 ### v0.24.2: 14 October 2024
 
 #### Improvements
