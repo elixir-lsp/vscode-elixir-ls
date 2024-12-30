@@ -1,6 +1,16 @@
 ### Unreleased
 
-### v0.25.0: 30 December 2024
+### v0.26.1: 30 December 2024
+
+#### Improvements
+
+- ElixirLS updated to [v0.26.1](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0261)
+
+#### Fixes
+
+- Fixed regression in formatter plugin loader
+
+### v0.26.0: 30 December 2024
 
 #### Highlights
 
