@@ -13,7 +13,7 @@
   "publisher": "JakeBecker",
   "version": "0.26.2",
   "engines": {
-    "vscode": "^1.94.0"
+    "vscode": "^1.93.0"
   },
   "sponsor": {
     "url": "https://github.com/sponsors/elixir-lsp"
@@ -604,7 +604,7 @@
     "@biomejs/biome": "^1.9.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "^20.0.0",
-    "@types/vscode": "~1.94.0",
+    "@types/vscode": "~1.93.0",
     "@vscode/debugprotocol": "^1.68.0",
     "@vscode/test-electron": "^2.4.1",
     "esbuild": "^0.24.0",
