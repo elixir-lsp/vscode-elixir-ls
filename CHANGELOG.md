@@ -1,5 +1,12 @@
 ### Unreleased
 
+### v0.26.3: 30 January 2025
+
+#### Improvements
+
+- ElixirLS updated to [v0.26.3](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0263)
+- Relaxed VSCode engine requirement to 1.93. ElixirLS should now be compatible with Cursor 0.42+
+
 ### v0.26.2: 2 January 2025
 
 #### Improvements
