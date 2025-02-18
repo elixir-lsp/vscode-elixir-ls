@@ -61,6 +61,48 @@ You can, of course, change these in your user settings, or on a per project basi
 
 ## Advanced Configuration
 
+### Customizing launch config for test runner
+
+The test runner builds a launch configuration dynamically basing on hardcoded default values:
+
+```js
+{
+  "type": "mix_task",
+  "name": "mix test",
+  "request": "launch",
+  "task": "test",
+  "env": {
+    "MIX_ENV": "test",
+  },
+  "taskArgs": buildTestCommandArgs(args, debug),
+  "startApps": true,
+  "projectDir": args.cwd,
+  // we need to require all test helpers and only the file we need to test
+  // mix test runs tests in all required files even if they do not match
+  // given path:line
+  "requireFiles": [
+    "test/**/test_helper.exs",
+    "apps/*/test/**/test_helper.exs",
+    args.filePath,
+  ],
+  "noDebug": !debug,
+}
+```
+
+The default launch config can be customized by providing a project launch configuration named `mix test`. If found, this launch config is used as default for running and debugging tests.
+
+Example:
+
+```json
+{
+  "type": "mix_task",
+  "name": "mix test",
+  "request": "launch",
+  "debugAutoInterpretAllModules": false,
+  "debugInterpretModulesPatterns": ["MyApp*"]
+}
+```
+
 ### Add support for emmet
 
 `emmet` is a plugin that makes it easier to write HTML: https://code.visualstudio.com/docs/editor/emmet
