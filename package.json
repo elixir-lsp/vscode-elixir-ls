@@ -156,6 +156,13 @@
           "minLength": 0,
           "default": ""
         },
+        "elixirLS.stdlibSrcDir": {
+          "scope": "resource",
+          "type": "string",
+          "description": "Subdirectory where the Elixir stdlib resides to allow for source code lookup. E.g. /home/youruser/.asdf/installs/elixir/1.18.2",
+          "minLength": 0,
+          "default": ""
+        },
         "elixirLS.useCurrentRootFolderAsProjectDir": {
           "scope": "resource",
           "type": "boolean",
