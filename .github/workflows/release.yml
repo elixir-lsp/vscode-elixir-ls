@@ -30,7 +30,7 @@ jobs:
       - run: cd elixir-ls && mix deps.get
 
       - name: Dry run
-        uses: HaaLeo/publish-vscode-extension@v1
+        uses: HaaLeo/publish-vscode-extension@v2
         if: ${{ contains(github.ref, '-rc.') }}
         with:
           pat: "dummy"
@@ -43,7 +43,7 @@ jobs:
           jq '.publisher = "JakeBecker"' package.json > package_temp.json
           mv package_temp.json package.json
       - name: Publish to Visual Studio Marketplace
-        uses: HaaLeo/publish-vscode-extension@v1
+        uses: HaaLeo/publish-vscode-extension@v2
         if: ${{ !contains(github.ref, '-rc.') }}
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
@@ -55,7 +55,7 @@ jobs:
           jq '.publisher = "elixir-lsp"' package.json > package_temp.json
           mv package_temp.json package.json
       - name: Publish to Open VSX Registry
-        uses: HaaLeo/publish-vscode-extension@v1
+        uses: HaaLeo/publish-vscode-extension@v2
         if: ${{ !contains(github.ref, '-rc.') }}
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
