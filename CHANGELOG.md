@@ -1,5 +1,22 @@
 ### Unreleased
 
+### v0.27.0: 27 February 2025
+
+#### Highlights
+
+- Added Go to declaration provider. It can be used to navigate from implementation to callback definition in behaviour module, from protocol implementation to protocol definition or from overriding def to the `__using__` macro.
+- Added support for asdf v0.16
+
+#### Improvements
+
+- ElixirLS updated to [v0.27.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0270)
+- Added a new setting `elixir_ls.stdlibSrcDir` to allow users to point to their elixir stdlib directory [cbecker](https://github.com/cbecker)
+- Build dependencies updated
+
+#### Breaking changes
+
+- elixir 1.13 reached end of life and is no longer supported. Consider updating to 1.14+
+
 ### v0.26.4: 31 January 2025
 
 #### Improvements
