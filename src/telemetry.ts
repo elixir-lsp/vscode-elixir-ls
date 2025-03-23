@@ -21,6 +21,14 @@ const samplingConfigs: EventSamplingConfig[] = [
     samplingFactor: 0.004,
   },
   {
+    eventName: "build_error",
+    samplingFactor: 0.1,
+  },
+  {
+    eventName: "test_controller_resolve_error",
+    samplingFactor: 0.01,
+  },
+  {
     eventName: "dialyzer",
     samplingFactor: 0.04,
   },
@@ -28,7 +36,7 @@ const samplingConfigs: EventSamplingConfig[] = [
     eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_foldingRange",
-    samplingFactor: 0.001,
+    samplingFactor: 0.0002,
   },
   {
     eventName: "lsp_request",
@@ -40,7 +48,7 @@ const samplingConfigs: EventSamplingConfig[] = [
     eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_codeAction",
-    samplingFactor: 0.002,
+    samplingFactor: 0.0002,
   },
   {
     eventName: "lsp_request",
@@ -52,7 +60,13 @@ const samplingConfigs: EventSamplingConfig[] = [
     eventName: "lsp_request",
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "textDocument_documentSymbol",
-    samplingFactor: 0.002,
+    samplingFactor: 0.0005,
+  },
+  {
+    eventName: "lsp_request",
+    propertyKey: "elixir_ls.lsp_command",
+    propertyValue: "workspace_symbol",
+    samplingFactor: 0.02,
   },
   {
     eventName: "lsp_request",
@@ -95,6 +109,30 @@ const samplingConfigs: EventSamplingConfig[] = [
     propertyKey: "elixir_ls.lsp_command",
     propertyValue: "initialize",
     samplingFactor: 0.03,
+  },
+  {
+    eventName: "dap_request",
+    propertyKey: "elixir_ls.dap_command",
+    propertyValue: "threads",
+    samplingFactor: 0.05,
+  },
+  {
+    eventName: "dap_request",
+    propertyKey: "elixir_ls.dap_command",
+    propertyValue: "initialize",
+    samplingFactor: 0.2,
+  },
+  {
+    eventName: "dap_request",
+    propertyKey: "elixir_ls.dap_command",
+    propertyValue: "launch",
+    samplingFactor: 0.2,
+  },
+  {
+    eventName: "dap_request",
+    propertyKey: "elixir_ls.dap_command",
+    propertyValue: "disconnect",
+    samplingFactor: 0.2,
   },
 ];
 
