@@ -84,8 +84,10 @@ export function configureTestController(
   const testFileUris = new WeakMap<vscode.TestItem, vscode.Uri>();
 
   function getOrCreateWorkspaceFolderTestItem(uri: vscode.Uri) {
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
-    let workspaceFolder = vscode.workspace.getWorkspaceFolder(uri)!;
+    let workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+    if (!workspaceFolder) {
+      return undefined;
+    }
     workspaceFolder =
       workspaceTracker.getOuterMostWorkspaceFolder(workspaceFolder);
 
@@ -125,6 +127,9 @@ export function configureTestController(
     fileTestItem.range = new vscode.Range(0, 0, 0, 0);
 
     const workspaceFolderTestItem = getOrCreateWorkspaceFolderTestItem(uri);
+    if (!workspaceFolderTestItem) {
+      return undefined;
+    }
     workspaceFolderTestItem.children.add(fileTestItem);
 
     testData.set(fileTestItem, ItemType.File);
@@ -170,18 +175,18 @@ export function configureTestController(
   }
 
   async function parseTestsInFileContents(
-    file: vscode.TestItem,
+    file: vscode.TestItem | undefined,
   ): Promise<void> {
+    if (!file) {
+      return;
+    }
     if (!file.uri?.toString().endsWith(".exs")) {
       return;
     }
     // If a document is open, VS Code already knows its contents. If this is being
     // called from the resolveHandler when a document isn't open, we'll need to
     // read them from disk ourselves.
-    const clientPromise = languageClientManager.getClientPromiseByUri(
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      file.uri!,
-    );
+    const clientPromise = languageClientManager.getClientPromiseByUri(file.uri);
 
     if (!clientPromise) {
       console.error(
@@ -228,8 +233,7 @@ export function configureTestController(
       const moduleTestItem = controller.createTestItem(
         moduleEntry.module,
         moduleEntry.module,
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
-        file.uri!,
+        file.uri,
       );
       moduleTestItem.range = new vscode.Range(
         moduleEntry.line,
@@ -245,8 +249,7 @@ export function configureTestController(
           const describeTestItem = controller.createTestItem(
             describeEntry.describe,
             describeEntry.describe,
-            // biome-ignore lint/style/noNonNullAssertion: <explanation>
-            file.uri!,
+            file.uri,
           );
           describeTestItem.range = new vscode.Range(
             describeEntry.line,
@@ -324,8 +327,7 @@ export function configureTestController(
           testItem.tags = testEntry.tags.map(
             (tag: string) => new vscode.TestTag(tag),
           );
-          // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          testFileUris.set(testItem, file.uri!);
+          testFileUris.set(testItem, file.uri);
 
           doctestGroupItem.children.add(testItem);
         }
@@ -489,8 +491,11 @@ export function configureTestController(
     // The `TestMessage` can contain extra information, like a failing location or
     // a diff output. But here we'll just give it a textual message.
     while (queue.length > 0 && !token.isCancellationRequested) {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      const test = queue.pop()!;
+      const test = queue.pop();
+
+      if (!test || !test.uri) {
+        continue;
+      }
 
       // Skip tests the user asked to exclude
       if (request.exclude?.includes(test)) {
@@ -500,11 +505,15 @@ export function configureTestController(
       const includeChildren = false;
       let runArgs: RunTestArgs;
 
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      const projectDir = workspaceTracker.getProjectDirForUri(test.uri!)!;
+      const projectDir = workspaceTracker.getProjectDirForUri(test.uri);
+      if (!projectDir) {
+        continue;
+      }
       const relativePath = test.uri?.fsPath.slice(projectDir.length + 1);
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      const workspaceFolder = vscode.workspace.getWorkspaceFolder(test.uri!)!;
+      const workspaceFolder = vscode.workspace.getWorkspaceFolder(test.uri);
+      if (!workspaceFolder) {
+        continue;
+      }
 
       // Note that we don't need to manually
       // set the state of parent tests; they'll be set automatically.
@@ -618,17 +627,24 @@ export function configureTestController(
 
         case ItemType.TestCase:
           if (test.description === "doctest") {
-            // biome-ignore lint/style/noNonNullAssertion: <explanation>
-            const testFileUri = testFileUris.get(test)!;
+            const testFileUri = testFileUris.get(test);
+            if (!testFileUri) {
+              continue;
+            }
             const projectDir =
-              // biome-ignore lint/style/noNonNullAssertion: <explanation>
-              workspaceTracker.getProjectDirForUri(testFileUri)!;
+              workspaceTracker.getProjectDirForUri(testFileUri);
+            if (!projectDir) {
+              continue;
+            }
             const relativePath = testFileUri.fsPath.slice(
               projectDir.length + 1,
             );
             const workspaceFolder =
-              // biome-ignore lint/style/noNonNullAssertion: <explanation>
-              vscode.workspace.getWorkspaceFolder(testFileUri)!;
+              vscode.workspace.getWorkspaceFolder(testFileUri);
+
+            if (!workspaceFolder) {
+              continue;
+            }
 
             runArgs = {
               cwd: projectDir,
@@ -733,8 +749,10 @@ export function configureTestController(
     RUN_TEST_FROM_CODELENS,
     async (args: RunArgs) => {
       const fileTestItemUri = vscode.Uri.file(args.filePath);
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      const projectDir = workspaceTracker.getProjectDirForUri(fileTestItemUri)!;
+      const projectDir = workspaceTracker.getProjectDirForUri(fileTestItemUri);
+      if (!projectDir) {
+        throw `Unable to find project dir for ${fileTestItemUri}`;
+      }
       await parseTestsInFileContents(
         getOrCreateFile(fileTestItemUri, projectDir),
       );
