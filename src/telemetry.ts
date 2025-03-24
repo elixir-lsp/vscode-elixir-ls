@@ -134,6 +134,10 @@ const samplingConfigs: EventSamplingConfig[] = [
     propertyValue: "disconnect",
     samplingFactor: 0.2,
   },
+  {
+    eventName: "unhandlederror",
+    samplingFactor: 0.01,
+  },
 ];
 
 function shouldSampleEvent(
@@ -155,6 +159,25 @@ function shouldSampleEvent(
   return true;
 }
 
+function applySampling(
+  eventName: string,
+  properties: TelemetryEventProperties | undefined,
+  cb: (samplingFactor: number) => void,
+) {
+  let samplingFactor = 1; // Default sampling factor
+
+  for (const config of samplingConfigs) {
+    if (shouldSampleEvent(eventName, properties, config)) {
+      samplingFactor = config.samplingFactor;
+      break;
+    }
+  }
+
+  if (samplingFactor === 1 || Math.random() <= samplingFactor) {
+    cb(samplingFactor);
+  }
+}
+
 export let reporter: TelemetryReporter;
 
 class EnvironmentReporter extends TelemetryReporter {
@@ -171,22 +194,13 @@ class EnvironmentReporter extends TelemetryReporter {
       return;
     }
 
-    let samplingFactor = 1; // Default sampling factor
-
-    for (const config of samplingConfigs) {
-      if (shouldSampleEvent(eventName, properties, config)) {
-        samplingFactor = config.samplingFactor;
-        break;
-      }
-    }
-
-    if (samplingFactor === 1 || Math.random() <= samplingFactor) {
+    applySampling(eventName, properties, (samplingFactor) =>
       super.sendTelemetryEvent(
         eventName,
         properties,
         this.appendCount(eventName, samplingFactor, measurements),
-      );
-    }
+      ),
+    );
   }
 
   override sendTelemetryErrorEvent(
@@ -198,10 +212,12 @@ class EnvironmentReporter extends TelemetryReporter {
       return;
     }
 
-    super.sendTelemetryErrorEvent(
-      eventName,
-      properties,
-      this.appendCount(eventName, 1, measurements),
+    applySampling(eventName, properties, (samplingFactor) =>
+      super.sendTelemetryErrorEvent(
+        eventName,
+        properties,
+        this.appendCount(eventName, samplingFactor, measurements),
+      ),
     );
   }
 
@@ -213,10 +229,13 @@ class EnvironmentReporter extends TelemetryReporter {
     if (process.env.ELS_TEST) {
       return;
     }
-    super.sendRawTelemetryEvent(
-      eventName,
-      properties,
-      this.appendCount(eventName, 1, measurements),
+
+    applySampling(eventName, properties, (samplingFactor) =>
+      super.sendRawTelemetryEvent(
+        eventName,
+        properties,
+        this.appendCount(eventName, samplingFactor, measurements),
+      ),
     );
   }
 
@@ -228,10 +247,13 @@ class EnvironmentReporter extends TelemetryReporter {
     if (process.env.ELS_TEST) {
       return;
     }
-    super.sendDangerousTelemetryErrorEvent(
-      eventName,
-      properties,
-      this.appendCount(eventName, 1, measurements),
+
+    applySampling(eventName, properties, (samplingFactor) =>
+      super.sendDangerousTelemetryErrorEvent(
+        eventName,
+        properties,
+        this.appendCount(eventName, samplingFactor, measurements),
+      ),
     );
   }
 
@@ -243,10 +265,13 @@ class EnvironmentReporter extends TelemetryReporter {
     if (process.env.ELS_TEST) {
       return;
     }
-    super.sendDangerousTelemetryEvent(
-      eventName,
-      properties,
-      this.appendCount(eventName, 1, measurements),
+
+    applySampling(eventName, properties, (samplingFactor) =>
+      super.sendDangerousTelemetryEvent(
+        eventName,
+        properties,
+        this.appendCount(eventName, samplingFactor, measurements),
+      ),
     );
   }
 
