@@ -1,5 +1,15 @@
 ### Unreleased
 
+### v0.27.2: 24 March 2025
+
+#### Improvements
+
+- ElixirLS updated to [v0.27.2](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0272)
+
+#### Fixes
+
+- Fixed some crashes in tests controller
+
 ### v0.27.1: 27 February 2025
 
 #### Improvements
