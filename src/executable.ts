@@ -5,7 +5,7 @@ import * as vscode from "vscode";
 const platformCommand = (command: Kind) =>
   command + (os.platform() === "win32" ? ".bat" : ".sh");
 
-export type Kind = "language_server" | "debug_adapter";
+export type Kind = "language_server" | "debug_adapter" | "elixir_check";
 export function buildCommand(
   context: vscode.ExtensionContext,
   kind: Kind,

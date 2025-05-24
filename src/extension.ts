@@ -57,7 +57,7 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
     }),
   );
 
-  testElixir();
+  testElixir(context);
 
   detectConflictingExtensions();
 

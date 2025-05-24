@@ -1,5 +1,6 @@
 import { execSync } from "node:child_process";
 import * as vscode from "vscode";
+import { buildCommand } from "./executable";
 
 function testElixirCommand(command: string): false | Buffer {
   try {
@@ -9,24 +10,27 @@ function testElixirCommand(command: string): false | Buffer {
   }
 }
 
-export function testElixir(): boolean {
-  const testResult = testElixirCommand("elixir");
+export function testElixir(context: vscode.ExtensionContext): boolean {
+  // Use the same script infrastructure as the language server to ensure
+  // consistent environment setup (version managers, etc.)
+  const checkCommand = buildCommand(context, "elixir_check", undefined);
+  const testResult = testElixirCommand(`"${checkCommand}"`);
 
   if (!testResult) {
     vscode.window.showErrorMessage(
-      "Failed to run 'elixir' command. ElixirLS will probably fail to launch. Logged PATH to Development Console.",
+      "Failed to run elixir check command. ElixirLS will probably fail to launch. Logged PATH to Development Console.",
     );
     console.warn(
-      `Failed to run 'elixir' command. Current process's PATH: ${process.env.PATH}`,
+      `Failed to run elixir check command. Current process's PATH: ${process.env.PATH}`,
     );
     return false;
   }
   if (testResult.length > 0) {
     vscode.window.showErrorMessage(
-      "Running 'elixir' command caused extraneous print to stdout. See VS Code's developer console for details.",
+      "Running elixir check command caused extraneous print to stdout. See VS Code's developer console for details.",
     );
     console.warn(
-      `Running 'elixir -e \"\"' printed to stdout:\n${testResult.toString()}`,
+      `Running elixir check command printed to stdout:\n${testResult.toString()}`,
     );
     return false;
   }
