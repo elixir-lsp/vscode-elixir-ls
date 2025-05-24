@@ -1,5 +1,16 @@
 ### Unreleased
 
+### v0.28.0: 24 May 2025
+
+#### Highlights
+
+- Added support for OTP 28 on elixir 1.18.4
+
+#### Improvements
+
+- ElixirLS updated to [v0.28.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0280)
+- Added support for OTP 28 dialyzer options
+
 ### v0.27.2: 24 March 2025
 
 #### Improvements

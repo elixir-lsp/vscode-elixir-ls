@@ -1,6 +1,7 @@
-import TelemetryReporter, {
+import {
   type TelemetryEventMeasurements,
   type TelemetryEventProperties,
+  TelemetryReporter,
 } from "@vscode/extension-telemetry";
 import type * as vscode from "vscode";
 
