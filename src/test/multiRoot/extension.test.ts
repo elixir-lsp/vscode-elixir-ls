@@ -100,14 +100,15 @@ suite("Multi root workspace tests", () => {
     );
   });
 
-  // TODO throw or return null
-  // test("requests from non workspace file: docs go to first workspace client", async () => {
-  //   const fileUri = vscode.Uri.file(path.join(fixturesPath, "elixir_file.ex"));
-  //   assert.equal(
-  //     languageClientManager.getClientByUri(fileUri),
-  //     languageClientManager.clients.get(vscode.workspace.workspaceFolders![0].uri.toString())
-  //   );
-  // });
+  test("requests from non workspace file: docs go to first workspace client", async () => {
+    const fileUri = vscode.Uri.file(path.join(fixturesPath, "elixir_file.ex"));
+    assert.equal(
+      extension.exports.languageClientManager.getClientByUri(fileUri),
+      extension.exports.languageClientManager.clients.get(
+        vscode.workspace.workspaceFolders?.[0].uri.toString() ?? "",
+      ),
+    );
+  });
 
   test("extension starts second client on file open from different outermost folder", async () => {
     const fileUri = vscode.Uri.file(
