@@ -94,7 +94,7 @@ export class WorkspaceTracker {
       return outermostFolder;
     }
 
-    // most likely handleDidChangeWorkspaceFolders callback hs not yet run
+    // most likely handleDidChangeWorkspaceFolders callback has not yet run
     // clear cache and try again
     if (!isRetry) {
       this.handleDidChangeWorkspaceFolders();
