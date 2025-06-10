@@ -250,7 +250,7 @@ function buildTestCommandArgs(args: RunTestArgs, debug: boolean): string[] {
     // TODO remove this when we require elixir 1.17
     const path =
       os.platform() === "win32"
-        ? args.filePath.replace("\\", "/")
+        ? args.filePath.replace(/\\/g, "/")
         : args.filePath;
     result.push(`${path}${line}`);
   }
