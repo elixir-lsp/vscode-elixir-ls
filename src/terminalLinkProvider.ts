@@ -27,7 +27,7 @@ export function configureTerminalLinkProvider(
       _token: vscode.CancellationToken,
     ): vscode.ProviderResult<TerminalLinkWithData[]> => {
       const regex =
-        /(?:\((?<app>[_a-z0-9]+) \d+.\d+.\d+\) )(?<file>[_a-z0-9/]*[_a-z0-9]+.ex):(?<line>\d+)/;
+        /(?:\((?<app>[_a-z0-9]+) \d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\) )(?<file>[_a-z0-9/]*[_a-z0-9]+\.ex):(?<line>\d+)/;
       const matches = context.line.match(regex);
       if (matches === null) {
         return [];
