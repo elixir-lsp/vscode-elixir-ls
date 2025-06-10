@@ -160,7 +160,7 @@ export function configureTestController(
         (segment) => segment === "node_modules" || segment.startsWith("."),
       )
     ) {
-      // exclude phoenix tests in node_module
+      // exclude phoenix tests in node_modules
       return false;
     }
 
