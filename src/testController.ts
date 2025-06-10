@@ -287,7 +287,7 @@ export function configureTestController(
         const doctests = describeEntry.tests.filter(
           (testEntry: { type: string }) => testEntry.type === "doctest",
         );
-        const grouppedDoctests = new Map<string, vscode.TestItem>();
+        const groupedDoctests = new Map<string, vscode.TestItem>();
         for (const testEntry of doctests) {
           const doctestModule = testEntry.tags
             .find((t: string) => t.startsWith("doctest:"))
@@ -297,7 +297,7 @@ export function configureTestController(
               .find((t: string) => t.startsWith("doctest_line:"))
               ?.replace("doctest_line:", ""),
           );
-          let doctestGroupItem = grouppedDoctests.get(doctestModule);
+          let doctestGroupItem = groupedDoctests.get(doctestModule);
           if (!doctestGroupItem) {
             doctestGroupItem = controller.createTestItem(
               doctestModule,
@@ -314,7 +314,7 @@ export function configureTestController(
             testData.set(doctestGroupItem, ItemType.Doctest);
 
             describeCollection.add(doctestGroupItem);
-            grouppedDoctests.set(doctestModule, doctestGroupItem);
+            groupedDoctests.set(doctestModule, doctestGroupItem);
           }
 
           const testItem = controller.createTestItem(
