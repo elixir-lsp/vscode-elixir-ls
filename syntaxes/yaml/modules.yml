@@ -1,0 +1,8 @@
+- captures:
+    '1':
+      name: keyword.control.module.elixir
+    '2':
+      name: entity.name.type.module.elixir
+  match: >-
+    ^\s*(defmodule|defprotocol|defimpl)\s+(([A-Z][A-Za-z0-9_]*\s*(\.)\s*)*[A-Z][A-Za-z0-9_]*)
+  name: meta.module.elixir
