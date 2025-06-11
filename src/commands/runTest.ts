@@ -101,7 +101,7 @@ export async function runTest(
   debug: boolean,
 ): Promise<string> {
   reporter.sendTelemetryEvent("run_test", {
-    "elixir_ls.with_debug": "true",
+    "elixir_ls.with_debug": debug ? "true" : "false",
   });
 
   const debugConfiguration: vscode.DebugConfiguration = getLaunchConfig(
@@ -201,7 +201,7 @@ export async function runTest(
       (debugSessionStarted) => {
         if (!debugSessionStarted) {
           reporter.sendTelemetryErrorEvent("run_test_error", {
-            "elixir_ls.with_debug": "true",
+            "elixir_ls.with_debug": debug ? "true" : "false",
           });
 
           disposeListeners();
@@ -211,7 +211,7 @@ export async function runTest(
       },
       (reason) => {
         reporter.sendTelemetryErrorEvent("run_test_error", {
-          "elixir_ls.with_debug": "true",
+          "elixir_ls.with_debug": debug ? "true" : "false",
           "elixir_ls.run_test_error": String(reason),
           "elixir_ls.run_test_error_stack": reason?.stack ?? "",
         });
