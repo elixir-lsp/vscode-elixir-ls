@@ -8,7 +8,10 @@ import { WorkspaceTracker } from "./project";
 import { TaskProvider } from "./taskProvider";
 import { configureTelemetry, reporter } from "./telemetry";
 import { configureTerminalLinkProvider } from "./terminalLinkProvider";
-import { configureTestController } from "./testController";
+import {
+  configureTestController,
+  handleWorkspaceFolderRemoved as handleTestControllerWorkspaceFolderRemoved,
+} from "./testController";
 import { testElixir } from "./testElixir";
 
 console.log("ElixirLS: Loading extension");
@@ -78,6 +81,7 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
     vscode.workspace.onDidChangeWorkspaceFolders(async (event) => {
       for (const folder of event.removed) {
         await languageClientManager.handleWorkspaceFolderRemoved(folder);
+        handleTestControllerWorkspaceFolderRemoved(folder);
       }
       // we might have closed client for some nested workspace folder child
       // reopen all needed

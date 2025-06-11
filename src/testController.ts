@@ -10,6 +10,16 @@ import type { LanguageClientManager } from "./languageClientManager";
 import { type WorkspaceTracker, getProjectDir } from "./project";
 import { reporter } from "./telemetry";
 
+const workspaceWatchers = new Map<string, vscode.FileSystemWatcher>();
+
+export function handleWorkspaceFolderRemoved(folder: vscode.WorkspaceFolder) {
+  const watcher = workspaceWatchers.get(folder.uri.toString());
+  if (watcher) {
+    watcher.dispose();
+    workspaceWatchers.delete(folder.uri.toString());
+  }
+}
+
 export function configureTestController(
   context: vscode.ExtensionContext,
   languageClientManager: LanguageClientManager,
@@ -350,6 +360,9 @@ export function configureTestController(
 
     await Promise.all(
       outerMostWorkspaceFolders.map(async (workspaceFolder) => {
+        if (workspaceWatchers.has(workspaceFolder.uri.toString())) {
+          return workspaceWatchers.get(workspaceFolder.uri.toString());
+        }
         const projectDir = getProjectDir(workspaceFolder);
         console.log(
           "ElixirLS: registering watcher in",
@@ -360,6 +373,8 @@ export function configureTestController(
 
         const pattern = new vscode.RelativePattern(projectDir, "**/*_test.exs");
         const watcher = vscode.workspace.createFileSystemWatcher(pattern);
+
+        workspaceWatchers.set(workspaceFolder.uri.toString(), watcher);
 
         context.subscriptions.push(watcher);
 
