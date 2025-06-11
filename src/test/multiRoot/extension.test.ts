@@ -8,8 +8,8 @@ import type { ElixirLS } from "../../extension";
 import { WorkspaceMode } from "../../project";
 import {
   getExtension,
-  sleep,
   waitForLanguageClientManagerUpdate,
+  waitForNoLanguageClientManagerUpdate,
   waitForWorkspaceUpdate,
 } from "../utils";
 
@@ -180,10 +180,10 @@ suite("Multi root workspace tests", () => {
     const fileUri = vscode.Uri.file(
       path.join(fixturesPath, "sample_umbrella", "apps", "child2", "mix.exs"),
     );
-    const document = await vscode.workspace.openTextDocument(fileUri);
-    await vscode.window.showTextDocument(document);
-
-    await sleep(3000);
+    await waitForNoLanguageClientManagerUpdate(extension, async () => {
+      const document = await vscode.workspace.openTextDocument(fileUri);
+      await vscode.window.showTextDocument(document);
+    });
 
     assert.ok(!extension.exports.languageClientManager.defaultClient);
     assert.equal(extension.exports.languageClientManager.clients.size, 2);
@@ -196,7 +196,7 @@ suite("Multi root workspace tests", () => {
       vscode.workspace.updateWorkspaceFolders(addedWorkspaceFolder.index, 1);
     });
 
-    await sleep(3000);
+    await waitForNoLanguageClientManagerUpdate(extension, () => {});
 
     assert.equal(extension.exports.languageClientManager.clients.size, 2);
   }).timeout(30000);
