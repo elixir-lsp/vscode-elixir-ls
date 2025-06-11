@@ -23,7 +23,7 @@ suite("Multi root workspace tests", () => {
     extension = getExtension();
   });
 
-  test("extension detects mix.exs and actives", async () => {
+  test("extension detects mix.exs and activates", async () => {
     assert.ok(extension.isActive);
     assert.equal(
       extension.exports.workspaceTracker.mode,
