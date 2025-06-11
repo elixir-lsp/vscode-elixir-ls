@@ -63,3 +63,28 @@ export const waitForLanguageClientManagerUpdate = (
       reject(e);
     }
   });
+
+export const waitForNoLanguageClientManagerUpdate = (
+  extension: vscode.Extension<ElixirLS>,
+  fun: () => void,
+  timeout = 3000,
+) =>
+  new Promise<void>((resolve, reject) => {
+    const disposable = extension.exports.languageClientManager.onDidChange(
+      () => {
+        disposable.dispose();
+        reject(new Error("language client manager changed"));
+      },
+    );
+    try {
+      fun();
+    } catch (e) {
+      disposable.dispose();
+      reject(e);
+      return;
+    }
+    setTimeout(() => {
+      disposable.dispose();
+      resolve();
+    }, timeout);
+  });
