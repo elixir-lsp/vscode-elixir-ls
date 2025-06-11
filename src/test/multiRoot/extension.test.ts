@@ -66,10 +66,10 @@ suite("Multi root workspace tests", () => {
     const fileUri = vscode.Uri.file(
       path.join(fixturesPath, "sample_umbrella", "apps", "child1", "mix.exs"),
     );
-    const document = await vscode.workspace.openTextDocument(fileUri);
-    await vscode.window.showTextDocument(document);
-
-    await sleep(3000);
+    await waitForLanguageClientManagerUpdate(extension, async () => {
+      const document = await vscode.workspace.openTextDocument(fileUri);
+      await vscode.window.showTextDocument(document);
+    });
 
     assert.ok(!extension.exports.languageClientManager.defaultClient);
     assert.equal(extension.exports.languageClientManager.clients.size, 1);
