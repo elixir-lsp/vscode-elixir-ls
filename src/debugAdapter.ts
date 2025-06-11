@@ -201,7 +201,7 @@ class DebugAdapterTrackerFactory
 
           if (event.event === "initialized") {
             const elapsed =
-              // biome-ignore lint/style/noNonNullAssertion: <explanation>
+              // biome-ignore lint/style/noNonNullAssertion: start time exists for active sessions
               performance.now() - this.startTimes.get(session.id)!;
             reporter.sendTelemetryEvent(
               "debug_session_initialized",
