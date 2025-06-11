@@ -32,9 +32,19 @@ function getExistingLaunchConfig(
     "launch",
     args.workspaceFolder,
   );
-  const testConfig = launchJson.configurations.findLast(
-    (e: { name: string }) => e.name === "mix test",
+  const configurations = launchJson.get<vscode.DebugConfiguration[]>(
+    "configurations",
   );
+  let testConfig: vscode.DebugConfiguration | undefined;
+  if (Array.isArray(configurations)) {
+    for (let i = configurations.length - 1; i >= 0; i--) {
+      const c = configurations[i];
+      if (c?.name === "mix test") {
+        testConfig = c;
+        break;
+      }
+    }
+  }
 
   if (testConfig === undefined) {
     return undefined;
