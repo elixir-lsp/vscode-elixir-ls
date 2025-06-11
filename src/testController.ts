@@ -170,7 +170,7 @@ export function configureTestController(
   function parseTestsInDocument(e: vscode.TextDocument) {
     const projectDir = workspaceTracker.getProjectDirForUri(e.uri);
     if (projectDir && filterTestFile(e.uri, projectDir)) {
-      parseTestsInFileContents(getOrCreateFile(e.uri, projectDir));
+      void parseTestsInFileContents(getOrCreateFile(e.uri, projectDir));
     }
   }
 
