@@ -35,7 +35,7 @@ export function configureTestController(
         reporter.sendTelemetryErrorEvent("test_controller_resolve_error", {
           "elixir_ls.test_controller_resolve_error": String(e),
           "elixir_ls.test_controller_resolve_error_stack":
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            // biome-ignore lint/suspicious/noExplicitAny: error may be of an unknown type
             (<any>e)?.stack ?? "",
         });
       }
@@ -51,7 +51,7 @@ export function configureTestController(
         reporter.sendTelemetryErrorEvent("test_controller_resolve_error", {
           "elixir_ls.test_controller_resolve_error": String(e),
           "elixir_ls.test_controller_resolve_error_stack":
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            // biome-ignore lint/suspicious/noExplicitAny: error may be of an unknown type
             (<any>e)?.stack ?? "",
         });
       }
@@ -207,7 +207,7 @@ export function configureTestController(
     }
 
     const command =
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      // biome-ignore lint/style/noNonNullAssertion: the command is guaranteed by the language server
       client.initializeResult.capabilities.executeCommandProvider?.commands.find(
         (c) => c.startsWith("getExUnitTestsInFile:"),
       )!;
@@ -219,7 +219,7 @@ export function configureTestController(
       arguments: [file.uri?.toString()],
     };
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny: response structure is defined by the server
     let res: any[] = [];
     try {
       res = await client.sendRequest(ExecuteCommandRequest.type, params);
@@ -407,7 +407,7 @@ export function configureTestController(
   ): vscode.TestItem | undefined {
     if (type === "doctest") {
       let foundDoctest: vscode.TestItem | undefined;
-      // biome-ignore lint/complexity/noForEach: <explanation>
+      // biome-ignore lint/complexity/noForEach: using forEach allows iterating over the children collection directly
       describeTest.children.forEach((doctestGroupItem) => {
         if (getType(doctestGroupItem) === ItemType.Doctest) {
           const candidate = doctestGroupItem.children.get(name);
@@ -474,13 +474,13 @@ export function configureTestController(
 
     // Loop through all included tests, or all known tests, and add them to our queue
     if (request.include) {
-      // biome-ignore lint/complexity/noForEach: <explanation>
+      // biome-ignore lint/complexity/noForEach: using forEach simplifies queuing requested tests
       request.include.forEach((test) => {
         queue.push(test);
         run.enqueued(test);
       });
     } else {
-      // biome-ignore lint/complexity/noForEach: <explanation>
+      // biome-ignore lint/complexity/noForEach: using forEach simplifies queuing all known tests
       controller.items.forEach((test) => {
         queue.push(test);
         run.enqueued(test);
@@ -522,7 +522,7 @@ export function configureTestController(
           // If we're running a workspace and any of the files is not parsed yet, parse them now
           {
             const childrenToCheck: Array<Promise<void>> = [];
-            // biome-ignore lint/complexity/noForEach: <explanation>
+            // biome-ignore lint/complexity/noForEach: using forEach is convenient for iterating over the children set
             test.children.forEach((fileTest) => {
               if (fileTest.children.size === 0) {
                 childrenToCheck.push(parseTestsInFileContents(fileTest));
@@ -705,7 +705,7 @@ export function configureTestController(
       }
 
       if (includeChildren) {
-        // biome-ignore lint/complexity/noForEach: <explanation>
+        // biome-ignore lint/complexity/noForEach: forEach makes enqueueing child tests straightforward
         test.children.forEach((test) => {
           queue.push(test);
           run.enqueued(test);

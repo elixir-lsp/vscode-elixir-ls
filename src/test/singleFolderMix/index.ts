@@ -15,7 +15,7 @@ export async function run(
   try {
     const files = await glob("**/**.test.js", { cwd: testsRoot });
     // Add files to the test suite
-    // biome-ignore lint/complexity/noForEach: <explanation>
+    // biome-ignore lint/complexity/noForEach: using forEach keeps the setup concise when adding test files
     files.forEach((f) => mocha.addFile(path.resolve(testsRoot, f)));
 
     try {

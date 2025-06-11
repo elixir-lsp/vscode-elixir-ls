@@ -43,7 +43,7 @@ export function configureManipulatePipes(
     }
 
     const command =
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      // biome-ignore lint/style/noNonNullAssertion: server capabilities guarantee this command exists
       client.initializeResult.capabilities.executeCommandProvider?.commands.find(
         (c: string) => c.startsWith("manipulatePipes:"),
       )!;
