@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 import {
   type Disposable,
+  type DocumentSelector,
   type Executable,
   LanguageClient,
   type LanguageClientOptions,
   RevealOutputChannelOn,
   type ServerOptions,
-  type DocumentSelector,
 } from "vscode-languageclient/node";
 import { buildCommand } from "./executable";
 import { WorkspaceMode, type WorkspaceTracker } from "./project";
