@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import {
   type Disposable,
+  type DocumentSelector,
   type Executable,
   LanguageClient,
   type LanguageClientOptions,
@@ -69,8 +70,7 @@ function startClient(
     debug: serverOpts,
   };
 
-  // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-  let displayName;
+  let displayName: string;
   if (clientOptions.workspaceFolder) {
     console.log(
       `ElixirLS: starting LSP client for ${clientOptions.workspaceFolder.uri.fsPath} with server options`,
@@ -320,7 +320,7 @@ export class LanguageClientManager {
         folder = vscode.workspace.workspaceFolders[0];
       } else {
         // no folders - use default client
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        // biome-ignore lint/style/noNonNullAssertion: a default client is always started when no workspace folders exist
         return this.defaultClientPromise!;
       }
     }
@@ -328,7 +328,7 @@ export class LanguageClientManager {
     // If we have nested workspace folders we only start a server on the outer most workspace folder.
     folder = this._workspaceTracker.getOuterMostWorkspaceFolder(folder);
 
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    // biome-ignore lint/style/noNonNullAssertion: the client promise is set when the workspace folder's client is started
     return this.clientsPromises.get(folder.uri.toString())!;
   }
 
@@ -399,8 +399,8 @@ export class LanguageClientManager {
     folder = this._workspaceTracker.getOuterMostWorkspaceFolder(folder);
 
     if (!this.clients.has(folder.uri.toString())) {
-      // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-      let documentSelector;
+      // The document selector will be assigned based on workspace mode
+      let documentSelector: DocumentSelector = defaultDocumentSelector;
       if (this._workspaceTracker.mode === WorkspaceMode.MULTI_ROOT) {
         // multi-root workspace
         // create document selector with glob pattern that will match files
@@ -450,9 +450,9 @@ export class LanguageClientManager {
     const clientsToDispose: LanguageClient[] = [];
     let changed = false;
     if (this.defaultClient) {
-      // biome-ignore lint/complexity/noForEach: <explanation>
+      // biome-ignore lint/complexity/noForEach: disposing all registered disposables is easier with forEach
       this.defaultClientDisposables?.forEach((d) => d.dispose());
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      // biome-ignore lint/style/noNonNullAssertion: defaultClientPromise is defined whenever defaultClient is
       clientStartPromises.push(this.defaultClientPromise!);
       clientsToDispose.push(this.defaultClient);
       this.defaultClient = null;
@@ -462,9 +462,9 @@ export class LanguageClientManager {
     }
 
     for (const [uri, client] of this.clients.entries()) {
-      // biome-ignore lint/complexity/noForEach: <explanation>
+      // biome-ignore lint/complexity/noForEach: disposing all registered disposables is easier with forEach
       this.clientsDisposables.get(uri)?.forEach((d) => d.dispose());
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      // biome-ignore lint/style/noNonNullAssertion: a promise exists for every started client
       clientStartPromises.push(this.clientsPromises.get(uri)!);
       clientsToDispose.push(client);
       changed = true;
@@ -498,9 +498,9 @@ export class LanguageClientManager {
     const client = this.clients.get(uri);
     if (client) {
       console.log("ElixirLS: Stopping LSP client for", folder.uri.fsPath);
-      // biome-ignore lint/complexity/noForEach: <explanation>
+      // biome-ignore lint/complexity/noForEach: disposing all registered disposables is easier with forEach
       this.clientsDisposables.get(uri)?.forEach((d) => d.dispose());
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      // biome-ignore lint/style/noNonNullAssertion: a promise exists for every started client
       const clientPromise = this.clientsPromises.get(uri)!;
 
       this.clients.delete(uri);
@@ -520,7 +520,7 @@ export class LanguageClientManager {
         );
         reporter.sendTelemetryErrorEvent("language_client_stop_error", {
           "elixir_ls.language_client_stop_error": String(e),
-          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          // biome-ignore lint/suspicious/noExplicitAny: error may not be typed, cast to access stack trace
           "elixir_ls.language_client_stop_error_stack": (<any>e)?.stack ?? "",
         });
       }
@@ -531,7 +531,7 @@ export class LanguageClientManager {
         console.warn("ElixirLS: error during LSP client dispose", e);
         reporter.sendTelemetryErrorEvent("language_client_stop_error", {
           "elixir_ls.language_client_stop_error": String(e),
-          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          // biome-ignore lint/suspicious/noExplicitAny: error may not be typed, cast to access stack trace
           "elixir_ls.language_client_stop_error_stack": (<any>e)?.stack ?? "",
         });
       }

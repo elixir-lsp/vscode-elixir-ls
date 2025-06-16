@@ -284,21 +284,21 @@ class EnvironmentReporter extends TelemetryReporter {
     const label = `elixir_ls.${eventName}_count`;
     if (!measurements) {
       const measurementsWithCount: TelemetryEventMeasurements = {};
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      // biome-ignore lint/suspicious/noExplicitAny: dynamic property access requires an explicit any cast
       (<any>measurementsWithCount)[label] = 1 / samplingFactor;
       return measurementsWithCount;
     }
     let countFound = false;
-    // biome-ignore lint/complexity/noForEach: <explanation>
+    // biome-ignore lint/complexity/noForEach: forEach provides a concise way to modify the object in place
     Object.keys(measurements).forEach((key) => {
       if (key.endsWith("_count")) {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // biome-ignore lint/suspicious/noExplicitAny: dynamic property access requires an explicit any cast
         (<any>measurements)[key] /= samplingFactor;
         countFound = true;
       }
     });
     if (!countFound) {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      // biome-ignore lint/suspicious/noExplicitAny: dynamic property access requires an explicit any cast
       (<any>measurements)[label] = 1 / samplingFactor;
     }
     return measurements;
@@ -373,7 +373,7 @@ export function preprocessStacktrace(originalStack: string) {
     "pwd",
     "android:value",
   ];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // biome-ignore lint/complexity/noForEach: forEach simplifies keyword replacement logic
   sensitiveKeywords.forEach((keyword) => {
     const regex = new RegExp(`(${keyword})[^a-zA-Z0-9]`, "gi");
     const encodeKeyword = `${keyword[0]}_${keyword.slice(1)}`;
@@ -393,9 +393,9 @@ export function preprocessStacktraceInProperties(
     return properties;
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: properties may contain arbitrary values
   for (const key in <any>properties) {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny: values may be of unknown type
     (<any>properties)[key] = preprocessStacktrace((<any>properties)[key]);
   }
   return properties;

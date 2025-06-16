@@ -35,7 +35,7 @@ export function configureTerminalLinkProvider(
 
       return [
         {
-          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          // biome-ignore lint/style/noNonNullAssertion: matches is defined because we return early when the regex does not match
           startIndex: matches.index!,
           length: matches[0].length,
           data: {

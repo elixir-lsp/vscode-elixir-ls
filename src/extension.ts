@@ -8,7 +8,10 @@ import { WorkspaceTracker } from "./project";
 import { TaskProvider } from "./taskProvider";
 import { configureTelemetry, reporter } from "./telemetry";
 import { configureTerminalLinkProvider } from "./terminalLinkProvider";
-import { configureTestController } from "./testController";
+import {
+  configureTestController,
+  handleWorkspaceFolderRemoved as handleTestControllerWorkspaceFolderRemoved,
+} from "./testController";
 import { testElixir } from "./testElixir";
 
 console.log("ElixirLS: Loading extension");
@@ -24,7 +27,7 @@ export const languageClientManager = new LanguageClientManager(
 );
 
 const startClientsForOpenDocuments = (context: vscode.ExtensionContext) => {
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // biome-ignore lint/complexity/noForEach: iterating with forEach keeps the initialization straightforward
   vscode.workspace.textDocuments.forEach((value) => {
     languageClientManager.handleDidOpenTextDocument(value, context);
   });
@@ -78,6 +81,7 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
     vscode.workspace.onDidChangeWorkspaceFolders(async (event) => {
       for (const folder of event.removed) {
         await languageClientManager.handleWorkspaceFolderRemoved(folder);
+        handleTestControllerWorkspaceFolderRemoved(folder);
       }
       // we might have closed client for some nested workspace folder child
       // reopen all needed

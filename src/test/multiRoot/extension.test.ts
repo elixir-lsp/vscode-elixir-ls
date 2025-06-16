@@ -152,7 +152,7 @@ suite("Multi root workspace tests", () => {
     assert.equal(extension.exports.languageClientManager.clients.size, 3);
 
     const addedWorkspaceFolder =
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      // biome-ignore lint/style/noNonNullAssertion: the workspace folder exists because it was added above
       vscode.workspace.getWorkspaceFolder(addedFolderUri)!;
 
     await waitForLanguageClientManagerUpdate(extension, async () => {
@@ -189,7 +189,7 @@ suite("Multi root workspace tests", () => {
     assert.equal(extension.exports.languageClientManager.clients.size, 2);
 
     const addedWorkspaceFolder =
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      // biome-ignore lint/style/noNonNullAssertion: the workspace folder exists because it was added above
       vscode.workspace.getWorkspaceFolder(addedFolderUri)!;
 
     await waitForWorkspaceUpdate(() => {
@@ -232,7 +232,7 @@ suite("Multi root workspace tests", () => {
   }).timeout(30000);
 
   test("extension starts first client on the same folder with mix.exs if useCurrentRootFolderAsProjectDir is true", async () => {
-    vscode.workspace
+    await vscode.workspace
       .getConfiguration("elixirLS")
       .update(
         "useCurrentRootFolderAsProjectDir",
