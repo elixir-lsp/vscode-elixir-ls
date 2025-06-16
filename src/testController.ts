@@ -394,7 +394,7 @@ export function configureTestController(
   ) {
     // output is a raw terminal, we need to wrap lines with CRLF
     // note replace("\n", "\r\n") is not working correctly
-    for (const line of output.split("\n")) {
+    for (const line of output.split(/\r?\n/)) {
       run.appendOutput(line, undefined, test);
       run.appendOutput("\r\n", undefined, test);
     }
