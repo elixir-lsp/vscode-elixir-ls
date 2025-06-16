@@ -1,0 +1,54 @@
+interpolated:
+  heredocs:
+    - delim: '"""'
+      name: string.quoted.double.heredoc.elixir
+    - delim: "'''"
+      name: string.quoted.double.heredoc.elixir
+  delimiters:
+    - open: '{'
+      close: '}'
+      nest: '#nest_curly'
+    - open: '['
+      close: ']'
+      nest: '#nest_brackets'
+    - open: '<'
+      close: '>'
+      nest: '#nest_ltgt'
+    - open: '('
+      close: ')'
+      nest: '#nest_parens'
+    - open: '/'
+      close: '/'
+    - open: "'"
+      close: "'"
+    - open: '"'
+      close: '"'
+    - open: '|'
+      close: '|'
+literal:
+  heredocs:
+    - delim: '"""'
+      name: string.quoted.other.literal.elixir
+    - delim: "'''"
+      name: string.quoted.other.literal.elixir
+  delimiters:
+    - open: '{'
+      close: '}'
+      nest: '#nest_curly'
+    - open: '['
+      close: ']'
+      nest: '#nest_brackets'
+    - open: '<'
+      close: '>'
+      nest: '#nest_ltgt'
+    - open: '('
+      close: ')'
+      nest: '#nest_parens'
+    - open: '/'
+      close: '/'
+    - open: "'"
+      close: "'"
+    - open: '"'
+      close: '"'
+    - open: '|'
+      close: '|'

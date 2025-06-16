@@ -1,0 +1,1587 @@
+comment: Syntax Parser for Elixir Programming Language.
+fileTypes:
+  - ex
+  - exs
+firstLineMatch: ^#!/.*\belixir
+foldingStartMarker: (after|else|catch|rescue|\-\>|\{|\[|do)\s*$
+foldingStopMarker: ^\s*((\}|\]|after|else|catch|rescue)\s*$|end\b)
+name: Elixir
+injections:
+  R:text.html.elixir meta.tag meta.attribute string.quoted:
+    comment: 'Uses R: to ensure this matches after any other injections.'
+    patterns:
+      - include: text.elixir
+patterns:
+  - begin: '@(module|type)?doc\s*(~s)?"""'
+    comment: '@doc with interpolated heredocs'
+    end: \s*"""
+    name: comment.documentation.heredoc.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: '@(module|type)?doc\s*(~s)?'''''''
+    comment: '@doc with interpolated single quoted heredocs'
+    end: \s*'''
+    name: comment.documentation.heredoc.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: '@(module|type)?doc\s*~S"""'
+    comment: '@doc with heredocs is treated as documentation'
+    end: \s*"""
+    name: comment.documentation.heredoc.elixir
+    patterns:
+      - include: '#escaped_char'
+  - begin: '@(module|type)?doc\s*~S'''''''
+    comment: '@doc with heredocs is treated as documentation'
+    end: \s*'''
+    name: comment.documentation.heredoc.elixir
+    patterns:
+      - include: '#escaped_char'
+  - comment: '@doc false is treated as documentation'
+    match: '@(module|type)?doc\s*false'
+    name: comment.documentation.false
+  - comment: '@doc since|deprecated is treated as documentation'
+    begin: '@(module|type)?doc\s*(since|deprecated): '''
+    end: ''''
+    name: comment.documentation.false
+  - comment: '@doc since|deprecated is treated as documentation'
+    begin: '@(module|type)?doc\s*(since|deprecated): "'
+    end: '"'
+    name: comment.documentation.false
+  - comment: '@deprecated is treated as documentation'
+    begin: '@deprecated\s*'''
+    end: ''''
+    name: comment.documentation.false
+  - comment: '@deprecated is treated as documentation'
+    begin: '@deprecated\s*"'
+    end: '"'
+    name: comment.documentation.false
+  - begin: '@(module|type)?doc\s*"'
+    comment: '@doc with string is treated as documentation'
+    end: '"'
+    name: comment.documentation.string
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: '@(module|type)?doc\s*'''
+    comment: '@doc with string is treated as documentation'
+    end: ''''
+    name: comment.documentation.string
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - match: (?<!\.)\b(alias|require|import|use)\b(?![?!])
+    name: keyword.other.special-method.elixir
+  - captures:
+      '1':
+        name: punctuation.definition.constant.elixir
+    comment: Atom key
+    match: >-
+      (?:<<<|<<>>|<<~|<~>|<>|<=|<-|<~|<|>>>|>=|>|\+\+\+|\+\+|\+|---|--|->|-|\*\*|\*|\|\|\||\|\||\|>|\||%{}|%|&&&|&&|&|===|==|=~|=>|=|!==|!=|!|\.\.|\.|~>>|~>|\^|{}|@|\/|\\\\|[\p{L}_][\p{L}\p{N}_@]*[?!]?)(:)(?!:|\b)
+    name: constant.language.symbol.elixir
+  - match: >-
+      (?<!\.)\b(do|end|case|for|if|cond|with|unless|try|receive|fn|defmodule|defprotocol|defimpl|defrecordp?|defstruct|defcallback|defexception|defoverridable|exit|after|rescue|catch|else|raise|reraise|throw|quote|unquote|unquote_splicing|super|when|and|or|not|in)\b(?![?!])
+    name: keyword.control.elixir
+  - comment: Function with parameters
+    begin: >-
+      \b(defp?|defmacrop?|defguardp?|defdelegate)\b\s*([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)\s*\(
+    name: meta.function.definition.elixir
+    beginCaptures:
+      '1':
+        name: keyword.control.elixir
+      '2':
+        name: entity.name.function.elixir
+    end: \)
+    patterns:
+      - include: $self
+  - comment: Function without parameters
+    match: >-
+      \b(defp?|defmacrop?|defguardp?|defdelegate)\b\s*([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)
+    name: meta.function.definition.elixir
+    captures:
+      '1':
+        name: keyword.control.elixir
+      '2':
+        name: entity.name.function.elixir
+  - comment: Typespec with parameters
+    begin: >-
+      ((@)(callback|macrocallback|spec|typep?|opaque))\b\s*([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)\s*\(
+    name: meta.type.definition.elixir
+    beginCaptures:
+      '1':
+        name: variable.other.constant.elixir
+      '2':
+        name: punctuation.definition.variable.elixir
+      '4':
+        name: entity.name.function.typespec.elixir
+    end: \)
+    patterns:
+      - include: $self
+  - comment: Typespec without parameters
+    match: >-
+      ((@)(callback|macrocallback|spec|typep?|opaque))\b\s*([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)
+    name: meta.type.definition.elixir
+    captures:
+      '1':
+        name: variable.other.constant.elixir
+      '2':
+        name: punctuation.definition.variable.elixir
+      '4':
+        name: entity.name.function.typespec.elixir
+  - comment: ' as above, just doesn''t need a ''end'' and does a logic operation'
+    match: (?<!\.)\b(and|not|or|when|in)\b
+    name: keyword.operator.elixir
+  - comment: Keyword
+    match: \b(nil|true|false)\b(?![?!])
+    name: constant.language.elixir
+  - comment: Access
+    match: >-
+      ((@)[_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)\s*(\.)\s*\b([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)\s*(\.)\s*\b([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)(?!\s*\.)
+    captures:
+      '1':
+        name: variable.other.constant.elixir
+      '2':
+        name: punctuation.definition.variable.elixir
+      '3':
+        name: punctuation.separator.method.elixir
+      '4':
+        name: variable.other.readwrite.elixir
+      '5':
+        name: punctuation.separator.method.elixir
+      '6':
+        name: variable.other.readwrite.elixir
+  - comment: Access
+    match: >-
+      ((@)[_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)\s*(\.)\s*\b([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)
+    captures:
+      '1':
+        name: variable.other.constant.elixir
+      '2':
+        name: punctuation.definition.variable.elixir
+      '3':
+        name: punctuation.separator.method.elixir
+      '4':
+        name: variable.other.readwrite.elixir
+  - comment: Access
+    match: >-
+      \b([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)\s*(\.)\s*\b([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)\s*(\.)\s*\b([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)(?!\s*\.)
+    captures:
+      '1':
+        name: variable.other.readwrite.elixir
+      '2':
+        name: punctuation.separator.method.elixir
+      '3':
+        name: variable.other.readwrite.elixir
+      '4':
+        name: punctuation.separator.method.elixir
+      '5':
+        name: variable.other.readwrite.elixir
+  - comment: Access
+    match: >-
+      \b([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)\s*(\.)\s*\b([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)
+    captures:
+      '1':
+        name: variable.other.readwrite.elixir
+      '2':
+        name: punctuation.separator.method.elixir
+      '3':
+        name: variable.other.readwrite.elixir
+  - comment: Dot call
+    match: \b(?<=\.)\s*([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)(?!\s*\.)
+    name: entity.name.function.call.dot.elixir
+  - begin: (?<=\.)\s*"
+    captures:
+      '1':
+        name: punctuation.definition.constant.elixir
+    end: '"(?!\s*\.)'
+    name: entity.name.function.call.dot.elixir
+    patterns:
+      - include: '#escaped_char'
+  - begin: (?<=\.)\s*'
+    captures:
+      '1':
+        name: punctuation.definition.constant.elixir
+    end: '''(?!\s*\.)'
+    name: entity.name.function.call.dot.elixir
+    patterns:
+      - include: '#escaped_char'
+  - comment: Local function capture
+    match: (\&)([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)(\/)([0-9]+)
+    captures:
+      '1':
+        name: keyword.operator.other.elixir
+      '2':
+        name: entity.name.function.call.capture.elixir
+      '3':
+        name: keyword.operator.arithmetic.elixir
+      '4':
+        name: constant.numeric.elixir
+  - comment: Local function call
+    match: \b([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)(?=\s*?\()
+    name: entity.name.function.call.local.elixir
+  - comment: Pipe into no parens local function call
+    match: (?<=\|\>\s*)([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)
+    name: entity.name.function.call.local.pipe.elixir
+  - match: \b(__(CALLER|ENV|MODULE|DIR|STACKTRACE)__)\b(?![?!])
+    name: variable.language.elixir
+  - match: \b[A-Z][A-Za-z0-9_]*\b
+    name: entity.name.type.module.elixir
+  - match: >-
+      \b(0[xX]\h(?>_?\h)*|\d(?>_?\d)*(\.(?![^[:space:][:digit:]])(?>_?\d)*)?([eE][-+]?\d(?>_?\d)*)?|0b[01](?:[_01]*[01]+|[01]*)|0o[0-7](?:[_0-7]*[0-7]+|[0-7]*))\b
+    name: constant.numeric.elixir
+  - comment: Regex sigil with curlies
+    begin: ~r\{
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \}[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.interpolated.elixir
+    patterns:
+      - include: '#regex_sub'
+      - include: '#nest_curly'
+  - comment: Regex sigil with pipes
+    begin: ~r\|
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \|[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.interpolated.elixir
+    patterns:
+      - include: '#regex_sub'
+  - comment: Regex sigil with parens
+    begin: ~r\(
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \)[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.interpolated.elixir
+    patterns:
+      - include: '#regex_sub'
+  - comment: Regex sigil with slashes
+    begin: ~r\/
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \/[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.interpolated.elixir
+    patterns:
+      - include: '#regex_sub'
+  - comment: Regex sigil with brackets
+    begin: ~r\[
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \][eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.interpolated.elixir
+    patterns:
+      - include: '#regex_sub'
+      - include: '#nest_brackets'
+  - comment: Regex sigil with ltgt
+    begin: ~r\<
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \>[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.interpolated.elixir
+    patterns:
+      - include: '#regex_sub'
+  - comment: Regex sigil with single quoted heredocs
+    begin: ~r\'\'\'
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \'\'\'[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.interpolated.elixir
+    patterns:
+      - include: '#regex_sub'
+  - comment: Regex sigil with double quotes heredocs
+    begin: ~r\"\"\"
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \"\"\"[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.interpolated.elixir
+    patterns:
+      - include: '#regex_sub'
+  - comment: Regex sigil with double quotes
+    begin: ~r\"
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \"[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.interpolated.elixir
+    patterns:
+      - include: '#regex_sub'
+  - comment: Regex sigil with single quotes
+    begin: ~r\'
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \'[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.interpolated.elixir
+    patterns:
+      - include: '#regex_sub'
+  - comment: Literal regex sigil with curlies
+    begin: ~R\{
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \}[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.literal.elixir
+    patterns:
+      - include: '#nest_curly'
+  - comment: Literal regex sigil with pipes
+    begin: ~R\|
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \|[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.literal.elixir
+  - comment: Literal regex sigil with parens
+    begin: ~R\(
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \)[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.literal.elixir
+    patterns:
+      - include: '#nest_parens'
+  - comment: Literal regex sigil with slashes
+    begin: ~R\/
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \/[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.literal.elixir
+  - comment: Literal regex sigil with brackets
+    begin: ~R\[
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \][eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.literal.elixir
+    patterns:
+      - include: '#nest_brackets'
+  - comment: Literal regex sigil with ltgt
+    begin: ~R\<
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \>[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.literal.elixir
+  - comment: Literal regex sigil with single quoted heredoc
+    begin: ~R\'\'\'
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \'\'\'[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.literal.elixir
+  - comment: Literal regex sigil with double quoted heredoc
+    begin: ~R\"\"\"
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \"\"\"[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.literal.elixir
+  - comment: Literal regex sigil with double quotes
+    begin: ~R\"
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \"[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.literal.elixir
+  - comment: Literal regex sigil with single quotes
+    begin: ~R\'
+    beginCaptures:
+      '0':
+        name: punctuation.section.regexp.begin.elixir
+    end: \'[eimnosux]*
+    endCaptures:
+      '0':
+        name: punctuation.section.regexp.end.elixir
+    name: string.regexp.literal.elixir
+  - comment: Character list sigil with curlies
+    begin: ~c\{
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \}[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Character list sigil with pipes
+    begin: ~c\|
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \|[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Character list sigil with parens
+    begin: ~c\(
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \)[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Character list sigil with curlies
+    begin: ~c\<
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \>[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Character list sigil with curlies
+    begin: ~c\[
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \][a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Character list sigil with curlies
+    begin: ~c\/
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \/[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Character list sigil with single quoted heredoc
+    begin: ~c\'\'\'
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \'\'\'[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Character list sigil with double quoted heredoc
+    begin: ~c\"\"\"
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \"\"\"[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Character list sigil with curlies
+    begin: ~c\'
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \'[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Character list sigil with curlies
+    begin: ~c\"
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \"[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Literal Character list sigil with curlies
+    begin: ~C\{
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \}[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+  - comment: Literal Character list sigil with pipes
+    begin: ~C\|
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \|[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+  - comment: Literal Character list sigil with parens
+    begin: ~C\(
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \)[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+  - comment: Literal Character list sigil with curlies
+    begin: ~C\<
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \>[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+  - comment: Literal Character list sigil with curlies
+    begin: ~C\[
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \][a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+  - comment: Literal Character list sigil with curlies
+    begin: ~C\/
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \/[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+  - comment: Literal Character list sigil with single quoted heredoc
+    begin: ~C\'\'\'
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \'\'\'[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+  - comment: Literal Character list sigil with double quoted heredoc
+    begin: ~C\"\"\"
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \"\"\"[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+  - comment: Literal Character list sigil with curlies
+    begin: ~C\'
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \'[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+  - comment: Literal Character list sigil with curlies
+    begin: ~C\"
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    end: \"[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+  - begin: ~w\{
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \}[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+      - include: '#nest_curly'
+  - begin: ~w\[
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \][acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+      - include: '#nest_brackets'
+  - begin: ~w\<
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \>[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+      - include: '#nest_ltgt'
+  - begin: ~w\(
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \)[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+      - include: '#nest_parens'
+  - begin: ~w\/
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \/[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ~w\|
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \|[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Interpolated word list sigil with single quoted heredoc
+    begin: ~w\'\'\'
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    end: \'\'\'[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: Interpolated word list sigil with double quoted heredoc
+    begin: ~w\"\"\"
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    end: \"\"\"[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ~w\'
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \'[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ~w\"
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \"[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ~W\{
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (without interpolation)
+    end: \}[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.literal.elixir
+  - begin: ~W\[
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (without interpolation)
+    end: \][acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.literal.elixir
+    patterns:
+      - include: '#nest_brackets'
+  - begin: ~W\<
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (without interpolation)
+    end: \>[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.literal.elixir
+    patterns:
+      - include: '#nest_ltgt'
+  - begin: ~W\(
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (without interpolation)
+    end: \)[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.literal.elixir
+    patterns:
+      - include: '#nest_parens'
+  - begin: ~W\/
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (without interpolation)
+    end: \/[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.literal.elixir
+  - begin: ~W\|
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (without interpolation)
+    end: \|[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.literal.elixir
+  - comment: Literal word list sigil with single quoted heredoc
+    begin: ~W\'\'\'
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    end: \'\'\'[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.literal.elixir
+  - comment: Literal word list sigil with double quoted heredoc
+    begin: ~W\"\"\"
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    end: \"\"\"[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.literal.elixir
+  - begin: ~W\'
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (without interpolation)
+    end: \'[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.literal.elixir
+  - begin: ~W\"
+    beginCaptures:
+      '0':
+        name: punctuation.section.list.begin.elixir
+    comment: sigil (without interpolation)
+    end: \"[acs]*
+    endCaptures:
+      '0':
+        name: punctuation.section.list.end.elixir
+    name: string.quoted.double.literal.elixir
+  - comment: String Eex heredoc with double quotes
+    begin: \s?(~E""")$
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    end: ^\s*("""[a-z]*)$
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    name: text.html.elixir
+    patterns:
+      - include: text.html.elixir
+  - comment: String Eex heredoc with double quotes
+    begin: \s?(~e""")$
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    end: ^\s*("""[a-z]*)$
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    name: text.html.elixir
+    patterns:
+      - include: text.html.elixir
+  - comment: String Eex heredoc with single quotes
+    begin: \s?(~E''')$
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    end: ^\s*('''[a-z]*)$
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    name: text.html.elixir
+    patterns:
+      - include: text.html.elixir
+  - comment: String Eex heredoc with single quotes
+    begin: \s?(~e''')$
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    end: ^\s*('''[a-z]*)$
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    name: text.html.elixir
+    patterns:
+      - include: text.html.elixir
+  - comment: Embedded LiveView heredoc with double quotes
+    begin: \s?(~L""")$
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    end: ^\s*("""[a-z]*)$
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    name: text.html.elixir
+    patterns:
+      - include: text.html.elixir
+  - comment: Embedded LiveView heredoc with double quotes
+    begin: \s?(~l""")$
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    end: ^\s*("""[a-z]*)$
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    name: text.html.elixir
+    patterns:
+      - include: text.html.elixir
+  - comment: Embedded LiveView heredoc with single quotes
+    begin: \s?(~L''')$
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    end: ^\s*('''[a-z]*)$
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    name: text.html.elixir
+    patterns:
+      - include: text.html.elixir
+  - comment: Embedded LiveView heredoc with single quotes
+    begin: \s?(~l''')$
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    end: ^\s*('''[a-z]*)$
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+      '1':
+        name: string.quoted.double.heredoc.elixir
+    name: text.html.elixir
+    patterns:
+      - include: text.html.elixir
+  - begin: ~[a-z](?>""")
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: Double-quoted heredocs sigils
+    end: ^\s*"""
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.heredoc.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ~[a-z](?>''')
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: Double-quoted heredocs sigils
+    end: ^\s*'''
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.heredoc.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ~[a-z]\{
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \}[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+      - include: '#nest_curly'
+  - begin: ~[a-z]\[
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \][a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+      - include: '#nest_brackets'
+  - begin: ~[a-z]\<
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \>[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+      - include: '#nest_ltgt'
+  - begin: ~[a-z]\(
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \)[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+      - include: '#nest_parens'
+  - begin: ~[a-z]\/
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \/[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ~[a-z]\'
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \'[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ~[a-z]\"
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \"[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ~[a-z]\|
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (allow for interpolation)
+    end: \|[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.interpolated.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ~[A-Z][A-Z0-9]*(?>""")
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: Double-quoted heredocs sigils
+    end: ^\s*"""
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.other.literal.elixir
+  - begin: ~[A-Z][A-Z0-9]*(?>''')
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: Double-quoted heredocs sigils
+    end: ^\s*'''
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.other.literal.elixir
+  - begin: ~[A-Z][A-Z0-9]*\{
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (without interpolation)
+    end: \}[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.literal.elixir
+  - begin: ~[A-Z][A-Z0-9]*\[
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (without interpolation)
+    end: \][a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.literal.elixir
+    patterns:
+      - include: '#nest_brackets'
+  - begin: ~[A-Z][A-Z0-9]*\<
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (without interpolation)
+    end: \>[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.literal.elixir
+    patterns:
+      - include: '#nest_ltgt'
+  - begin: ~[A-Z][A-Z0-9]*\(
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (without interpolation)
+    end: \)[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.literal.elixir
+    patterns:
+      - include: '#nest_parens'
+  - begin: ~[A-Z][A-Z0-9]*\/
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (without interpolation)
+    end: \/[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.literal.elixir
+  - begin: ~[A-Z][A-Z0-9]*\'
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (without interpolation)
+    end: \'[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.literal.elixir
+  - begin: ~[A-Z][A-Z0-9]*\"
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (without interpolation)
+    end: \"[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.literal.elixir
+  - begin: ~[A-Z][A-Z0-9]*\|
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: sigil (without interpolation)
+    end: \|[a-z]*
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.literal.elixir
+  - begin: ':'''
+    captures:
+      '0':
+        name: punctuation.definition.constant.elixir
+    end: ''''
+    name: constant.language.symbol.single-quoted.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: symbols with single-quoted string, used as keys in Keyword lists.
+    match: (')((?:[^'\\]*(?:\\.[^'\\]*)*))(':)(?!:)
+    name: constant.language.symbol.single-quoted.elixir
+    captures:
+      '1':
+        name: punctuation.definition.constant.elixir
+      '2':
+        patterns:
+          - include: '#interpolated_elixir'
+          - include: '#escaped_char'
+      '3':
+        name: punctuation.definition.constant.elixir
+  - begin: ':"'
+    captures:
+      '0':
+        name: punctuation.definition.constant.elixir
+    end: '"'
+    name: constant.language.symbol.double-quoted.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: (?>''')
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: Single-quoted heredocs
+    end: ^\s*'''
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.heredoc.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: ''''
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: single quoted string (allows for interpolation)
+    end: ''''
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.single.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: (?>""")
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: Double-quoted heredocs
+    end: ^\s*"""
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.heredoc.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - comment: symbols defined by double-quoted string, used as keys in Keyword lists.
+    match: (")((?:[^"\\]*(?:\\.[^"\\]*)*))(":)(?!:)
+    name: constant.language.symbol.double-quoted.elixir
+    captures:
+      '1':
+        name: punctuation.definition.constant.elixir
+      '2':
+        patterns:
+          - include: '#interpolated_elixir'
+          - include: '#escaped_char'
+      '3':
+        name: punctuation.definition.constant.elixir
+  - begin: '"'
+    beginCaptures:
+      '0':
+        name: punctuation.definition.string.begin.elixir
+    comment: double quoted string (allows for interpolation)
+    end: '"'
+    endCaptures:
+      '0':
+        name: punctuation.definition.string.end.elixir
+    name: string.quoted.double.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+  - begin: '#'
+    beginCaptures:
+      '0':
+        name: punctuation.definition.comment.elixir
+    end: \n
+    name: comment.line.number-sign.elixir
+  - match: \b_([\w]+[?!]?)
+    name: comment.unused.elixir
+  - match: \b_\b
+    name: comment.wildcard.elixir
+  - comment: |-
+      matches question mark letters.
+
+      examples (1st alternation = hex):
+      ?\x1     ?\x61
+
+      examples (2nd alternation = octal):
+      ?\0      ?\07     ?\017
+
+      examples (3rd alternation = escaped):
+      ?\n      ?\b
+
+      examples (4th alternation = meta-ctrl):
+      ?\C-a    ?\M-a    ?\C-\M-\C-\M-a
+
+      examples (4th alternation = normal):
+      ?a       ?A       ?0
+      ?*       ?"       ?(
+      ?.       ?#
+
+
+      the negative lookbehind prevents against matching
+      p(42.tainted?)
+    match: >-
+      (?<!\w)\?(\\(x\h{1,2}(?!\h)\b|0[0-7]{0,2}(?![0-7])\b|[^x0MC])|(\\[MC]-)+\w|[^\s\\])
+    name: constant.numeric.elixir
+  - match: (\|\|\||&&&|\^\^\^|<<<|>>>|~~~)
+    name: keyword.operator.bitwise.elixir
+  - comment: 'matches: <<~ ~>>'
+    match: ~>>|<\<\~
+    name: keyword.operator.other.unbalanced.elixir
+  - comment: 'matches: | ++ -- ** \ <- <> << >> :: .. ... |> => -> <|> <~> <~ ~>'
+    match: >-
+      \+\+|\-\-|\*\*|\\\\|\<\-|\<\>|\<\<|\>\>|\:\:|\.\.\.?|\|>|=>|<\|\>|<~>|->|~>|<~|(?<!\|)\|(?!\|)
+    name: keyword.operator.other.elixir
+  - match: '===?|!==?|<=?|>=?|=~'
+    name: keyword.operator.comparison.elixir
+  - match: (?<=[ \t])!+|\bnot\b|&&|\band\b|\|\||\bor\b|\bxor\b
+    name: keyword.operator.logical.elixir
+  - match: (\^)
+    name: keyword.operator.other.elixir
+  - match: (\*|\+|\-|/)
+    name: keyword.operator.arithmetic.elixir
+  - match: '='
+    name: keyword.operator.assignment.elixir
+  - match: \;
+    name: punctuation.separator.statement.elixir
+  - match: ','
+    name: punctuation.separator.object.elixir
+  - match: \.
+    name: punctuation.separator.method.elixir
+  - match: '%'
+    name: punctuation.definition.map.elixir
+  - match: \{|\}
+    name: punctuation.section.scope.elixir
+  - match: \[\]|\[|\]
+    name: punctuation.section.array.elixir
+  - match: \(|\)
+    name: punctuation.section.function.elixir
+  - match: (@)([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)
+    name: variable.other.constant.elixir
+    captures:
+      '1':
+        name: punctuation.definition.variable.elixir
+  - match: ([_\p{Ll}\p{Lo}][\p{L}\p{N}_]*[?!]?)
+    name: variable.other.readwrite.elixir
+  - match: (&)\d+
+    name: variable.other.anonymous.elixir
+  - match: (&)
+    name: keyword.operator.other.elixir
+  - captures:
+      '1':
+        name: punctuation.definition.constant.elixir
+    comment: Atom
+    match: >-
+      (?<!:)(:)(?:<<<|<<>>|<<~|<~>|<>|<=|<-|<~|<|>>>|>=|>|\+\+\+|\+\+|\+|---|--|->|-|\*\*|\*|\|\|\||\|\||\|>|\||%{}|%|&&&|&&|&|===|==|=~|=>|=|!==|!=|!|\.\.|\.|~>>|~>|\^|{}|@|\/|\\\\|[\p{L}_][\p{L}\p{N}_@]*[?!]?)
+    name: constant.language.symbol.elixir
+  - match: ':'
+    name: punctuation.separator.other.elixir
+repository:
+  escaped_char:
+    match: \\(?:[0-7]{1,3}|x[\da-fA-F]{1,2}|.)
+    name: constant.character.escape.elixir
+  interpolated_elixir:
+    patterns:
+      - captures:
+          '0':
+            name: punctuation.section.embedded.elixir
+          '1':
+            name: meta.embedded.line.empty.elixir
+        match: '#\{(\})'
+        name: meta.embedded.line.elixir
+      - begin: '#\{'
+        captures:
+          '0':
+            name: punctuation.section.embedded.elixir
+        end: \}
+        name: meta.embedded.line.elixir
+        patterns:
+          - include: '#nest_curly_and_self'
+          - include: $self
+  nest_brackets:
+    begin: \[
+    captures:
+      '0':
+        name: punctuation.section.scope.elixir
+    end: \]
+    patterns:
+      - include: '#nest_brackets'
+  nest_curly:
+    begin: \{
+    captures:
+      '0':
+        name: punctuation.section.scope.elixir
+    end: \}
+    patterns:
+      - include: '#nest_curly'
+  nest_curly_and_self:
+    patterns:
+      - begin: \{
+        captures:
+          '0':
+            name: punctuation.section.scope.elixir
+        end: \}
+        patterns:
+          - include: '#nest_curly_and_self'
+      - include: $self
+  nest_ltgt:
+    begin: \<
+    captures:
+      '0':
+        name: punctuation.section.scope.elixir
+    end: \>
+    patterns:
+      - include: '#nest_ltgt'
+  nest_parens:
+    begin: \(
+    captures:
+      '0':
+        name: punctuation.section.scope.elixir
+    end: \)
+    patterns:
+      - include: '#nest_parens'
+  regex_sub:
+    name: string.interpolated.regexp.elixir
+    patterns:
+      - include: '#interpolated_elixir'
+      - include: '#escaped_char'
+      - name: string.regexp.arbitrary-repitition.elixir
+        match: (\{)\d+(,\d+)?(\})
+        captures:
+          '1':
+            name: punctuation.definition.arbitrary-repitition.elixir
+          '3':
+            name: punctuation.definition.arbitrary-repitition.elixir
+      - name: string.regexp.character-class.elixir
+        begin: \[(?:\^?\])?
+        end: \]
+        captures:
+          '0':
+            name: punctuation.definition.character-class.elixir
+        patterns:
+          - include: '#escaped_char'
+      - begin: \(
+        captures:
+          '0':
+            name: punctuation.definition.group.elixir
+        end: \)
+        name: string.regexp.group.elixir
+        patterns:
+          - include: '#regex_sub'
+      - begin: (?<=^|\s)(#)\s(?=[[a-zA-Z0-9,. \t?!-][^\x{00}-\x{7F}]]*$)
+        beginCaptures:
+          '1':
+            name: punctuation.definition.comment.elixir
+        comment: >-
+          We are restrictive in what we allow to go after the comment character
+          to avoid false positives, since the availability of comments depend on
+          regexp flags.
+        end: $\n?
+        endCaptures:
+          '0':
+            name: punctuation.definition.comment.elixir
+        name: comment.line.number-sign.elixir
+scopeName: source.elixir
