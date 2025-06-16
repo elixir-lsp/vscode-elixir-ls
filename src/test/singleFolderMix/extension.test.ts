@@ -11,7 +11,7 @@ import { getExtension, waitForLanguageClientManagerUpdate } from "../utils";
 let extension: vscode.Extension<ElixirLS>;
 const fixturesPath = path.resolve(__dirname, "../../../src/test-fixtures");
 
-suite("Single folder no mix tests", () => {
+suite("Single folder mix tests", () => {
   vscode.window.showInformationMessage(
     "Start single folder mix project tests.",
   );
