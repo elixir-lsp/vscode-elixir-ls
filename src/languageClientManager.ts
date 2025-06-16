@@ -521,7 +521,7 @@ export class LanguageClientManager {
         reporter.sendTelemetryErrorEvent("language_client_stop_error", {
           "elixir_ls.language_client_stop_error": String(e),
           // biome-ignore lint/suspicious/noExplicitAny: error may not be typed, cast to access stack trace
-          "elixir_ls.language_client_start_error_stack": (<any>e)?.stack ?? "",
+          "elixir_ls.language_client_stop_error_stack": (<any>e)?.stack ?? "",
         });
       }
       try {
@@ -532,7 +532,7 @@ export class LanguageClientManager {
         reporter.sendTelemetryErrorEvent("language_client_stop_error", {
           "elixir_ls.language_client_stop_error": String(e),
           // biome-ignore lint/suspicious/noExplicitAny: error may not be typed, cast to access stack trace
-          "elixir_ls.language_client_start_error_stack": (<any>e)?.stack ?? "",
+          "elixir_ls.language_client_stop_error_stack": (<any>e)?.stack ?? "",
         });
       }
     }
