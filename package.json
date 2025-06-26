@@ -589,6 +589,25 @@
           }
         }
       }
+    ],
+    "languageModelTools": [
+      {
+        "name": "elixir-definition",
+        "displayName": "Elixir Definition Lookup",
+        "modelDescription": "Find the definition of an Elixir symbol and return its source code",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "elixir-definition",
+        "inputSchema": {
+          "type": "object",
+          "required": ["symbol"],
+          "properties": {
+            "symbol": {
+              "type": "string",
+              "description": "The name of the symbol to find (e.g., 'MyModule.my_function', 'MyModule', ':erlang.term_to_binary')"
+            }
+          }
+        }
+      }
     ]
   },
   "scripts": {
