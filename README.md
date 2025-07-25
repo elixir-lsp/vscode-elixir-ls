@@ -120,6 +120,10 @@ Add or edit your `emmet.includedLanguages` to include the new Language ID:
 
 See [ElixirLS](https://github.com/elixir-lsp/elixir-ls) for details on the supported Elixir and Erlang versions.
 
+## Using ElixirLS with Dev Containers
+
+You can run ElixirLS inside a [VS Code dev container](https://code.visualstudio.com/docs/devcontainers/containers) for a consistent development environment. An example configuration is provided in the [elixir-ls-devcontainer-example](https://github.com/elixir-lsp/elixir-ls-devcontainer-example/blob/main/.devcontainer/Dockerfile) repository. Copy its `.devcontainer` folder into your project (or use it as a starting point), then select **Remote-Containers: Reopen in Container** from the command palette. After the container builds, the extension will run in the container just as it does locally.
+
 ## Troubleshooting
 
 If you run into issues with the extension, try these debugging steps:
