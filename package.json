@@ -589,6 +589,113 @@
           }
         }
       }
+    ],
+    "languageModelTools": [
+      {
+        "name": "elixir-definition",
+        "displayName": "Elixir Definition Lookup",
+        "modelDescription": "Find and retrieve the source code definition of Elixir/Erlang symbols including modules, functions, types, macros, and callbacks. Returns the actual source code with file location and line numbers for precise code inspection.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "elixir-definition",
+        "inputSchema": {
+          "type": "object",
+          "required": ["symbol"],
+          "properties": {
+            "symbol": {
+              "type": "string",
+              "description": "The symbol to find definition for. Supports: modules ('MyModule', 'GenServer'), functions ('MyModule.function', 'String.split/2'), types ('@type my_type'), macros ('defmacro'), Erlang modules (':gen_server'), Erlang functions (':lists.map/2'). Use qualified names (Module.function) for best results."
+            }
+          }
+        }
+      },
+      {
+        "name": "elixir-environment",
+        "displayName": "Elixir Environment Lookup",
+        "modelDescription": "Get comprehensive environment information at a specific code location including current module/function context, available aliases, imports, requires, variables in scope with their inferred types, module attributes, implemented behaviours, and all definitions in the file. Essential for understanding code context and available symbols.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "elixir-environment",
+        "inputSchema": {
+          "type": "object",
+          "required": ["location"],
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "Location in the code to analyze context. Formats: 'file.ex:line:column', 'file.ex:line', 'lib/my_module.ex:25:10', 'file:///absolute/path/file.ex:10:5'. Use specific line/column for better variable scope and context analysis. Line numbers start at 1."
+            }
+          }
+        }
+      },
+      {
+        "name": "elixir-module-dependencies",
+        "displayName": "Elixir Module Dependencies",
+        "modelDescription": "Analyze comprehensive module dependency relationships including direct/reverse dependencies, transitive dependencies, compile-time vs runtime dependencies, imports, aliases, requires, function calls, and struct expansions. Critical for understanding code architecture, impact analysis, and refactoring decisions.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "elixir-module-dependencies",
+        "inputSchema": {
+          "type": "object",
+          "required": ["module"],
+          "properties": {
+            "module": {
+              "type": "string",
+              "description": "The module name to analyze dependencies for. Supports Elixir modules ('MyApp.MyModule', 'GenServer', 'Enum') and Erlang modules (':gen_server', ':ets'). Returns categorized dependency breakdown showing what the module depends on and what depends on it."
+            }
+          }
+        }
+      },
+      {
+        "name": "elixir-docs",
+        "displayName": "Elixir Documentation Aggregator",
+        "modelDescription": "Aggregate and return comprehensive documentation for multiple Elixir modules, functions, types, callbacks, or attributes in a single efficient request. Supports both module-level documentation (with function/type listings) and specific symbol documentation with examples and usage patterns.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "elixir-docs",
+        "inputSchema": {
+          "type": "object",
+          "required": ["modules"],
+          "properties": {
+            "modules": {
+              "type": "array",
+              "description": "List of symbols to get documentation for. Supports: modules ('Enum', 'GenServer'), functions ('String.split/2', 'Enum.map'), types ('Enum.t/0', 'GenServer.on_start/0'), callbacks ('GenServer.handle_call', 'Application.start'), attributes ('@moduledoc', '@doc'). Mix different symbol types for comprehensive API understanding.",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "elixir-implementation-finder",
+        "displayName": "Elixir Implementation Finder",
+        "modelDescription": "Find all concrete implementations of Elixir behaviours, protocols, callbacks, and delegated functions across the entire codebase. Essential for discovering how abstract interfaces are implemented and understanding polymorphic behavior patterns.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "elixir-implementation-finder",
+        "inputSchema": {
+          "type": "object",
+          "required": ["symbol"],
+          "properties": {
+            "symbol": {
+              "type": "string",
+              "description": "The symbol to find implementations for. Supports: behaviours ('GenServer', 'Application', 'Supervisor'), protocols ('Enumerable', 'Inspect', 'String.Chars'), callbacks ('GenServer.handle_call', 'Application.start'), functions with @impl annotations. Returns file locations and implementation signatures."
+            }
+          }
+        }
+      },
+      {
+        "name": "elixir-types",
+        "displayName": "Elixir Type Information",
+        "modelDescription": "Extract comprehensive type information from Elixir modules including @type definitions, @spec annotations, @callback specifications, and Dialyzer inferred contracts. Essential for understanding module interfaces, type safety, function signatures, and behaviour contracts.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "elixir-types",
+        "inputSchema": {
+          "type": "object",
+          "required": ["module"],
+          "properties": {
+            "module": {
+              "type": "string",
+              "description": "The module name to analyze type information for. Supports Elixir modules ('GenServer', 'MyApp.MyModule', 'Enum') and Erlang modules (':gen_server', ':ets'). Returns detailed type specifications, function signatures, callback definitions, and custom types with their documentation."
+            }
+          }
+        }
+      }
     ]
   },
   "scripts": {
