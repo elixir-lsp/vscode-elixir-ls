@@ -5,12 +5,38 @@ interface IParameters {
   module: string;
 }
 
+interface ITypeInfo {
+  name: string;
+  kind: string;
+  signature: string;
+  spec: string;
+  doc?: string;
+}
+
+interface ISpecInfo {
+  name: string;
+  specs: string;
+  doc?: string;
+}
+
+interface ICallbackInfo {
+  name: string;
+  specs: string;
+  doc?: string;
+}
+
+interface IDialyzerContract {
+  name: string;
+  line: number;
+  contract: string;
+}
+
 interface ITypeInfoResult {
   module?: string;
-  types?: unknown[];
-  specs?: unknown[];
-  callbacks?: unknown[];
-  dialyzer_contracts?: unknown[];
+  types?: ITypeInfo[];
+  specs?: ISpecInfo[];
+  callbacks?: ICallbackInfo[];
+  dialyzer_contracts?: IDialyzerContract[];
   error?: string;
 }
 
