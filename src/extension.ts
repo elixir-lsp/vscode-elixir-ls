@@ -4,6 +4,11 @@ import { configureCommands } from "./commands";
 import { detectConflictingExtensions } from "./conflictingExtensions";
 import { configureDebugger } from "./debugAdapter";
 import { DefinitionTool } from "./definition-tool";
+import { EnvironmentTool } from "./environment-tool";
+import { ModuleDependenciesTool } from "./module-dependencies-tool";
+import { ImplementationFinderTool } from "./implementation-finder-tool";
+import { DocsAggregatorTool } from "./docs-aggregator-tool";
+import { TypeInfoTool } from "./type-info-tool";
 import { LanguageClientManager } from "./languageClientManager";
 import { WorkspaceTracker } from "./project";
 import { TaskProvider } from "./taskProvider";
@@ -85,11 +90,44 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
     for (const [_uri, clientPromise] of clientPromises.entries()) {
       try {
         const client = await clientPromise;
-        const tool = new DefinitionTool(client);
+        
+        // Register definition tool
+        const definitionTool = new DefinitionTool(client);
         context.subscriptions.push(
-          vscode.lm.registerTool("elixir-definition", tool)
+          vscode.lm.registerTool("elixir-definition", definitionTool)
         );
-        console.log("ElixirLS: Registered language model tool for client");
+        
+        // Register environment tool
+        const environmentTool = new EnvironmentTool(client);
+        context.subscriptions.push(
+          vscode.lm.registerTool("elixir-environment", environmentTool)
+        );
+        
+        // Register module dependencies tool
+        const moduleDependenciesTool = new ModuleDependenciesTool(client);
+        context.subscriptions.push(
+          vscode.lm.registerTool("elixir-module-dependencies", moduleDependenciesTool)
+        );
+        
+        // Register implementation finder tool
+        const implementationFinderTool = new ImplementationFinderTool(client);
+        context.subscriptions.push(
+          vscode.lm.registerTool("elixir-implementation-finder", implementationFinderTool)
+        );
+        
+        // Register documentation aggregator tool
+        const docsAggregatorTool = new DocsAggregatorTool(client);
+        context.subscriptions.push(
+          vscode.lm.registerTool("elixir-docs", docsAggregatorTool)
+        );
+        
+        // Register type info tool
+        const typeInfoTool = new TypeInfoTool(client);
+        context.subscriptions.push(
+          vscode.lm.registerTool("elixir-types", typeInfoTool)
+        );
+        
+        console.log("ElixirLS: Registered language model tools for client");
         // Only register once - all clients share the same command namespace
         break;
       } catch (error) {
