@@ -4,12 +4,11 @@ import { configureCommands } from "./commands";
 import { detectConflictingExtensions } from "./conflictingExtensions";
 import { configureDebugger } from "./debugAdapter";
 import { DefinitionTool } from "./definition-tool";
-import { EnvironmentTool } from "./environment-tool";
-import { ModuleDependenciesTool } from "./module-dependencies-tool";
-import { ImplementationFinderTool } from "./implementation-finder-tool";
 import { DocsAggregatorTool } from "./docs-aggregator-tool";
-import { TypeInfoTool } from "./type-info-tool";
+import { EnvironmentTool } from "./environment-tool";
+import { ImplementationFinderTool } from "./implementation-finder-tool";
 import { LanguageClientManager } from "./languageClientManager";
+import { ModuleDependenciesTool } from "./module-dependencies-tool";
 import { WorkspaceTracker } from "./project";
 import { TaskProvider } from "./taskProvider";
 import { configureTelemetry, reporter } from "./telemetry";
@@ -19,6 +18,7 @@ import {
   handleWorkspaceFolderRemoved as handleTestControllerWorkspaceFolderRemoved,
 } from "./testController";
 import { testElixir } from "./testElixir";
+import { TypeInfoTool } from "./type-info-tool";
 
 console.log("ElixirLS: Loading extension");
 
@@ -86,52 +86,61 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
   // Register language model tool for all clients
   const registerLanguageModelTool = async () => {
     const clientPromises = languageClientManager.allClientsPromises();
-    
+
     for (const [_uri, clientPromise] of clientPromises.entries()) {
       try {
         const client = await clientPromise;
-        
+
         // Register definition tool
         const definitionTool = new DefinitionTool(client);
         context.subscriptions.push(
-          vscode.lm.registerTool("elixir-definition", definitionTool)
+          vscode.lm.registerTool("elixir-definition", definitionTool),
         );
-        
+
         // Register environment tool
         const environmentTool = new EnvironmentTool(client);
         context.subscriptions.push(
-          vscode.lm.registerTool("elixir-environment", environmentTool)
+          vscode.lm.registerTool("elixir-environment", environmentTool),
         );
-        
+
         // Register module dependencies tool
         const moduleDependenciesTool = new ModuleDependenciesTool(client);
         context.subscriptions.push(
-          vscode.lm.registerTool("elixir-module-dependencies", moduleDependenciesTool)
+          vscode.lm.registerTool(
+            "elixir-module-dependencies",
+            moduleDependenciesTool,
+          ),
         );
-        
+
         // Register implementation finder tool
         const implementationFinderTool = new ImplementationFinderTool(client);
         context.subscriptions.push(
-          vscode.lm.registerTool("elixir-implementation-finder", implementationFinderTool)
+          vscode.lm.registerTool(
+            "elixir-implementation-finder",
+            implementationFinderTool,
+          ),
         );
-        
+
         // Register documentation aggregator tool
         const docsAggregatorTool = new DocsAggregatorTool(client);
         context.subscriptions.push(
-          vscode.lm.registerTool("elixir-docs", docsAggregatorTool)
+          vscode.lm.registerTool("elixir-docs", docsAggregatorTool),
         );
-        
+
         // Register type info tool
         const typeInfoTool = new TypeInfoTool(client);
         context.subscriptions.push(
-          vscode.lm.registerTool("elixir-types", typeInfoTool)
+          vscode.lm.registerTool("elixir-types", typeInfoTool),
         );
-        
+
         console.log("ElixirLS: Registered language model tools for client");
         // Only register once - all clients share the same command namespace
         break;
       } catch (error) {
-        console.error("ElixirLS: Failed to register language model tool", error);
+        console.error(
+          "ElixirLS: Failed to register language model tool",
+          error,
+        );
       }
     }
   };
@@ -144,7 +153,7 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
     vscode.workspace.onDidOpenTextDocument((_doc) => {
       // Small delay to ensure client is started
       setTimeout(registerLanguageModelTool, 1000);
-    })
+    }),
   );
 
   context.subscriptions.push(

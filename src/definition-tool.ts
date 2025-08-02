@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import {
-  ExecuteCommandParams,
+  type ExecuteCommandParams,
   ExecuteCommandRequest,
-  LanguageClient,
+  type LanguageClient,
 } from "vscode-languageclient/node";
 
 interface IParameters {
@@ -19,7 +19,7 @@ export class DefinitionTool implements vscode.LanguageModelTool<IParameters> {
 
   async prepareInvocation(
     options: vscode.LanguageModelToolInvocationPrepareOptions<IParameters>,
-    _token: vscode.CancellationToken
+    _token: vscode.CancellationToken,
   ): Promise<vscode.PreparedToolInvocation> {
     return {
       invocationMessage: `Looking up definition for: ${options.input.symbol}`,
@@ -28,21 +28,21 @@ export class DefinitionTool implements vscode.LanguageModelTool<IParameters> {
 
   async invoke(
     options: vscode.LanguageModelToolInvocationOptions<IParameters>,
-    token: vscode.CancellationToken
+    token: vscode.CancellationToken,
   ): Promise<vscode.LanguageModelToolResult> {
     const { symbol } = options.input;
 
     try {
       // Find the llmDefinition command from server capabilities
-      const command = this.client.initializeResult?.capabilities
-        .executeCommandProvider?.commands.find((c) =>
-          c.startsWith("llmDefinition:")
+      const command =
+        this.client.initializeResult?.capabilities.executeCommandProvider?.commands.find(
+          (c) => c.startsWith("llmDefinition:"),
         );
 
       if (!command) {
         return new vscode.LanguageModelToolResult([
           new vscode.LanguageModelTextPart(
-            "ElixirLS language server is not ready or does not support the llmDefinition command"
+            "ElixirLS language server is not ready or does not support the llmDefinition command",
           ),
         ]);
       }
@@ -55,13 +55,13 @@ export class DefinitionTool implements vscode.LanguageModelTool<IParameters> {
       const result = await this.client.sendRequest<IDefinitionResult>(
         ExecuteCommandRequest.method,
         params,
-        token
+        token,
       );
 
       if (result?.error) {
         return new vscode.LanguageModelToolResult([
           new vscode.LanguageModelTextPart(
-            `Error finding definition: ${result.error}`
+            `Error finding definition: ${result.error}`,
           ),
         ]);
       }
@@ -74,14 +74,15 @@ export class DefinitionTool implements vscode.LanguageModelTool<IParameters> {
 
       return new vscode.LanguageModelToolResult([
         new vscode.LanguageModelTextPart(
-          `No definition found for symbol: ${symbol}`
+          `No definition found for symbol: ${symbol}`,
         ),
       ]);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       return new vscode.LanguageModelToolResult([
         new vscode.LanguageModelTextPart(
-          `Failed to look up definition: ${errorMessage}`
+          `Failed to look up definition: ${errorMessage}`,
         ),
       ]);
     }

@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import {
-  ExecuteCommandParams,
+  type ExecuteCommandParams,
   ExecuteCommandRequest,
-  LanguageClient,
+  type LanguageClient,
 } from "vscode-languageclient/node";
 
 interface IParameters {
@@ -31,12 +31,12 @@ interface IEnvironmentResult {
   requires?: string[];
   variables?: Array<{
     name: string;
-    type: any;
+    type: unknown;
     version: number;
   }>;
   attributes?: Array<{
     name: string;
-    type: any;
+    type: unknown;
   }>;
   behaviours_implemented?: string[];
   definitions?: {
@@ -53,7 +53,7 @@ export class EnvironmentTool implements vscode.LanguageModelTool<IParameters> {
 
   async prepareInvocation(
     options: vscode.LanguageModelToolInvocationPrepareOptions<IParameters>,
-    _token: vscode.CancellationToken
+    _token: vscode.CancellationToken,
   ): Promise<vscode.PreparedToolInvocation> {
     return {
       invocationMessage: `Getting environment information at: ${options.input.location}`,
@@ -62,21 +62,21 @@ export class EnvironmentTool implements vscode.LanguageModelTool<IParameters> {
 
   async invoke(
     options: vscode.LanguageModelToolInvocationOptions<IParameters>,
-    token: vscode.CancellationToken
+    token: vscode.CancellationToken,
   ): Promise<vscode.LanguageModelToolResult> {
     const { location } = options.input;
 
     try {
       // Find the llmEnvironment command from server capabilities
-      const command = this.client.initializeResult?.capabilities
-        .executeCommandProvider?.commands.find((c) =>
-          c.startsWith("llmEnvironment:")
+      const command =
+        this.client.initializeResult?.capabilities.executeCommandProvider?.commands.find(
+          (c) => c.startsWith("llmEnvironment:"),
         );
 
       if (!command) {
         return new vscode.LanguageModelToolResult([
           new vscode.LanguageModelTextPart(
-            "ElixirLS language server is not ready or does not support the llmEnvironment command"
+            "ElixirLS language server is not ready or does not support the llmEnvironment command",
           ),
         ]);
       }
@@ -89,13 +89,13 @@ export class EnvironmentTool implements vscode.LanguageModelTool<IParameters> {
       const result = await this.client.sendRequest<IEnvironmentResult>(
         ExecuteCommandRequest.method,
         params,
-        token
+        token,
       );
 
       if (result?.error) {
         return new vscode.LanguageModelToolResult([
           new vscode.LanguageModelTextPart(
-            `Error getting environment: ${result.error}`
+            `Error getting environment: ${result.error}`,
           ),
         ]);
       }
@@ -103,116 +103,125 @@ export class EnvironmentTool implements vscode.LanguageModelTool<IParameters> {
       if (result) {
         // Format the environment information for the language model
         const parts: vscode.LanguageModelTextPart[] = [];
-        
+
         if (result.location) {
           parts.push(
             new vscode.LanguageModelTextPart(
-              `# Environment at ${result.location.uri}:${result.location.line}:${result.location.column}\n\n`
-            )
+              `# Environment at ${result.location.uri}:${result.location.line}:${result.location.column}\n\n`,
+            ),
           );
         }
 
         if (result.context) {
-          parts.push(
-            new vscode.LanguageModelTextPart("## Context\n")
-          );
+          parts.push(new vscode.LanguageModelTextPart("## Context\n"));
           if (result.context.module) {
             parts.push(
-              new vscode.LanguageModelTextPart(`- Module: ${result.context.module}\n`)
+              new vscode.LanguageModelTextPart(
+                `- Module: ${result.context.module}\n`,
+              ),
             );
           }
           if (result.context.function) {
             parts.push(
-              new vscode.LanguageModelTextPart(`- Function: ${result.context.function}\n`)
+              new vscode.LanguageModelTextPart(
+                `- Function: ${result.context.function}\n`,
+              ),
             );
           }
           parts.push(
-            new vscode.LanguageModelTextPart(`- Context type: ${result.context.context_type}\n\n`)
+            new vscode.LanguageModelTextPart(
+              `- Context type: ${result.context.context_type}\n\n`,
+            ),
           );
         }
 
         if (result.aliases && result.aliases.length > 0) {
-          parts.push(
-            new vscode.LanguageModelTextPart("## Aliases\n")
-          );
-          result.aliases.forEach(alias => {
+          parts.push(new vscode.LanguageModelTextPart("## Aliases\n"));
+          for (const alias of result.aliases) {
             parts.push(
-              new vscode.LanguageModelTextPart(`- ${alias.alias} → ${alias.module}\n`)
+              new vscode.LanguageModelTextPart(
+                `- ${alias.alias} → ${alias.module}\n`,
+              ),
             );
-          });
+          }
           parts.push(new vscode.LanguageModelTextPart("\n"));
         }
 
         if (result.imports && result.imports.length > 0) {
-          parts.push(
-            new vscode.LanguageModelTextPart("## Imports\n")
-          );
-          result.imports.forEach(imp => {
+          parts.push(new vscode.LanguageModelTextPart("## Imports\n"));
+          for (const imp of result.imports) {
             parts.push(
-              new vscode.LanguageModelTextPart(`- ${imp.module}.${imp.function}\n`)
+              new vscode.LanguageModelTextPart(
+                `- ${imp.module}.${imp.function}\n`,
+              ),
             );
-          });
+          }
           parts.push(new vscode.LanguageModelTextPart("\n"));
         }
 
         if (result.variables && result.variables.length > 0) {
           parts.push(
-            new vscode.LanguageModelTextPart("## Variables in scope\n")
+            new vscode.LanguageModelTextPart("## Variables in scope\n"),
           );
-          result.variables.forEach(v => {
-            parts.push(
-              new vscode.LanguageModelTextPart(`- ${v.name}\n`)
-            );
-          });
+          for (const v of result.variables) {
+            parts.push(new vscode.LanguageModelTextPart(`- ${v.name}\n`));
+          }
           parts.push(new vscode.LanguageModelTextPart("\n"));
         }
 
         if (result.attributes && result.attributes.length > 0) {
           parts.push(
-            new vscode.LanguageModelTextPart("## Module attributes\n")
+            new vscode.LanguageModelTextPart("## Module attributes\n"),
           );
-          result.attributes.forEach(attr => {
+          for (const attr of result.attributes) {
             const typeStr = attr.type ? JSON.stringify(attr.type) : "any";
             parts.push(
-              new vscode.LanguageModelTextPart(`- @${attr.name}: ${typeStr}\n`)
+              new vscode.LanguageModelTextPart(`- @${attr.name}: ${typeStr}\n`),
             );
-          });
+          }
           parts.push(new vscode.LanguageModelTextPart("\n"));
         }
 
-        if (result.behaviours_implemented && result.behaviours_implemented.length > 0) {
+        if (
+          result.behaviours_implemented &&
+          result.behaviours_implemented.length > 0
+        ) {
           parts.push(
-            new vscode.LanguageModelTextPart("## Behaviours implemented\n")
+            new vscode.LanguageModelTextPart("## Behaviours implemented\n"),
           );
-          result.behaviours_implemented.forEach(b => {
-            parts.push(
-              new vscode.LanguageModelTextPart(`- ${b}\n`)
-            );
-          });
+          for (const b of result.behaviours_implemented) {
+            parts.push(new vscode.LanguageModelTextPart(`- ${b}\n`));
+          }
         }
 
         if (result.definitions) {
-          parts.push(
-            new vscode.LanguageModelTextPart("## Definitions\n")
-          );
+          parts.push(new vscode.LanguageModelTextPart("## Definitions\n"));
           if (result.definitions.modules_defined.length > 0) {
             parts.push(
-              new vscode.LanguageModelTextPart(`- Modules defined: ${result.definitions.modules_defined.join(", ")}\n`)
+              new vscode.LanguageModelTextPart(
+                `- Modules defined: ${result.definitions.modules_defined.join(", ")}\n`,
+              ),
             );
           }
           if (result.definitions.types_defined.length > 0) {
             parts.push(
-              new vscode.LanguageModelTextPart(`- Types defined: ${result.definitions.types_defined.join(", ")}\n`)
+              new vscode.LanguageModelTextPart(
+                `- Types defined: ${result.definitions.types_defined.join(", ")}\n`,
+              ),
             );
           }
           if (result.definitions.functions_defined.length > 0) {
             parts.push(
-              new vscode.LanguageModelTextPart(`- Functions defined: ${result.definitions.functions_defined.join(", ")}\n`)
+              new vscode.LanguageModelTextPart(
+                `- Functions defined: ${result.definitions.functions_defined.join(", ")}\n`,
+              ),
             );
           }
           if (result.definitions.callbacks_defined.length > 0) {
             parts.push(
-              new vscode.LanguageModelTextPart(`- Callbacks defined: ${result.definitions.callbacks_defined.join(", ")}\n`)
+              new vscode.LanguageModelTextPart(
+                `- Callbacks defined: ${result.definitions.callbacks_defined.join(", ")}\n`,
+              ),
             );
           }
         }
@@ -222,14 +231,15 @@ export class EnvironmentTool implements vscode.LanguageModelTool<IParameters> {
 
       return new vscode.LanguageModelToolResult([
         new vscode.LanguageModelTextPart(
-          `No environment information found for location: ${location}`
+          `No environment information found for location: ${location}`,
         ),
       ]);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       return new vscode.LanguageModelToolResult([
         new vscode.LanguageModelTextPart(
-          `Failed to get environment: ${errorMessage}`
+          `Failed to get environment: ${errorMessage}`,
         ),
       ]);
     }

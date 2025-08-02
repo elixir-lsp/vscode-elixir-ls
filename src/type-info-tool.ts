@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
-import { LanguageClient } from 'vscode-languageclient/node';
+import * as vscode from "vscode";
+import type { LanguageClient } from "vscode-languageclient/node";
 
 interface IParameters {
   module: string;
@@ -7,10 +7,10 @@ interface IParameters {
 
 interface ITypeInfoResult {
   module?: string;
-  types?: any[];
-  specs?: any[];
-  callbacks?: any[];
-  dialyzer_contracts?: any[];
+  types?: unknown[];
+  specs?: unknown[];
+  callbacks?: unknown[];
+  dialyzer_contracts?: unknown[];
   error?: string;
 }
 
@@ -19,7 +19,7 @@ export class TypeInfoTool implements vscode.LanguageModelTool<IParameters> {
 
   async prepareInvocation(
     options: vscode.LanguageModelToolInvocationPrepareOptions<IParameters>,
-    _token: vscode.CancellationToken
+    _token: vscode.CancellationToken,
   ): Promise<vscode.PreparedToolInvocation> {
     return {
       invocationMessage: `Getting type information for: ${options.input.module}`,
@@ -28,100 +28,105 @@ export class TypeInfoTool implements vscode.LanguageModelTool<IParameters> {
 
   async invoke(
     options: vscode.LanguageModelToolInvocationOptions<IParameters>,
-    token: vscode.CancellationToken
+    token: vscode.CancellationToken,
   ): Promise<vscode.LanguageModelToolResult> {
     const args = options.input;
-    
+
     if (!args.module) {
       return new vscode.LanguageModelToolResult([
-        new vscode.LanguageModelTextPart('Error: module parameter is required')
+        new vscode.LanguageModelTextPart("Error: module parameter is required"),
       ]);
     }
 
     try {
       // Find the llmTypeInfo command from server capabilities
-      const command = this.client.initializeResult?.capabilities
-        .executeCommandProvider?.commands.find((c) =>
-          c.startsWith("llmTypeInfo:")
+      const command =
+        this.client.initializeResult?.capabilities.executeCommandProvider?.commands.find(
+          (c) => c.startsWith("llmTypeInfo:"),
         );
 
       if (!command) {
         return new vscode.LanguageModelToolResult([
-          new vscode.LanguageModelTextPart('Error: llmTypeInfo command not found in server capabilities')
+          new vscode.LanguageModelTextPart(
+            "Error: llmTypeInfo command not found in server capabilities",
+          ),
         ]);
       }
 
       const result = await this.client.sendRequest<ITypeInfoResult>(
-        'workspace/executeCommand',
+        "workspace/executeCommand",
         {
           command: command,
-          arguments: [args.module]
-        }
+          arguments: [args.module],
+        },
       );
 
       if (result.error) {
         return new vscode.LanguageModelToolResult([
-          new vscode.LanguageModelTextPart(`Error: ${result.error}`)
+          new vscode.LanguageModelTextPart(`Error: ${result.error}`),
         ]);
       }
 
       // Format the type information in a readable way
       const parts: vscode.LanguageModelTextPart[] = [];
-      
-      parts.push(new vscode.LanguageModelTextPart(`# Type Information for ${result.module}\n\n`));
+
+      parts.push(
+        new vscode.LanguageModelTextPart(
+          `# Type Information for ${result.module}\n\n`,
+        ),
+      );
 
       if (result.types && result.types.length > 0) {
-        parts.push(new vscode.LanguageModelTextPart('## Types\n\n'));
+        parts.push(new vscode.LanguageModelTextPart("## Types\n\n"));
         for (const type of result.types) {
-          parts.push(new vscode.LanguageModelTextPart(
-            `### ${type.name}\n` +
-            `Kind: ${type.kind}\n` +
-            `Signature: ${type.signature}\n` +
-            `\`\`\`elixir\n${type.spec}\n\`\`\`\n` +
-            (type.doc ? `${type.doc}\n` : '') +
-            '\n'
-          ));
+          parts.push(
+            new vscode.LanguageModelTextPart(
+              `### ${type.name}\nKind: ${type.kind}\nSignature: ${type.signature}\n\`\`\`elixir\n${type.spec}\n\`\`\`\n${type.doc ? `${type.doc}\n` : ""}\n`,
+            ),
+          );
         }
       }
 
       if (result.specs && result.specs.length > 0) {
-        parts.push(new vscode.LanguageModelTextPart('## Function Specs\n\n'));
+        parts.push(new vscode.LanguageModelTextPart("## Function Specs\n\n"));
         for (const spec of result.specs) {
-          parts.push(new vscode.LanguageModelTextPart(
-            `### ${spec.name}\n` +
-            `\`\`\`elixir\n${spec.specs}\n\`\`\`\n` +
-            (spec.doc ? `${spec.doc}\n` : '') +
-            '\n'
-          ));
+          parts.push(
+            new vscode.LanguageModelTextPart(
+              `### ${spec.name}\n\`\`\`elixir\n${spec.specs}\n\`\`\`\n${spec.doc ? `${spec.doc}\n` : ""}\n`,
+            ),
+          );
         }
       }
 
       if (result.callbacks && result.callbacks.length > 0) {
-        parts.push(new vscode.LanguageModelTextPart('## Callbacks\n\n'));
+        parts.push(new vscode.LanguageModelTextPart("## Callbacks\n\n"));
         for (const callback of result.callbacks) {
-          parts.push(new vscode.LanguageModelTextPart(
-            `### ${callback.name}\n` +
-            `\`\`\`elixir\n${callback.specs}\n\`\`\`\n` +
-            (callback.doc ? `${callback.doc}\n` : '') +
-            '\n'
-          ));
+          parts.push(
+            new vscode.LanguageModelTextPart(
+              `### ${callback.name}\n\`\`\`elixir\n${callback.specs}\n\`\`\`\n${callback.doc ? `${callback.doc}\n` : ""}\n`,
+            ),
+          );
         }
       }
 
       if (result.dialyzer_contracts && result.dialyzer_contracts.length > 0) {
-        parts.push(new vscode.LanguageModelTextPart('## Dialyzer Contracts\n\n'));
+        parts.push(
+          new vscode.LanguageModelTextPart("## Dialyzer Contracts\n\n"),
+        );
         for (const contract of result.dialyzer_contracts) {
-          parts.push(new vscode.LanguageModelTextPart(
-            `### ${contract.name} (line ${contract.line})\n` +
-            `\`\`\`elixir\n${contract.contract}\n\`\`\`\n\n`
-          ));
+          parts.push(
+            new vscode.LanguageModelTextPart(
+              `### ${contract.name} (line ${contract.line})\n` +
+                `\`\`\`elixir\n${contract.contract}\n\`\`\`\n\n`,
+            ),
+          );
         }
       }
 
       return new vscode.LanguageModelToolResult(parts);
     } catch (error) {
       return new vscode.LanguageModelToolResult([
-        new vscode.LanguageModelTextPart(`Error: ${error}`)
+        new vscode.LanguageModelTextPart(`Error: ${error}`),
       ]);
     }
   }

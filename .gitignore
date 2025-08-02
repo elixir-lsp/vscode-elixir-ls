@@ -4,3 +4,7 @@ node_modules
 *.vsix
 **/erl_crash.dump
 elixir-ls-release/
+
+.claude
+CLAUDE.local.md
+.mcp.json

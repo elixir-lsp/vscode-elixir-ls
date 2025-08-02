@@ -32,9 +32,8 @@ function getExistingLaunchConfig(
     "launch",
     args.workspaceFolder,
   );
-  const configurations = launchJson.get<vscode.DebugConfiguration[]>(
-    "configurations",
-  );
+  const configurations =
+    launchJson.get<vscode.DebugConfiguration[]>("configurations");
   let testConfig: vscode.DebugConfiguration | undefined;
   if (Array.isArray(configurations)) {
     for (let i = configurations.length - 1; i >= 0; i--) {
