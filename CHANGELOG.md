@@ -1,5 +1,33 @@
 ### Unreleased
 
+### v0.29.0: 4 August 2025
+
+#### Highlights
+
+- Added Call hierarchy provider implementing LSP [textDocument/prepareCallHierarchy](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.18/specification/#textDocument_prepareCallHierarchy), [callHierarchy/incomingCalls](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.18/specification/#callHierarchy_incomingCalls) and [callHierarchy/outgoingCalls](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.18/specification/#callHierarchy_outgoingCalls)
+- ElixirLS now bundles a number of experimental LLM oriented tools exposed as custom commands and a builtin MCP server. The tools focus on model friendly text interface instead of typical IDE oriented LSP API methods. Refer to [README.md](README.md) on how to connect to the MCP server. The tools include:
+  - `find_definition` - Find and retrieve the source code of symbols.
+  - `get_environment` - Retrieve environment at location with aliases, imports, requires and more.
+  - `get_docs` - Aggregate and return comprehensive documentation
+  - `get_type_info` - Extract typespecs and contracts.
+  - `find_implementations` - Find all implementations of behaviours and protocols.
+  - `get_module_dependencies` - Analyze module dependency relationships
+- Unofficial support for elixir 1.19
+
+#### Improvements
+
+- ElixirLS updated to [v0.29.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0290)
+- Check elixir command improved. It should be less prone to raising incorrect warnings
+- Terminal link regex improved
+- Improved processing of newlines in test output
+- Tasks are now correctly registered in multi-root workspaces
+
+#### Fixes
+
+- Fixed invalid path replacement in test runner on windows
+- Fixed resource leak on workspace folder removal
+- Fixed extension name in constants
+
 ### v0.28.0: 24 May 2025
 
 #### Highlights
