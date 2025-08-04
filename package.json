@@ -223,6 +223,12 @@
           "type": "string",
           "description": "Absolute path to alternative ElixirLS release that will override the packaged release",
           "minLength": 0
+        },
+        "elixirLS.dotFormatter": {
+          "scope": "resource",
+          "type": "string",
+          "description": "Path to a custom .formatter.exs file used when formatting documents",
+          "minLength": 0
         }
       }
     },
