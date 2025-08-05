@@ -11,7 +11,7 @@
   "author": "The Elixir community",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.29.0",
+  "version": "0.29.1",
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -229,6 +229,18 @@
           "type": "string",
           "description": "Path to a custom .formatter.exs file used when formatting documents",
           "minLength": 0
+        },
+        "elixirLS.mcpEnabled": {
+          "scope": "resource",
+          "type": "boolean",
+          "description": "Enable or disable the MCP server",
+          "default": true
+        },
+        "elixirLS.mcpPort": {
+          "scope": "resource",
+          "type": "integer",
+          "description": "Set a specific port for the MCP server. If not set, uses `3789 + hash(workspace_path)` for predictable port assignment per workspace",
+          "default": 0
         }
       }
     },

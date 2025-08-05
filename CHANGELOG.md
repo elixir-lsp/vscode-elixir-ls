@@ -1,5 +1,12 @@
 ### Unreleased
 
+### v0.29.1: 5 August 2025
+
+#### Improvements
+
+- ElixirLS updated to [v0.29.1](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0291)
+- Added settings controlling builtin MCP server
+
 ### v0.29.0: 4 August 2025
 
 #### Highlights
