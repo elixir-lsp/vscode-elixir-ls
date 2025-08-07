@@ -97,6 +97,15 @@
       "elixir_ls.lsp_reverse_request":       {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "LSP reverse request command"}
     },
 
+    "mcp_request": {
+      "elixir_ls.mcp_command": {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "MCP command issued by client"}
+    },
+    "mcp_request_error": {
+      "elixir_ls.mcp_command":       {"classification": "PublicNonPersonalData", "purpose": "PerformanceAndHealth", "comment": "MCP command issued by client"},
+      "elixir_ls.mcp_error":         {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "MCP error code"},
+      "elixir_ls.mcp_error_message": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "MCP error message"}
+    },
+
     "parser_error": {
       "elixir_ls.parser_error": {"classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "comment": "Parser error message"}
     },
