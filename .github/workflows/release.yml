@@ -18,7 +18,7 @@ jobs:
               echo "package.json version $VERSION does not match commit tag $GITHUB_REF_NAME"
               exit 1
           fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: "20.x"
       - name: Setup Elixir
