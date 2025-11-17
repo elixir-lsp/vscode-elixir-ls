@@ -1,5 +1,21 @@
 ### Unreleased
 
+### v0.30.0: 17 November 2025
+
+#### Highlights
+
+- Added support for elixir 1.19 (and OTP 28 on 1.19)
+
+#### Improvements
+
+- ElixirLS updated to [v0.30.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0300)
+- Dependencies and build tools updated
+
+#### Breaking changes
+
+- elixir 1.14 reached end of life and is no longer supported. Consider updating to 1.15+
+- minimum VSCode engine version bumped to 1.99
+
 ### v0.29.3: 20 August 2025
 
 #### Improvements
