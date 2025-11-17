@@ -266,7 +266,7 @@ export function configureDebugger(context: vscode.ExtensionContext) {
     vscode.debug.registerDebugAdapterDescriptorFactory("mix_task", factory),
   );
 
-  trackerFactory = new DebugAdapterTrackerFactory(context);
+  trackerFactory = new DebugAdapterTrackerFactory();
 
   context.subscriptions.push(
     vscode.debug.registerDebugAdapterTrackerFactory("mix_task", trackerFactory),
