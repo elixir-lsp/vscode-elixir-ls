@@ -11,9 +11,9 @@ import {
 import { buildCommand } from "./executable";
 import { WorkspaceMode, type WorkspaceTracker } from "./project";
 import {
-  type TelemetryEvent,
   preprocessStacktraceInProperties,
   reporter,
+  type TelemetryEvent,
 } from "./telemetry";
 
 // Languages fully handled by this extension
@@ -450,7 +450,6 @@ export class LanguageClientManager {
     const clientsToDispose: LanguageClient[] = [];
     let changed = false;
     if (this.defaultClient) {
-      // biome-ignore lint/complexity/noForEach: disposing all registered disposables is easier with forEach
       this.defaultClientDisposables?.forEach((d) => d.dispose());
       // biome-ignore lint/style/noNonNullAssertion: defaultClientPromise is defined whenever defaultClient is
       clientStartPromises.push(this.defaultClientPromise!);
@@ -462,7 +461,6 @@ export class LanguageClientManager {
     }
 
     for (const [uri, client] of this.clients.entries()) {
-      // biome-ignore lint/complexity/noForEach: disposing all registered disposables is easier with forEach
       this.clientsDisposables.get(uri)?.forEach((d) => d.dispose());
       // biome-ignore lint/style/noNonNullAssertion: a promise exists for every started client
       clientStartPromises.push(this.clientsPromises.get(uri)!);
@@ -498,7 +496,6 @@ export class LanguageClientManager {
     const client = this.clients.get(uri);
     if (client) {
       console.log("ElixirLS: Stopping LSP client for", folder.uri.fsPath);
-      // biome-ignore lint/complexity/noForEach: disposing all registered disposables is easier with forEach
       this.clientsDisposables.get(uri)?.forEach((d) => d.dispose());
       // biome-ignore lint/style/noNonNullAssertion: a promise exists for every started client
       const clientPromise = this.clientsPromises.get(uri)!;

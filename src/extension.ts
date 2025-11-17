@@ -33,7 +33,6 @@ export const languageClientManager = new LanguageClientManager(
 );
 
 const startClientsForOpenDocuments = (context: vscode.ExtensionContext) => {
-  // biome-ignore lint/complexity/noForEach: iterating with forEach keeps the initialization straightforward
   vscode.workspace.textDocuments.forEach((value) => {
     languageClientManager.handleDidOpenTextDocument(value, context);
   });

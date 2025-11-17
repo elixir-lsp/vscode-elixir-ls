@@ -41,7 +41,7 @@ export function configureTerminalLinkProvider(
           data: {
             app: matches.groups?.app ?? "",
             file: matches.groups?.file ?? "",
-            line: Number.parseInt(matches.groups?.line ?? "1"),
+            line: Number.parseInt(matches.groups?.line ?? "1", 10),
           },
         },
       ];

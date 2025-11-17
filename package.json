@@ -25,7 +25,12 @@
     "Testing",
     "Formatters"
   ],
-  "keywords": ["elixir", "mix", "dialyzer", "multi-root ready"],
+  "keywords": [
+    "elixir",
+    "mix",
+    "dialyzer",
+    "multi-root ready"
+  ],
   "activationEvents": [
     "onLanguage:phoenix-heex",
     "onLanguage:surface",
@@ -124,7 +129,11 @@
           "scope": "resource",
           "description": "Formatter to use for Dialyzer warnings",
           "type": "string",
-          "enum": ["dialyzer", "dialyxir_short", "dialyxir_long"],
+          "enum": [
+            "dialyzer",
+            "dialyxir_short",
+            "dialyxir_long"
+          ],
           "markdownEnumDescriptions": [
             "Original Dialyzer format",
             "Same as `mix dialyzer --format short`",
@@ -186,7 +195,11 @@
         "elixirLS.trace.server": {
           "scope": "window",
           "type": "string",
-          "enum": ["off", "messages", "verbose"],
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
           "default": "off",
           "description": "Traces the communication between VS Code and the Elixir language server."
         },
@@ -247,21 +260,42 @@
     "languages": [
       {
         "id": "elixir",
-        "aliases": ["Elixir", "elixir"],
-        "extensions": [".ex", ".exs"],
-        "filenames": ["mix.lock"],
+        "aliases": [
+          "Elixir",
+          "elixir"
+        ],
+        "extensions": [
+          ".ex",
+          ".exs"
+        ],
+        "filenames": [
+          "mix.lock"
+        ],
         "configuration": "./elixir-language-configuration.json"
       },
       {
         "id": "eex",
-        "aliases": ["Embedded Elixir", "EEx", "eex"],
-        "extensions": [".eex", ".leex"],
+        "aliases": [
+          "Embedded Elixir",
+          "EEx",
+          "eex"
+        ],
+        "extensions": [
+          ".eex",
+          ".leex"
+        ],
         "configuration": "./eex-language-configuration.json"
       },
       {
         "id": "html-eex",
-        "aliases": ["HTML (Embedded Elixir)", "HTML (EEx)"],
-        "extensions": [".html.eex", ".html.leex"],
+        "aliases": [
+          "HTML (Embedded Elixir)",
+          "HTML (EEx)"
+        ],
+        "extensions": [
+          ".html.eex",
+          ".html.leex"
+        ],
         "configuration": "./eex-language-configuration.json"
       }
     ],
@@ -311,10 +345,14 @@
         "osx": {
           "program": "debug_adapter.sh"
         },
-        "languages": ["elixir"],
+        "languages": [
+          "elixir"
+        ],
         "configurationAttributes": {
           "launch": {
-            "required": ["projectDir"],
+            "required": [
+              "projectDir"
+            ],
             "properties": {
               "task": {
                 "type": "string",
@@ -375,7 +413,11 @@
               "stackTraceMode": {
                 "type": "string",
                 "description": "Option passed to :int.stack_trace/1. See https://www.erlang.org/doc/man/int#stack_trace-1 for details",
-                "enum": ["all", "no_tail", "false"],
+                "enum": [
+                  "all",
+                  "no_tail",
+                  "false"
+                ],
                 "default": "no_tail"
               },
               "exitAfterTaskReturns": {
@@ -391,7 +433,10 @@
             }
           },
           "attach": {
-            "required": ["projectDir", "remoteNode"],
+            "required": [
+              "projectDir",
+              "remoteNode"
+            ],
             "properties": {
               "remoteNode": {
                 "type": "string",
@@ -431,7 +476,11 @@
               "stackTraceMode": {
                 "type": "string",
                 "description": "Option passed to :int.stack_trace/1. See https://www.erlang.org/doc/man/int#stack_trace-1 for details",
-                "enum": ["all", "no_tail", "false"],
+                "enum": [
+                  "all",
+                  "no_tail",
+                  "false"
+                ],
                 "default": "no_tail"
               }
             }
@@ -449,10 +498,15 @@
             "name": "mix test",
             "request": "launch",
             "task": "test",
-            "taskArgs": ["--trace"],
+            "taskArgs": [
+              "--trace"
+            ],
             "startApps": true,
             "projectDir": "${workspaceRoot}",
-            "requireFiles": ["test/**/test_helper.exs", "test/**/*_test.exs"]
+            "requireFiles": [
+              "test/**/test_helper.exs",
+              "test/**/*_test.exs"
+            ]
           }
         ],
         "configurationSnippets": [
@@ -475,7 +529,10 @@
       {
         "name": "mixCompileError",
         "owner": "elixir",
-        "fileLocation": ["relative", "${workspaceRoot}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceRoot}"
+        ],
         "severity": "error",
         "pattern": {
           "regexp": "^\\*\\* \\((\\w+)\\) (.*):(\\d+): (.*)$",
@@ -487,7 +544,10 @@
       {
         "name": "mixCompileWarning",
         "owner": "elixir",
-        "fileLocation": ["relative", "${workspaceRoot}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceRoot}"
+        ],
         "severity": "warning",
         "pattern": [
           {
@@ -505,7 +565,10 @@
       {
         "name": "mixTestFailure",
         "owner": "elixir",
-        "fileLocation": ["relative", "${workspaceRoot}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceRoot}"
+        ],
         "severity": "warning",
         "pattern": [
           {
@@ -599,7 +662,9 @@
     "taskDefinitions": [
       {
         "type": "mix",
-        "required": ["task"],
+        "required": [
+          "task"
+        ],
         "properties": {
           "task": {
             "type": "string",
@@ -617,7 +682,9 @@
         "toolReferenceName": "elixir-definition",
         "inputSchema": {
           "type": "object",
-          "required": ["symbol"],
+          "required": [
+            "symbol"
+          ],
           "properties": {
             "symbol": {
               "type": "string",
@@ -634,7 +701,9 @@
         "toolReferenceName": "elixir-environment",
         "inputSchema": {
           "type": "object",
-          "required": ["location"],
+          "required": [
+            "location"
+          ],
           "properties": {
             "location": {
               "type": "string",
@@ -651,7 +720,9 @@
         "toolReferenceName": "elixir-module-dependencies",
         "inputSchema": {
           "type": "object",
-          "required": ["module"],
+          "required": [
+            "module"
+          ],
           "properties": {
             "module": {
               "type": "string",
@@ -668,7 +739,9 @@
         "toolReferenceName": "elixir-docs",
         "inputSchema": {
           "type": "object",
-          "required": ["modules"],
+          "required": [
+            "modules"
+          ],
           "properties": {
             "modules": {
               "type": "array",
@@ -688,7 +761,9 @@
         "toolReferenceName": "elixir-implementation-finder",
         "inputSchema": {
           "type": "object",
-          "required": ["symbol"],
+          "required": [
+            "symbol"
+          ],
           "properties": {
             "symbol": {
               "type": "string",
@@ -705,7 +780,9 @@
         "toolReferenceName": "elixir-types",
         "inputSchema": {
           "type": "object",
-          "required": ["module"],
+          "required": [
+            "module"
+          ],
           "properties": {
             "module": {
               "type": "string",
@@ -735,7 +812,7 @@
     "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.3.5",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.13.14",
     "@types/vscode": "~1.99.0",

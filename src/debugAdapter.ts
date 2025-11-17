@@ -2,10 +2,10 @@ import type { DebugProtocol } from "@vscode/debugprotocol";
 import * as vscode from "vscode";
 import { buildCommand } from "./executable";
 import {
-  type TelemetryEvent,
   preprocessStacktrace,
   preprocessStacktraceInProperties,
   reporter,
+  type TelemetryEvent,
 } from "./telemetry";
 
 class DebugAdapterExecutableFactory
@@ -95,11 +95,7 @@ export interface DebuggeeOutput {
 class DebugAdapterTrackerFactory
   implements vscode.DebugAdapterTrackerFactory, vscode.Disposable
 {
-  private _context: vscode.ExtensionContext;
   private startTimes: Map<string, number> = new Map();
-  constructor(context: vscode.ExtensionContext) {
-    this._context = context;
-  }
 
   dispose() {
     this._onExited.dispose();

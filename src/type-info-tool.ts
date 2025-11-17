@@ -54,7 +54,7 @@ export class TypeInfoTool implements vscode.LanguageModelTool<IParameters> {
 
   async invoke(
     options: vscode.LanguageModelToolInvocationOptions<IParameters>,
-    token: vscode.CancellationToken,
+    _token: vscode.CancellationToken,
   ): Promise<vscode.LanguageModelToolResult> {
     const args = options.input;
 

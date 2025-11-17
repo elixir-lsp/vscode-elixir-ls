@@ -289,7 +289,6 @@ class EnvironmentReporter extends TelemetryReporter {
       return measurementsWithCount;
     }
     let countFound = false;
-    // biome-ignore lint/complexity/noForEach: forEach provides a concise way to modify the object in place
     Object.keys(measurements).forEach((key) => {
       if (key.endsWith("_count")) {
         // biome-ignore lint/suspicious/noExplicitAny: dynamic property access requires an explicit any cast
@@ -334,10 +333,13 @@ export function preprocessStacktrace(originalStack: string) {
     // Regular expression to capture paths of the library
     const libraryPathRegex = new RegExp(`(.*)(/${library}/)([^\\s]+)`, "g");
 
-    stack = stack.replace(libraryPathRegex, (_, before, libraryPath, after) => {
-      const modifiedPath = after.replace(/\//g, "_");
-      return `USER_PATH_${library}_${modifiedPath}`;
-    });
+    stack = stack.replace(
+      libraryPathRegex,
+      (_, _before, _libraryPath, after) => {
+        const modifiedPath = after.replace(/\//g, "_");
+        return `USER_PATH_${library}_${modifiedPath}`;
+      },
+    );
   }
 
   // Sanitize Elixir function arity syntax
@@ -373,7 +375,6 @@ export function preprocessStacktrace(originalStack: string) {
     "pwd",
     "android:value",
   ];
-  // biome-ignore lint/complexity/noForEach: forEach simplifies keyword replacement logic
   sensitiveKeywords.forEach((keyword) => {
     const regex = new RegExp(`(${keyword})[^a-zA-Z0-9]`, "gi");
     const encodeKeyword = `${keyword[0]}_${keyword.slice(1)}`;

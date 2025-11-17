@@ -7,7 +7,7 @@ import {
 import { type RunTestArgs, runTest } from "./commands/runTest";
 import { RUN_TEST_FROM_CODELENS } from "./constants";
 import type { LanguageClientManager } from "./languageClientManager";
-import { type WorkspaceTracker, getProjectDir } from "./project";
+import { getProjectDir, type WorkspaceTracker } from "./project";
 import { reporter } from "./telemetry";
 
 const workspaceWatchers = new Map<string, vscode.FileSystemWatcher>();
@@ -422,7 +422,6 @@ export function configureTestController(
   ): vscode.TestItem | undefined {
     if (type === "doctest") {
       let foundDoctest: vscode.TestItem | undefined;
-      // biome-ignore lint/complexity/noForEach: using forEach allows iterating over the children collection directly
       describeTest.children.forEach((doctestGroupItem) => {
         if (getType(doctestGroupItem) === ItemType.Doctest) {
           const candidate = doctestGroupItem.children.get(name);
@@ -489,13 +488,11 @@ export function configureTestController(
 
     // Loop through all included tests, or all known tests, and add them to our queue
     if (request.include) {
-      // biome-ignore lint/complexity/noForEach: using forEach simplifies queuing requested tests
       request.include.forEach((test) => {
         queue.push(test);
         run.enqueued(test);
       });
     } else {
-      // biome-ignore lint/complexity/noForEach: using forEach simplifies queuing all known tests
       controller.items.forEach((test) => {
         queue.push(test);
         run.enqueued(test);
@@ -537,7 +534,6 @@ export function configureTestController(
           // If we're running a workspace and any of the files is not parsed yet, parse them now
           {
             const childrenToCheck: Array<Promise<void>> = [];
-            // biome-ignore lint/complexity/noForEach: using forEach is convenient for iterating over the children set
             test.children.forEach((fileTest) => {
               if (fileTest.children.size === 0) {
                 childrenToCheck.push(parseTestsInFileContents(fileTest));
@@ -720,7 +716,6 @@ export function configureTestController(
       }
 
       if (includeChildren) {
-        // biome-ignore lint/complexity/noForEach: forEach makes enqueueing child tests straightforward
         test.children.forEach((test) => {
           queue.push(test);
           run.enqueued(test);
@@ -797,8 +792,7 @@ export function configureTestController(
         if (item) {
           return item;
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        for (const [childId, child] of items) {
+        for (const [_childId, child] of items) {
           item = getFileTestItemRecursive(child.children, id);
           if (item) {
             return item;
