@@ -689,6 +689,10 @@
             "symbol": {
               "type": "string",
               "description": "The symbol to find definition for. Supports: modules ('MyModule', 'GenServer'), functions ('MyModule.function', 'String.split/2'), types ('@type my_type'), macros ('defmacro'), Erlang modules (':gen_server'), Erlang functions (':lists.map/2'). Use qualified names (Module.function) for best results."
+            },
+            "file": {
+              "type": "string",
+              "description": "Optional absolute file path to specify which workspace to search. If not provided, uses the active editor's workspace or the first available workspace."
             }
           }
         }
@@ -727,6 +731,10 @@
             "module": {
               "type": "string",
               "description": "The module name to analyze dependencies for. Supports Elixir modules ('MyApp.MyModule', 'GenServer', 'Enum') and Erlang modules (':gen_server', ':ets'). Returns categorized dependency breakdown showing what the module depends on and what depends on it."
+            },
+            "file": {
+              "type": "string",
+              "description": "Optional absolute file path to specify which workspace to analyze. If not provided, uses the active editor's workspace or the first available workspace."
             }
           }
         }
@@ -749,6 +757,10 @@
               "items": {
                 "type": "string"
               }
+            },
+            "file": {
+              "type": "string",
+              "description": "Optional absolute file path to specify which workspace to query. If not provided, uses the active editor's workspace or the first available workspace."
             }
           }
         }
@@ -768,6 +780,10 @@
             "symbol": {
               "type": "string",
               "description": "The symbol to find implementations for. Supports: behaviours ('GenServer', 'Application', 'Supervisor'), protocols ('Enumerable', 'Inspect', 'String.Chars'), callbacks ('GenServer.handle_call', 'Application.start'), functions with @impl annotations. Returns file locations and implementation signatures."
+            },
+            "file": {
+              "type": "string",
+              "description": "Optional absolute file path to specify which workspace to search. If not provided, uses the active editor's workspace or the first available workspace."
             }
           }
         }
@@ -787,6 +803,10 @@
             "module": {
               "type": "string",
               "description": "The module name to analyze type information for. Supports Elixir modules ('GenServer', 'MyApp.MyModule', 'Enum') and Erlang modules (':gen_server', ':ets'). Returns detailed type specifications, function signatures, callback definitions, and custom types with their documentation."
+            },
+            "file": {
+              "type": "string",
+              "description": "Optional absolute file path to specify which workspace to analyze. If not provided, uses the active editor's workspace or the first available workspace."
             }
           }
         }

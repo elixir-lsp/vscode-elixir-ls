@@ -4,9 +4,11 @@ import {
   ExecuteCommandRequest,
   type LanguageClient,
 } from "vscode-languageclient/node";
+import type { LanguageClientManager } from "./languageClientManager";
 
 interface IParameters {
   module: string;
+  file?: string;
 }
 
 interface IModuleDependenciesResult {
@@ -42,7 +44,7 @@ interface IModuleDependenciesResult {
 export class ModuleDependenciesTool
   implements vscode.LanguageModelTool<IParameters>
 {
-  constructor(private client: LanguageClient) {}
+  constructor(private clientManager: LanguageClientManager) {}
 
   async prepareInvocation(
     options: vscode.LanguageModelToolInvocationPrepareOptions<IParameters>,
@@ -53,16 +55,58 @@ export class ModuleDependenciesTool
     };
   }
 
+  private getClient(file?: string): LanguageClient | null {
+    if (file) {
+      try {
+        const uri = vscode.Uri.file(file);
+        return this.clientManager.getClientByUri(uri);
+      } catch (error) {
+        console.warn(`ElixirLS: Failed to get client for file ${file}:`, error);
+      }
+    }
+
+    // Fall back to active editor
+    const activeEditor = vscode.window.activeTextEditor;
+    if (activeEditor) {
+      try {
+        return this.clientManager.getClientByUri(activeEditor.document.uri);
+      } catch (error) {
+        console.warn(
+          "ElixirLS: Failed to get client for active editor:",
+          error,
+        );
+      }
+    }
+
+    // Fall back to default client
+    if (this.clientManager.defaultClient) {
+      return this.clientManager.defaultClient;
+    }
+
+    // Fall back to first available client
+    const clients = this.clientManager.allClients();
+    return clients.length > 0 ? clients[0] : null;
+  }
+
   async invoke(
     options: vscode.LanguageModelToolInvocationOptions<IParameters>,
     token: vscode.CancellationToken,
   ): Promise<vscode.LanguageModelToolResult> {
-    const { module } = options.input;
+    const { module, file } = options.input;
+
+    const client = this.getClient(file);
+    if (!client) {
+      return new vscode.LanguageModelToolResult([
+        new vscode.LanguageModelTextPart(
+          "ElixirLS language server is not available. Please open an Elixir file or workspace.",
+        ),
+      ]);
+    }
 
     try {
       // Find the llmModuleDependencies command from server capabilities
       const command =
-        this.client.initializeResult?.capabilities.executeCommandProvider?.commands.find(
+        client.initializeResult?.capabilities.executeCommandProvider?.commands.find(
           (c) => c.startsWith("llmModuleDependencies:"),
         );
 
@@ -79,7 +123,7 @@ export class ModuleDependenciesTool
         arguments: [module],
       };
 
-      const result = await this.client.sendRequest<IModuleDependenciesResult>(
+      const result = await client.sendRequest<IModuleDependenciesResult>(
         ExecuteCommandRequest.method,
         params,
         token,

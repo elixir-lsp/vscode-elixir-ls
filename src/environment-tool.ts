@@ -4,6 +4,7 @@ import {
   ExecuteCommandRequest,
   type LanguageClient,
 } from "vscode-languageclient/node";
+import type { LanguageClientManager } from "./languageClientManager";
 
 interface IParameters {
   location: string;
@@ -49,7 +50,7 @@ interface IEnvironmentResult {
 }
 
 export class EnvironmentTool implements vscode.LanguageModelTool<IParameters> {
-  constructor(private client: LanguageClient) {}
+  constructor(private clientManager: LanguageClientManager) {}
 
   async prepareInvocation(
     options: vscode.LanguageModelToolInvocationPrepareOptions<IParameters>,
@@ -60,16 +61,84 @@ export class EnvironmentTool implements vscode.LanguageModelTool<IParameters> {
     };
   }
 
+  private parseLocationFile(location: string): string | null {
+    // Location formats: "file.ex:line:column" or "file:///absolute/path/file.ex:line:column"
+    try {
+      if (location.startsWith("file://")) {
+        // Extract path from URI
+        const uri = vscode.Uri.parse(
+          `${location.split(":")[0]}:${location.split(":")[1]}`,
+        );
+        return uri.fsPath;
+      }
+      // Simple file path - extract everything before the first colon
+      const colonIndex = location.indexOf(":");
+      if (colonIndex > 0) {
+        return location.substring(0, colonIndex);
+      }
+      return location;
+    } catch (error) {
+      console.warn(`ElixirLS: Failed to parse location ${location}:`, error);
+      return null;
+    }
+  }
+
+  private getClient(location: string): LanguageClient | null {
+    const filePath = this.parseLocationFile(location);
+    if (filePath) {
+      try {
+        const uri = vscode.Uri.file(filePath);
+        return this.clientManager.getClientByUri(uri);
+      } catch (error) {
+        console.warn(
+          `ElixirLS: Failed to get client for location ${location}:`,
+          error,
+        );
+      }
+    }
+
+    // Fall back to active editor
+    const activeEditor = vscode.window.activeTextEditor;
+    if (activeEditor) {
+      try {
+        return this.clientManager.getClientByUri(activeEditor.document.uri);
+      } catch (error) {
+        console.warn(
+          "ElixirLS: Failed to get client for active editor:",
+          error,
+        );
+      }
+    }
+
+    // Fall back to default client
+    if (this.clientManager.defaultClient) {
+      return this.clientManager.defaultClient;
+    }
+
+    // Fall back to first available client
+    const clients = this.clientManager.allClients();
+    return clients.length > 0 ? clients[0] : null;
+  }
+
   async invoke(
     options: vscode.LanguageModelToolInvocationOptions<IParameters>,
     token: vscode.CancellationToken,
   ): Promise<vscode.LanguageModelToolResult> {
     const { location } = options.input;
 
+    const client = this.getClient(location);
+    if (!client) {
+      return new vscode.LanguageModelToolResult([
+        new vscode.LanguageModelTextPart(
+          "ElixirLS language server is not available. Please open an Elixir file or workspace.",
+        ),
+      ]);
+    }
+
     try {
       // Find the llmEnvironment command from server capabilities
       const command =
-        this.client.initializeResult?.capabilities.executeCommandProvider?.commands.find(
+        client.initializeResult?.capabilities.executeCommandProvider?.commands.find(
           (c) => c.startsWith("llmEnvironment:"),
         );
 
@@ -86,7 +155,7 @@ export class EnvironmentTool implements vscode.LanguageModelTool<IParameters> {
         arguments: [location],
       };
 
-      const result = await this.client.sendRequest<IEnvironmentResult>(
+      const result = await client.sendRequest<IEnvironmentResult>(
         ExecuteCommandRequest.method,
         params,
         token,

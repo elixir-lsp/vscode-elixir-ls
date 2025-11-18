@@ -1,8 +1,10 @@
 import * as vscode from "vscode";
 import type { LanguageClient } from "vscode-languageclient/node";
+import type { LanguageClientManager } from "./languageClientManager";
 
 interface IParameters {
   module: string;
+  file?: string;
 }
 
 interface ITypeInfo {
@@ -41,7 +43,7 @@ interface ITypeInfoResult {
 }
 
 export class TypeInfoTool implements vscode.LanguageModelTool<IParameters> {
-  constructor(private client: LanguageClient) {}
+  constructor(private clientManager: LanguageClientManager) {}
 
   async prepareInvocation(
     options: vscode.LanguageModelToolInvocationPrepareOptions<IParameters>,
@@ -50,6 +52,39 @@ export class TypeInfoTool implements vscode.LanguageModelTool<IParameters> {
     return {
       invocationMessage: `Getting type information for: ${options.input.module}`,
     };
+  }
+
+  private getClient(file?: string): LanguageClient | null {
+    if (file) {
+      try {
+        const uri = vscode.Uri.file(file);
+        return this.clientManager.getClientByUri(uri);
+      } catch (error) {
+        console.warn(`ElixirLS: Failed to get client for file ${file}:`, error);
+      }
+    }
+
+    // Fall back to active editor
+    const activeEditor = vscode.window.activeTextEditor;
+    if (activeEditor) {
+      try {
+        return this.clientManager.getClientByUri(activeEditor.document.uri);
+      } catch (error) {
+        console.warn(
+          "ElixirLS: Failed to get client for active editor:",
+          error,
+        );
+      }
+    }
+
+    // Fall back to default client
+    if (this.clientManager.defaultClient) {
+      return this.clientManager.defaultClient;
+    }
+
+    // Fall back to first available client
+    const clients = this.clientManager.allClients();
+    return clients.length > 0 ? clients[0] : null;
   }
 
   async invoke(
@@ -64,10 +99,19 @@ export class TypeInfoTool implements vscode.LanguageModelTool<IParameters> {
       ]);
     }
 
+    const client = this.getClient(args.file);
+    if (!client) {
+      return new vscode.LanguageModelToolResult([
+        new vscode.LanguageModelTextPart(
+          "ElixirLS language server is not available. Please open an Elixir file or workspace.",
+        ),
+      ]);
+    }
+
     try {
       // Find the llmTypeInfo command from server capabilities
       const command =
-        this.client.initializeResult?.capabilities.executeCommandProvider?.commands.find(
+        client.initializeResult?.capabilities.executeCommandProvider?.commands.find(
           (c) => c.startsWith("llmTypeInfo:"),
         );
 
@@ -79,7 +123,7 @@ export class TypeInfoTool implements vscode.LanguageModelTool<IParameters> {
         ]);
       }
 
-      const result = await this.client.sendRequest<ITypeInfoResult>(
+      const result = await client.sendRequest<ITypeInfoResult>(
         "workspace/executeCommand",
         {
           command: command,

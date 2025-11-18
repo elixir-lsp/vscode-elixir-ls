@@ -82,78 +82,54 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
 
   startClientsForOpenDocuments(context);
 
-  // Register language model tool for all clients
-  const registerLanguageModelTool = async () => {
-    const clientPromises = languageClientManager.allClientsPromises();
-
-    for (const [_uri, clientPromise] of clientPromises.entries()) {
-      try {
-        const client = await clientPromise;
-
-        // Register definition tool
-        const definitionTool = new DefinitionTool(client);
-        context.subscriptions.push(
-          vscode.lm.registerTool("elixir-definition", definitionTool),
-        );
-
-        // Register environment tool
-        const environmentTool = new EnvironmentTool(client);
-        context.subscriptions.push(
-          vscode.lm.registerTool("elixir-environment", environmentTool),
-        );
-
-        // Register module dependencies tool
-        const moduleDependenciesTool = new ModuleDependenciesTool(client);
-        context.subscriptions.push(
-          vscode.lm.registerTool(
-            "elixir-module-dependencies",
-            moduleDependenciesTool,
-          ),
-        );
-
-        // Register implementation finder tool
-        const implementationFinderTool = new ImplementationFinderTool(client);
-        context.subscriptions.push(
-          vscode.lm.registerTool(
-            "elixir-implementation-finder",
-            implementationFinderTool,
-          ),
-        );
-
-        // Register documentation aggregator tool
-        const docsAggregatorTool = new DocsAggregatorTool(client);
-        context.subscriptions.push(
-          vscode.lm.registerTool("elixir-docs", docsAggregatorTool),
-        );
-
-        // Register type info tool
-        const typeInfoTool = new TypeInfoTool(client);
-        context.subscriptions.push(
-          vscode.lm.registerTool("elixir-types", typeInfoTool),
-        );
-
-        console.log("ElixirLS: Registered language model tools for client");
-        // Only register once - all clients share the same command namespace
-        break;
-      } catch (error) {
-        console.error(
-          "ElixirLS: Failed to register language model tool",
-          error,
-        );
-      }
-    }
-  };
-
-  // Register tool for existing clients
-  registerLanguageModelTool();
-
-  // Register tool when new clients are added
+  // Register language model tools once - they work across all workspaces
+  // Register definition tool
+  const definitionTool = new DefinitionTool(languageClientManager);
   context.subscriptions.push(
-    vscode.workspace.onDidOpenTextDocument((_doc) => {
-      // Small delay to ensure client is started
-      setTimeout(registerLanguageModelTool, 1000);
-    }),
+    vscode.lm.registerTool("elixir-definition", definitionTool),
   );
+
+  // Register environment tool
+  const environmentTool = new EnvironmentTool(languageClientManager);
+  context.subscriptions.push(
+    vscode.lm.registerTool("elixir-environment", environmentTool),
+  );
+
+  // Register module dependencies tool
+  const moduleDependenciesTool = new ModuleDependenciesTool(
+    languageClientManager,
+  );
+  context.subscriptions.push(
+    vscode.lm.registerTool(
+      "elixir-module-dependencies",
+      moduleDependenciesTool,
+    ),
+  );
+
+  // Register implementation finder tool
+  const implementationFinderTool = new ImplementationFinderTool(
+    languageClientManager,
+  );
+  context.subscriptions.push(
+    vscode.lm.registerTool(
+      "elixir-implementation-finder",
+      implementationFinderTool,
+    ),
+  );
+
+  // Register documentation aggregator tool
+  const docsAggregatorTool = new DocsAggregatorTool(languageClientManager);
+  context.subscriptions.push(
+    vscode.lm.registerTool("elixir-docs", docsAggregatorTool),
+  );
+
+  // Register type info tool
+  const typeInfoTool = new TypeInfoTool(languageClientManager);
+  context.subscriptions.push(
+    vscode.lm.registerTool("elixir-types", typeInfoTool),
+  );
+
+  console.log("ElixirLS: Registered language model tools");
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeWorkspaceFolders(async (event) => {
@@ -164,8 +140,6 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
       // we might have closed client for some nested workspace folder child
       // reopen all needed
       startClientsForOpenDocuments(context);
-      // Register tool for new clients
-      setTimeout(registerLanguageModelTool, 1000);
     }),
   );
 
