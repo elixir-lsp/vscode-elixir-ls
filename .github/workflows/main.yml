@@ -60,6 +60,13 @@ jobs:
           # DISABLE_GPU: 1
           ELS_LOCAL: 1
         if: runner.os == 'Linux'
+      - name: Run grammar tests
+        run: |
+          npm run test:grammar
+        env:
+          # DISABLE_GPU: 1
+          ELS_LOCAL: 1
+        if: runner.os != 'Linux'
       - name: Run tests
         run: |
           npm test

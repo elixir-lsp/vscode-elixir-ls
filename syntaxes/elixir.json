@@ -1821,6 +1821,534 @@
       ]
     },
     {
+      "comment": "Bash sigil with double quoted heredoc",
+      "begin": "\\s?(~b\"\"\")$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*(\"\"\"[SEOsvpu]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with single quoted heredoc",
+      "begin": "\\s?(~b''')$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*('''[SEOsvpu]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with curlies",
+      "begin": "~b\\{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\}[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_curly"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with brackets",
+      "begin": "~b\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\][SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_brackets"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with angle brackets",
+      "begin": "~b\\<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\>[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_ltgt"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with parens",
+      "begin": "~b\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\)[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_parens"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with slashes",
+      "begin": "~b\\/",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\/[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with pipes",
+      "begin": "~b\\|",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\|[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with double quotes",
+      "begin": "~b\\\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\\"[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with single quotes",
+      "begin": "~b\\'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\'[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Literal Bash sigil with double quoted heredoc",
+      "begin": "\\s?(~BASH\"\"\")$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*(\"\"\"[SEOsvpu]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Literal Bash sigil with single quoted heredoc",
+      "begin": "\\s?(~BASH''')$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*('''[SEOsvpu]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Literal Bash sigil with curlies",
+      "begin": "~BASH\\{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\}[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_curly"
+        }
+      ]
+    },
+    {
+      "comment": "Literal Bash sigil with brackets",
+      "begin": "~BASH\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\][SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_brackets"
+        }
+      ]
+    },
+    {
+      "comment": "Literal Bash sigil with angle brackets",
+      "begin": "~BASH\\<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\>[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_ltgt"
+        }
+      ]
+    },
+    {
+      "comment": "Literal Bash sigil with parens",
+      "begin": "~BASH\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\)[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_parens"
+        }
+      ]
+    },
+    {
+      "comment": "Literal Bash sigil with slashes",
+      "begin": "~BASH\\/",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\/[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Literal Bash sigil with pipes",
+      "begin": "~BASH\\|",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\|[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Literal Bash sigil with double quotes",
+      "begin": "~BASH\\\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\\"[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Literal Bash sigil with single quotes",
+      "begin": "~BASH\\'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\'[SEOsvpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
       "begin": "~[a-z](?>\"\"\")",
       "beginCaptures": {
         "0": {
