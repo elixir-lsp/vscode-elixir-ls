@@ -1821,6 +1821,300 @@
       ]
     },
     {
+      "comment": "Bash sigil with double quoted heredoc - selective shell highlighting (excludes #string to avoid \" conflict)",
+      "begin": "\\s?(~BASH\"\"\")$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*(\"\"\"[SEOevpu]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#safe_shell_tokens"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with single quoted heredoc",
+      "begin": "\\s?(~BASH''')$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "end": "^\\s*('''[SEOevpu]*)$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        },
+        "1": {
+          "name": "string.quoted.double.heredoc.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with curlies",
+      "begin": "~BASH\\{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\}[SEOevpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_curly"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with brackets",
+      "begin": "~BASH\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\][SEOevpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_brackets"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with angle brackets",
+      "begin": "~BASH\\<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\>[SEOevpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_ltgt"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with parens",
+      "begin": "~BASH\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\)[SEOevpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        },
+        {
+          "include": "#nest_parens"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with slashes",
+      "begin": "~BASH\\/",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\/[SEOevpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with pipes",
+      "begin": "~BASH\\|",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\|[SEOevpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "source.shell"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with double quotes - selective shell highlighting (excludes #string to avoid \" conflict)",
+      "begin": "~BASH(?!\"\"\")\\\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\\"[SEOevpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#safe_shell_tokens"
+        }
+      ]
+    },
+    {
+      "comment": "Bash sigil with single quotes - selective shell highlighting (excludes #string to avoid ' conflict)",
+      "begin": "~BASH(?!''')\\'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.elixir"
+        }
+      },
+      "end": "\\'[SEOevpu]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.elixir"
+        }
+      },
+      "name": "source.shell",
+      "patterns": [
+        {
+          "include": "#interpolated_elixir"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#safe_shell_tokens"
+        }
+      ]
+    },
+    {
       "begin": "~[a-z](?>\"\"\")",
       "beginCaptures": {
         "0": {
@@ -2200,7 +2494,7 @@
       "name": "string.quoted.double.literal.elixir"
     },
     {
-      "begin": "~[A-Z][A-Z0-9]*\\'",
+      "begin": "~[A-Z][A-Z0-9]*(?!''')\\'",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -2216,7 +2510,7 @@
       "name": "string.quoted.double.literal.elixir"
     },
     {
-      "begin": "~[A-Z][A-Z0-9]*\\\"",
+      "begin": "~[A-Z][A-Z0-9]*(?!\"\"\")\\\"",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.elixir"
@@ -2547,6 +2841,50 @@
     }
   ],
   "repository": {
+    "safe_shell_tokens": {
+      "comment": "Shell tokens that do not transitively include #string — safe for use inside quote-delimited BASH sigils",
+      "patterns": [
+        {
+          "include": "source.shell#comment"
+        },
+        {
+          "include": "source.shell#floating_keyword"
+        },
+        {
+          "include": "source.shell#keyword"
+        },
+        {
+          "include": "source.shell#support"
+        },
+        {
+          "include": "source.shell#modifiers"
+        },
+        {
+          "include": "source.shell#pipeline"
+        },
+        {
+          "include": "source.shell#normal_statement_seperator"
+        },
+        {
+          "include": "source.shell#numeric_literal"
+        },
+        {
+          "include": "source.shell#boolean"
+        },
+        {
+          "include": "source.shell#line_continuation"
+        },
+        {
+          "include": "source.shell#redirect_fix"
+        },
+        {
+          "include": "source.shell#redirect_number"
+        },
+        {
+          "include": "source.shell#regex_comparison"
+        }
+      ]
+    },
     "escaped_char": {
       "match": "\\\\(?:[0-7]{1,3}|x[\\da-fA-F]{1,2}|.)",
       "name": "constant.character.escape.elixir"
