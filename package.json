@@ -38,6 +38,16 @@
     "onDebugResolve:elixir"
   ],
   "main": "./out/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "ElixirLS compiles the project and runs Mix tasks, which executes code from the project and all of its dependencies (including compile-time code such as macros, mix.exs, and dependency build scripts). Only trust workspaces whose project and dependency sources you trust."
+    },
+    "virtualWorkspaces": {
+      "supported": false,
+      "description": "ElixirLS requires access to Mix and the project files on a real filesystem."
+    }
+  },
   "contributes": {
     "configurationDefaults": {
       "[elixir]": {
