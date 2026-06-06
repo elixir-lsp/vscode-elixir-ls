@@ -763,6 +763,11 @@
         "name": "elixir-definition",
         "displayName": "Elixir Definition Lookup",
         "modelDescription": "Find and retrieve the source code definition of Elixir/Erlang symbols including modules, functions, types, macros, and callbacks. Returns the actual source code with file location and line numbers for precise code inspection.",
+        "userDescription": "Look up the source definition of an Elixir or Erlang symbol (module, function, type, macro, or callback).",
+        "icon": "$(go-to-file)",
+        "tags": [
+          "elixir"
+        ],
         "canBeReferencedInPrompt": true,
         "toolReferenceName": "elixir-definition",
         "inputSchema": {
@@ -786,6 +791,11 @@
         "name": "elixir-environment",
         "displayName": "Elixir Environment Lookup",
         "modelDescription": "Get comprehensive environment information at a specific code location including current module/function context, available aliases, imports, requires, variables in scope with their inferred types, module attributes, implemented behaviours, and all definitions in the file. Essential for understanding code context and available symbols.",
+        "userDescription": "Inspect the Elixir context at a code location: aliases, imports, requires, variables in scope, and inferred types.",
+        "icon": "$(symbol-namespace)",
+        "tags": [
+          "elixir"
+        ],
         "canBeReferencedInPrompt": true,
         "toolReferenceName": "elixir-environment",
         "inputSchema": {
@@ -805,6 +815,11 @@
         "name": "elixir-module-dependencies",
         "displayName": "Elixir Module Dependencies",
         "modelDescription": "Analyze comprehensive module dependency relationships including direct/reverse dependencies, transitive dependencies, compile-time vs runtime dependencies, imports, aliases, requires, function calls, and struct expansions. Critical for understanding code architecture, impact analysis, and refactoring decisions.",
+        "userDescription": "Analyze an Elixir module's dependencies and dependents, including compile-time vs runtime relationships.",
+        "icon": "$(references)",
+        "tags": [
+          "elixir"
+        ],
         "canBeReferencedInPrompt": true,
         "toolReferenceName": "elixir-module-dependencies",
         "inputSchema": {
@@ -828,6 +843,11 @@
         "name": "elixir-docs",
         "displayName": "Elixir Documentation Aggregator",
         "modelDescription": "Aggregate and return comprehensive documentation for multiple Elixir modules, functions, types, callbacks, or attributes in a single efficient request. Supports both module-level documentation (with function/type listings) and specific symbol documentation with examples and usage patterns.",
+        "userDescription": "Fetch documentation for Elixir modules, functions, types, callbacks, and attributes.",
+        "icon": "$(book)",
+        "tags": [
+          "elixir"
+        ],
         "canBeReferencedInPrompt": true,
         "toolReferenceName": "elixir-docs",
         "inputSchema": {
@@ -854,6 +874,11 @@
         "name": "elixir-implementation-finder",
         "displayName": "Elixir Implementation Finder",
         "modelDescription": "Find all concrete implementations of Elixir behaviours, protocols, callbacks, and delegated functions across the entire codebase. Essential for discovering how abstract interfaces are implemented and understanding polymorphic behavior patterns.",
+        "userDescription": "Find implementations of Elixir behaviours, protocols, and callbacks across the codebase.",
+        "icon": "$(symbol-interface)",
+        "tags": [
+          "elixir"
+        ],
         "canBeReferencedInPrompt": true,
         "toolReferenceName": "elixir-implementation-finder",
         "inputSchema": {
@@ -877,6 +902,11 @@
         "name": "elixir-types",
         "displayName": "Elixir Type Information",
         "modelDescription": "Extract comprehensive type information from Elixir modules including @type definitions, @spec annotations, @callback specifications, and Dialyzer inferred contracts. Essential for understanding module interfaces, type safety, function signatures, and behaviour contracts.",
+        "userDescription": "Get type specs, callbacks, and Dialyzer contracts for an Elixir module.",
+        "icon": "$(symbol-class)",
+        "tags": [
+          "elixir"
+        ],
         "canBeReferencedInPrompt": true,
         "toolReferenceName": "elixir-types",
         "inputSchema": {
