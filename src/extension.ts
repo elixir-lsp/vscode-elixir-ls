@@ -8,6 +8,7 @@ import { DocsAggregatorTool } from "./docs-aggregator-tool";
 import { EnvironmentTool } from "./environment-tool";
 import { ImplementationFinderTool } from "./implementation-finder-tool";
 import { LanguageClientManager } from "./languageClientManager";
+import { configureLanguageStatus } from "./languageStatus";
 import { ModuleDependenciesTool } from "./module-dependencies-tool";
 import { WorkspaceTracker } from "./project";
 import { TaskProvider } from "./taskProvider";
@@ -74,6 +75,7 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
   detectConflictingExtensions();
 
   configureCommands(context, languageClientManager);
+  configureLanguageStatus(context, languageClientManager);
   configureDebugger(context);
   configureTerminalLinkProvider(context);
   configureTestController(context, languageClientManager, workspaceTracker);

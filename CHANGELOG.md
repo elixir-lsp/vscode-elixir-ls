@@ -2,6 +2,7 @@
 
 #### Improvements
 
+- Added a language status item showing ElixirLS server state, version, and a Restart action in the Language Status popup
 - Added a "Get Started with ElixirLS" walkthrough (install, open a project, configure, test, debug, Dialyzer)
 - Declared Workspace Trust and virtual workspace capabilities (ElixirLS requires a trusted workspace as it compiles project and dependency code)
 
