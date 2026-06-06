@@ -9,6 +9,7 @@ import { EnvironmentTool } from "./environment-tool";
 import { ImplementationFinderTool } from "./implementation-finder-tool";
 import { LanguageClientManager } from "./languageClientManager";
 import { configureLanguageStatus } from "./languageStatus";
+import { configureMcp } from "./mcp";
 import { ModuleDependenciesTool } from "./module-dependencies-tool";
 import { WorkspaceTracker } from "./project";
 import { TaskProvider } from "./taskProvider";
@@ -76,6 +77,7 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
 
   configureCommands(context, languageClientManager);
   configureLanguageStatus(context, languageClientManager);
+  configureMcp(context, workspaceTracker);
   configureDebugger(context);
   configureTerminalLinkProvider(context);
   configureTestController(context, languageClientManager, workspaceTracker);

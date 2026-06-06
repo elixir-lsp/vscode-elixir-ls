@@ -49,6 +49,12 @@
     }
   },
   "contributes": {
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "elixirLS.mcp",
+        "label": "ElixirLS"
+      }
+    ],
     "walkthroughs": [
       {
         "id": "elixirLSGettingStarted",

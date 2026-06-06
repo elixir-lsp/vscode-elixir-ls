@@ -4,6 +4,7 @@
 
 - Added a language status item showing ElixirLS server state, version, and a Restart action in the Language Status popup
 - Language model tools now expose user-facing descriptions, icons, and tags in the tool picker
+- ElixirLS's built-in MCP server is now registered with VS Code's MCP infrastructure (no hand-written mcp.json needed when `elixirLS.mcpEnabled` is set)
 - Added a "Get Started with ElixirLS" walkthrough (install, open a project, configure, test, debug, Dialyzer)
 - Declared Workspace Trust and virtual workspace capabilities (ElixirLS requires a trusted workspace as it compiles project and dependency code)
 
