@@ -13,7 +13,7 @@
   "publisher": "JakeBecker",
   "version": "0.30.0",
   "engines": {
-    "vscode": "^1.99.0"
+    "vscode": "^1.105.0"
   },
   "sponsor": {
     "url": "https://github.com/sponsors/elixir-lsp"
@@ -832,21 +832,21 @@
     "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.5",
+    "@biomejs/biome": "^2.4.16",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.13.14",
-    "@types/vscode": "~1.99.0",
+    "@types/node": "^22.19.20",
+    "@types/vscode": "~1.105.0",
     "@vscode/debugprotocol": "^1.68.0",
     "@vscode/test-electron": "^2.5.2",
-    "esbuild": "^0.27.0",
-    "glob": "^11.1.0",
-    "mocha": "^11.7.5",
+    "esbuild": "^0.28.0",
+    "glob": "^13.0.6",
+    "mocha": "^11.7.6",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^6.1.0",
-    "typescript": "~5.9.3"
+    "rimraf": "^6.1.3",
+    "typescript": "~6.0.3"
   },
   "dependencies": {
-    "@vscode/extension-telemetry": "^1.2.0",
-    "vscode-languageclient": "^9.0.1"
+    "@vscode/extension-telemetry": "^1.5.2",
+    "vscode-languageclient": "^10.0.0"
   }
 }

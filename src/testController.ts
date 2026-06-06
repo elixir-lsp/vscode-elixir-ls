@@ -505,7 +505,7 @@ export function configureTestController(
     while (queue.length > 0 && !token.isCancellationRequested) {
       const test = queue.pop();
 
-      if (!test || !test.uri) {
+      if (!test?.uri) {
         continue;
       }
 

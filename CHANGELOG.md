@@ -1,5 +1,9 @@
 ### Unreleased
 
+#### Breaking changes
+
+- minimum VSCode engine version bumped to 1.105
+
 ### v0.30.0: 17 November 2025
 
 #### Highlights

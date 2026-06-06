@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "target": "ES2024",
     "module": "commonjs",
-    "lib": ["ES2020"],
+    "lib": ["ES2024"],
+    "types": ["node", "mocha", "vscode"],
     "outDir": "out",
+    "rootDir": "src",
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "skipLibCheck": true
   },
   "exclude": ["node_modules", ".vscode-test", "elixir-ls", "elixir-ls-release"]
 }

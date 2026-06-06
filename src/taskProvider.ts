@@ -8,7 +8,6 @@ export class TaskProvider implements vscode.TaskProvider {
   public provideTasks(): vscode.Task[] {
     const wsFolders = vscode.workspace.workspaceFolders;
     if (!wsFolders || wsFolders.length === 0) {
-      vscode.window.showErrorMessage("no workspace open...");
       return [];
     }
 

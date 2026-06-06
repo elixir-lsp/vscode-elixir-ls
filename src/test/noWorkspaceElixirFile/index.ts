@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import { glob } from "glob";
-import * as Mocha from "mocha";
+import Mocha from "mocha";
 
 export async function run(
   testsRoot: string,
