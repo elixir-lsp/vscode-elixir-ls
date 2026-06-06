@@ -49,6 +49,10 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
     vscode.workspace.workspaceFile?.toString(),
   );
 
+  // Signal that ElixirLS has activated (a Mix project is open). Used by the
+  // Getting Started walkthrough to auto-complete the "Open a Mix project" step.
+  vscode.commands.executeCommand("setContext", "elixirLS.activated", true);
+
   configureTelemetry(context);
 
   reporter.sendTelemetryEvent("extension_activated", {

@@ -1,5 +1,10 @@
 ### Unreleased
 
+#### Improvements
+
+- Added a "Get Started with ElixirLS" walkthrough (install, open a project, configure, test, debug, Dialyzer)
+- Declared Workspace Trust and virtual workspace capabilities (ElixirLS requires a trusted workspace as it compiles project and dependency code)
+
 #### Breaking changes
 
 - minimum VSCode engine version bumped to 1.105

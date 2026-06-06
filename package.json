@@ -49,6 +49,81 @@
     }
   },
   "contributes": {
+    "walkthroughs": [
+      {
+        "id": "elixirLSGettingStarted",
+        "title": "Get Started with ElixirLS",
+        "description": "Set up Elixir language support, testing, and debugging.",
+        "steps": [
+          {
+            "id": "installElixir",
+            "title": "Install Elixir & Erlang/OTP",
+            "description": "ElixirLS uses the Elixir and OTP installed on your machine.\n[Open the Elixir install guide](https://elixir-lang.org/install.html)",
+            "media": {
+              "markdown": "walkthroughs/install-elixir.md"
+            },
+            "completionEvents": [
+              "onLink:https://elixir-lang.org/install.html"
+            ]
+          },
+          {
+            "id": "openProject",
+            "title": "Open a Mix project",
+            "description": "Open a folder containing a mix.exs file to start ElixirLS.\n[Open Folder](command:workbench.action.files.openFolder)",
+            "media": {
+              "markdown": "walkthroughs/open-project.md"
+            },
+            "completionEvents": [
+              "onContext:elixirLS.activated"
+            ]
+          },
+          {
+            "id": "configure",
+            "title": "Configure ElixirLS",
+            "description": "Tune project directory, Mix env, and more.\n[Open ElixirLS Settings](command:workbench.action.openSettings?%22elixirLS%22)",
+            "media": {
+              "markdown": "walkthroughs/configure.md"
+            },
+            "completionEvents": [
+              "onCommand:workbench.action.openSettings"
+            ]
+          },
+          {
+            "id": "runTests",
+            "title": "Run and debug tests",
+            "description": "Run your ExUnit tests from the Test Explorer.\n[Open Testing](command:workbench.view.testing)",
+            "media": {
+              "markdown": "walkthroughs/run-tests.md"
+            },
+            "completionEvents": [
+              "onCommand:workbench.view.testing"
+            ]
+          },
+          {
+            "id": "debug",
+            "title": "Debug your code",
+            "description": "Set breakpoints and step through Mix tasks and tests.\n[Open Run and Debug](command:workbench.view.debug)",
+            "media": {
+              "markdown": "walkthroughs/debug.md"
+            },
+            "completionEvents": [
+              "onCommand:workbench.view.debug"
+            ]
+          },
+          {
+            "id": "dialyzer",
+            "title": "Enable Dialyzer (optional)",
+            "description": "Get incremental type analysis as you work.\n[Open Dialyzer Settings](command:workbench.action.openSettings?%22elixirLS.dialyzer%22)",
+            "media": {
+              "markdown": "walkthroughs/dialyzer.md"
+            },
+            "completionEvents": [
+              "onSettingChanged:elixirLS.dialyzerEnabled"
+            ]
+          }
+        ]
+      }
+    ],
     "configurationDefaults": {
       "[elixir]": {
         "editor.insertSpaces": true,
