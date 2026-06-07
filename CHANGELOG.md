@@ -1,5 +1,9 @@
 ### Unreleased
 
+#### Highlights
+
+- Added support for Erlang/OTP 29 and Elixir 1.20
+
 #### Improvements
 
 - Added a language status item showing ElixirLS server state, version, and a Restart action in the Language Status popup
@@ -10,6 +14,8 @@
 
 #### Breaking changes
 
+- Elixir versions below 1.16 are no longer supported. Consider updating to 1.16+
+- Erlang/OTP versions below 26 are no longer supported. Consider updating to OTP 26+
 - minimum VSCode engine version bumped to 1.105
 
 ### v0.30.0: 17 November 2025
