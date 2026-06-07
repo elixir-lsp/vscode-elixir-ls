@@ -1,5 +1,6 @@
 import * as os from "node:os";
 import * as vscode from "vscode";
+import { type CoverageFile, recordCoverage } from "../coverage";
 import {
   type DebuggeeExited,
   type DebuggeeOutput,
@@ -27,6 +28,7 @@ export type RunTestArgs = {
 function getExistingLaunchConfig(
   args: RunTestArgs,
   debug: boolean,
+  coverage: boolean,
 ): vscode.DebugConfiguration | undefined {
   const launchJson = vscode.workspace.getConfiguration(
     "launch",
@@ -58,7 +60,7 @@ function getExistingLaunchConfig(
     ...(testConfig.env ?? {}),
   };
   // as of vscode 1.78 ANSI is not fully supported
-  testConfig.taskArgs = buildTestCommandArgs(args, debug);
+  testConfig.taskArgs = buildTestCommandArgs(args, debug, coverage);
   testConfig.requireFiles = [
     "test/**/test_helper.exs",
     "apps/*/test/**/test_helper.exs",
@@ -72,9 +74,10 @@ function getExistingLaunchConfig(
 function getLaunchConfig(
   args: RunTestArgs,
   debug: boolean,
+  coverage: boolean,
 ): vscode.DebugConfiguration {
   const fileConfiguration: vscode.DebugConfiguration | undefined =
-    getExistingLaunchConfig(args, debug);
+    getExistingLaunchConfig(args, debug, coverage);
 
   const fallbackConfiguration: vscode.DebugConfiguration = {
     type: "mix_task",
@@ -84,7 +87,7 @@ function getLaunchConfig(
     env: {
       MIX_ENV: "test",
     },
-    taskArgs: buildTestCommandArgs(args, debug),
+    taskArgs: buildTestCommandArgs(args, debug, coverage),
     startApps: true,
     projectDir: args.cwd,
     // we need to require all test helpers and only the file we need to test
@@ -108,14 +111,17 @@ export async function runTest(
   run: vscode.TestRun,
   args: RunTestArgs,
   debug: boolean,
+  coverage = false,
 ): Promise<string> {
   reporter.sendTelemetryEvent("run_test", {
     "elixir_ls.with_debug": debug ? "true" : "false",
+    "elixir_ls.with_coverage": coverage ? "true" : "false",
   });
 
   const debugConfiguration: vscode.DebugConfiguration = getLaunchConfig(
     args,
     debug,
+    coverage,
   );
 
   return new Promise((resolve, reject) => {
@@ -139,6 +145,15 @@ export async function runTest(
           } else if (category === "ex_unit") {
             const exUnitEvent = outputEvent.output.body.data.event;
             const data = outputEvent.output.body.data;
+            if (exUnitEvent === "test_coverage") {
+              // Coverage events carry whole-file data rather than a single test.
+              // Only consume them for coverage runs.
+              if (coverage && Array.isArray(data.files)) {
+                console.log("Coverage", JSON.stringify(data));
+                recordCoverage(run, data.files as CoverageFile[]);
+              }
+              return;
+            }
             const test = args.getTest(
               data.file,
               data.module,
@@ -234,13 +249,23 @@ export async function runTest(
 
 const COMMON_ARGS = ["--formatter", "ElixirLS.DebugAdapter.ExUnitFormatter"];
 
-function buildTestCommandArgs(args: RunTestArgs, debug: boolean): string[] {
+function buildTestCommandArgs(
+  args: RunTestArgs,
+  debug: boolean,
+  coverage: boolean,
+): string[] {
   let line = "";
   if (typeof args.line === "number") {
     line = `:${args.line}`;
   }
 
   const result = [];
+
+  // Enable Mix's built-in coverage tool. The ExUnit formatter analyzes the
+  // resulting `:cover` data and emits it back over DAP as a `test_coverage` event.
+  if (coverage) {
+    result.push("--cover");
+  }
 
   if (args.module) {
     result.push("--only");

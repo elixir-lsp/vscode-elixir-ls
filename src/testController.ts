@@ -6,6 +6,7 @@ import {
 } from "vscode-languageclient";
 import { type RunTestArgs, runTest } from "./commands/runTest";
 import { RUN_TEST_FROM_CODELENS } from "./constants";
+import { loadDetailedCoverage } from "./coverage";
 import type { LanguageClientManager } from "./languageClientManager";
 import { getProjectDir, type WorkspaceTracker } from "./project";
 import { reporter } from "./telemetry";
@@ -482,6 +483,7 @@ export function configureTestController(
     shouldDebug: boolean,
     request: vscode.TestRunRequest,
     token: vscode.CancellationToken,
+    coverage = false,
   ) {
     const run = controller.createTestRun(request);
     const queue: vscode.TestItem[] = [];
@@ -704,7 +706,7 @@ export function configureTestController(
 
       const start = performance.now();
       try {
-        const output = await runTest(run, runArgs, shouldDebug);
+        const output = await runTest(run, runArgs, shouldDebug, coverage);
         writeOutput(run, output, test);
       } catch (e) {
         writeOutput(run, e as string, test);
@@ -746,6 +748,22 @@ export function configureTestController(
   );
 
   context.subscriptions.push(debugProfile);
+
+  // Coverage runs go through `mix test --cover` (without debugger interpretation,
+  // which is incompatible with cover instrumentation). The debug adapter's ExUnit
+  // formatter analyzes the `:cover` data and streams it back over DAP.
+  const coverageProfile = controller.createRunProfile(
+    "Run with Coverage",
+    vscode.TestRunProfileKind.Coverage,
+    (request, token) => {
+      runHandler(false, request, token, true);
+    },
+  );
+
+  coverageProfile.loadDetailedCoverage = (testRun, fileCoverage) =>
+    Promise.resolve(loadDetailedCoverage(testRun, fileCoverage));
+
+  context.subscriptions.push(coverageProfile);
 
   type RunArgs = {
     projectDir: string;

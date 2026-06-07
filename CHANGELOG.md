@@ -6,6 +6,7 @@
 
 #### Improvements
 
+- Added a "Run with Coverage" test profile — `mix test --cover` results are surfaced via the editor's native test coverage UI, including line (statement), per-function (declaration), and per-clause (branch) coverage for genuine multi-clause functions
 - Added a language status item showing ElixirLS server state, version, and a Restart action in the Language Status popup
 - Language model tools now expose user-facing descriptions, icons, and tags in the tool picker
 - ElixirLS's built-in MCP server is now registered with VS Code's MCP infrastructure (no hand-written mcp.json needed when `elixirLS.mcpEnabled` is set)
