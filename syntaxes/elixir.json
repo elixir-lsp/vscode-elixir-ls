@@ -371,7 +371,7 @@
     },
     {
       "comment": "Pipe into no parens local function call",
-      "match": "(?<=\\|\\>\\s*)([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
+      "match": "(?<=\\|\\>)\\s*([_\\p{Ll}\\p{Lo}][\\p{L}\\p{N}_]*[?!]?)",
       "name": "entity.name.function.call.local.pipe.elixir"
     },
     {
