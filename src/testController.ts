@@ -25,7 +25,7 @@ export function configureTestController(
   context: vscode.ExtensionContext,
   languageClientManager: LanguageClientManager,
   workspaceTracker: WorkspaceTracker,
-) {
+): vscode.TestController {
   console.log("ElixirLS: creating test controller");
   const controller = vscode.tests.createTestController(
     "elixirLSExUnitTests",
@@ -123,7 +123,12 @@ export function configureTestController(
   // otherwise we'll create it with `canResolveChildren = true` to indicate it
   // can be passed to the `controller.resolveHandler` to gets its children.
   function getOrCreateFile(uri: vscode.Uri, projectDir: string) {
-    const existing = controller.items.get(uri.toString());
+    const workspaceFolderTestItem = getOrCreateWorkspaceFolderTestItem(uri);
+    if (!workspaceFolderTestItem) {
+      return undefined;
+    }
+
+    const existing = workspaceFolderTestItem.children.get(uri.toString());
     if (existing) {
       return existing;
     }
@@ -136,11 +141,6 @@ export function configureTestController(
     );
     fileTestItem.canResolveChildren = true;
     fileTestItem.range = new vscode.Range(0, 0, 0, 0);
-
-    const workspaceFolderTestItem = getOrCreateWorkspaceFolderTestItem(uri);
-    if (!workspaceFolderTestItem) {
-      return undefined;
-    }
     workspaceFolderTestItem.children.add(fileTestItem);
 
     testData.set(fileTestItem, ItemType.File);
@@ -843,4 +843,6 @@ export function configureTestController(
   );
 
   context.subscriptions.push(testCommand);
+
+  return controller;
 }

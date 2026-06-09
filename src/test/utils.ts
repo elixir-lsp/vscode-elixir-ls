@@ -33,6 +33,23 @@ export const sleep = (timeout: number) =>
     setTimeout(resolve, timeout);
   });
 
+// Polls `predicate` until it returns true or the timeout elapses. Useful for
+// asserting on asynchronous file-system watcher events.
+export const waitFor = async (
+  predicate: () => boolean,
+  timeout = 15000,
+  interval = 100,
+): Promise<boolean> => {
+  const deadline = Date.now() + timeout;
+  while (Date.now() < deadline) {
+    if (predicate()) {
+      return true;
+    }
+    await sleep(interval);
+  }
+  return predicate();
+};
+
 export const waitForWorkspaceUpdate = (fun: () => void) =>
   new Promise((resolve, reject) => {
     const disposable = vscode.workspace.onDidChangeWorkspaceFolders(() => {

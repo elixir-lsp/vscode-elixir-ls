@@ -62,6 +62,20 @@ async function main(): Promise<void> {
       },
     });
 
+    // test controller (fresh instance with no document opened so the language
+    // client is not started until the test controller needs it)
+    await runTests({
+      extensionDevelopmentPath,
+      extensionTestsPath: path.resolve(__dirname, "./testController"),
+      launchArgs: [
+        ...disableGpu,
+        path.resolve(__dirname, "../../src/test-fixtures/single_folder_mix"),
+      ],
+      extensionTestsEnv: {
+        ELS_TEST: "1",
+      },
+    });
+
     // multi root
     await runTests({
       extensionDevelopmentPath,

@@ -27,6 +27,7 @@ console.log("ElixirLS: Loading extension");
 export interface ElixirLS {
   workspaceTracker: WorkspaceTracker;
   languageClientManager: LanguageClientManager;
+  testController: vscode.TestController;
 }
 
 export const workspaceTracker = new WorkspaceTracker();
@@ -80,7 +81,11 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
   configureMcp(context, workspaceTracker);
   configureDebugger(context);
   configureTerminalLinkProvider(context);
-  configureTestController(context, languageClientManager, workspaceTracker);
+  const testController = configureTestController(
+    context,
+    languageClientManager,
+    workspaceTracker,
+  );
 
   context.subscriptions.push(
     vscode.workspace.onDidOpenTextDocument((value) => {
@@ -162,6 +167,7 @@ export function activate(context: vscode.ExtensionContext): ElixirLS {
   return {
     languageClientManager,
     workspaceTracker,
+    testController,
   };
 }
 
