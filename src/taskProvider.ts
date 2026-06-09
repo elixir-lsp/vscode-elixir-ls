@@ -32,14 +32,14 @@ export class TaskProvider implements vscode.TaskProvider {
       {
         name: "Run test at cursor",
         // biome-ignore lint/suspicious/noTemplateCurlyInString: This is a VSCode task template string, not a JS template literal
-        command: "mix test ${relativeFile}:${lineNumber}",
+        command: "mix test ${file}:${lineNumber}",
         group: vscode.TaskGroup.Test,
         matchers: ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"],
       },
       {
         name: "Run tests in current file",
         // biome-ignore lint/suspicious/noTemplateCurlyInString: This is a VSCode task template string, not a JS template literal
-        command: "mix test ${relativeFile}",
+        command: "mix test ${file}",
         group: vscode.TaskGroup.Test,
         matchers: ["$mixCompileError", "$mixCompileWarning", "$mixTestFailure"],
       },
@@ -110,7 +110,7 @@ export class TaskProvider implements vscode.TaskProvider {
       {
         name: "Trace file dependencies",
         // biome-ignore lint/suspicious/noTemplateCurlyInString: This is a VSCode task template string, not a JS template literal
-        command: "mix xref trace ${relativeFile}",
+        command: "mix xref trace ${file}",
       },
       {
         name: "Print file dependency graph",
