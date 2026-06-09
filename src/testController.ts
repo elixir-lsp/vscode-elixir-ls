@@ -386,9 +386,19 @@ export function configureTestController(
         watcher.onDidChange((uri) =>
           parseTestsInFileContents(getOrCreateFile(uri, projectDir)),
         );
-        // And, finally, delete TestItems for removed files. This is simple, since
-        // we use the URI as the TestItem's ID.
-        watcher.onDidDelete((uri) => controller.items.delete(uri.toString()));
+        // And, finally, delete TestItems for removed files. File items live under
+        // their workspace-folder item, so delete from that item's children.
+        watcher.onDidDelete((uri) => {
+          const folder = vscode.workspace.getWorkspaceFolder(uri);
+          if (!folder) {
+            return;
+          }
+          const outer = workspaceTracker.getOuterMostWorkspaceFolder(folder);
+          const workspaceFolderTestItem = controller.items.get(
+            outer.uri.toString(),
+          );
+          workspaceFolderTestItem?.children.delete(uri.toString());
+        });
 
         const files = await vscode.workspace.findFiles(pattern);
 
