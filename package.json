@@ -11,7 +11,7 @@
   "author": "The Elixir community",
   "license": "MIT",
   "publisher": "JakeBecker",
-  "version": "0.30.0",
+  "version": "0.31.0",
   "engines": {
     "vscode": "^1.105.0"
   },
@@ -172,15 +172,9 @@
           "default": true,
           "description": "Run ElixirLS's rapid Dialyzer when code is saved"
         },
-        "elixirLS.incrementalDialyzer": {
-          "scope": "resource",
-          "type": "boolean",
-          "default": true,
-          "description": "Use OTP incremental dialyzer (available on OTP 26+)"
-        },
         "elixirLS.dialyzerWarnOpts": {
           "scope": "resource",
-          "description": "Dialyzer options to enable or disable warnings - See Dialyzer's documentation for options. Note that the \"race_conditions\" option is unsupported",
+          "description": "Dialyzer options to enable or disable warnings - See Dialyzer's documentation for options",
           "type": "array",
           "uniqueItems": true,
           "items": {

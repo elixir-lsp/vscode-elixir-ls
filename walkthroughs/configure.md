@@ -9,7 +9,7 @@ Commonly adjusted settings:
 - **`elixirLS.projectDir`** — subdirectory containing your `mix.exs` when it is not
   at the workspace root (umbrella apps, monorepos).
 - **`elixirLS.mixEnv`** / **`elixirLS.mixTarget`** — the `MIX_ENV` / `MIX_TARGET`
-  used for compilation (defaults to `test`).
+  used for compilation (`MIX_ENV` defaults to `test`, `MIX_TARGET` to `host`).
 - **`elixirLS.dialyzerEnabled`** — enable/disable Dialyzer (see the Dialyzer step).
 - **`elixirLS.fetchDeps`** — automatically fetch dependencies on compile.
 - **`elixirLS.envVariables`** — extra environment variables for compilation.

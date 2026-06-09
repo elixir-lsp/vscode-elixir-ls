@@ -1,4 +1,4 @@
-### Unreleased
+### v0.31.0: 9 June 2026
 
 #### Highlights
 
@@ -6,6 +6,7 @@
 
 #### Improvements
 
+- ElixirLS updated to [v0.31.0](https://github.com/elixir-lsp/elixir-ls/blob/master/CHANGELOG.md#v0310)
 - Added a "Run with Coverage" test profile — `mix test --cover` results are surfaced via the editor's native test coverage UI, including line (statement), per-function (declaration), and per-clause (branch) coverage for genuine multi-clause functions
 - Added a language status item showing ElixirLS server state, version, and a Restart action in the Language Status popup
 - Language model tools now expose user-facing descriptions, icons, and tags in the tool picker
@@ -13,11 +14,22 @@
 - Added a "Get Started with ElixirLS" walkthrough (install, open a project, configure, test, debug, Dialyzer)
 - Declared Workspace Trust and virtual workspace capabilities (ElixirLS requires a trusted workspace as it compiles project and dependency code)
 
+#### Fixes
+
+- Test Explorer now starts the language client when discovering tests
+- Look up test file items under their workspace folder, fixing test discovery in multi-root workspaces
+- Remove deleted test files from the Test Explorer
+- Omit undefined `filePath` from `requireFiles`
+- Use absolute file paths in file-specific mix tasks
+- Use forward slashes in terminal link globs, fixing test result links on Windows
+- Fixed Language Model tools registration in multi-root workspaces
+
 #### Breaking changes
 
 - Elixir versions below 1.16 are no longer supported. Consider updating to 1.16+
 - Erlang/OTP versions below 26 are no longer supported. Consider updating to OTP 26+
 - minimum VSCode engine version bumped to 1.105
+- Removed the `elixirLS.incrementalDialyzer` setting — OTP's incremental Dialyzer is now always used
 
 ### v0.30.0: 17 November 2025
 

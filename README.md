@@ -52,8 +52,9 @@ ElixirLS is opinionated and sets the following default settings for Elixir files
   "editor.formatOnType": true,
 
   // Misc
-  "editor.wordBasedSuggestions": false,
-  "editor.trimAutoWhitespace": false
+  "editor.wordBasedSuggestions": "off",
+  "editor.trimAutoWhitespace": false,
+  "editor.snippetSuggestions": "inline"
 }
 ```
 

@@ -4,8 +4,6 @@ ElixirLS includes an integrated, incremental [Dialyzer](https://www.erlang.org/d
 that surfaces type discrepancies as you work.
 
 - **`elixirLS.dialyzerEnabled`** — turn Dialyzer on or off (on by default).
-- **`elixirLS.incrementalDialyzer`** — use OTP's incremental Dialyzer (OTP 26+) for
-  faster analysis.
 - **`elixirLS.dialyzerWarnOpts`** — enable or disable individual warning categories.
 - **`elixirLS.dialyzerFormat`** — choose the warning format
   (`dialyzer`, `dialyxir_short`, `dialyxir_long`).
