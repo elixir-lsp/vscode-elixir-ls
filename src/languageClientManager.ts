@@ -363,7 +363,17 @@ export class LanguageClientManager {
       return;
     }
 
-    const uri = document.uri;
+    this.ensureClientStartedForUri(document.uri, context);
+  }
+
+  // Ensures the language client for the workspace folder containing `uri` is
+  // started, starting it if necessary, and returns its promise. Used both when a
+  // document is opened and when the test explorer needs a client before any
+  // Elixir document has been opened.
+  public ensureClientStartedForUri(
+    uri: vscode.Uri,
+    context: vscode.ExtensionContext,
+  ): Promise<LanguageClient> {
     let folder = vscode.workspace.getWorkspaceFolder(uri);
 
     // Files outside of workspace go to default client when no workspace folder is open
@@ -391,7 +401,8 @@ export class LanguageClientManager {
           ] = startClient(context, clientOptions);
           this._onDidChange.fire();
         }
-        return;
+        // biome-ignore lint/style/noNonNullAssertion: defaultClientPromise is set whenever defaultClient is
+        return this.defaultClientPromise!;
       }
     }
 
@@ -443,6 +454,9 @@ export class LanguageClientManager {
       this.clientsDisposables.set(folder.uri.toString(), clientDisposables);
       this._onDidChange.fire();
     }
+
+    // biome-ignore lint/style/noNonNullAssertion: the client promise is set when the workspace folder's client is started
+    return this.clientsPromises.get(folder.uri.toString())!;
   }
 
   public async deactivate() {

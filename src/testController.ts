@@ -197,7 +197,12 @@ export function configureTestController(
     // If a document is open, VS Code already knows its contents. If this is being
     // called from the resolveHandler when a document isn't open, we'll need to
     // read them from disk ourselves.
-    const clientPromise = languageClientManager.getClientPromiseByUri(file.uri);
+    // Start the workspace language client if it has not been started yet (e.g.
+    // when the test explorer is opened before any Elixir document).
+    const clientPromise = languageClientManager.ensureClientStartedForUri(
+      file.uri,
+      context,
+    );
 
     if (!clientPromise) {
       console.error(
