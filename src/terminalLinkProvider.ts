@@ -59,8 +59,9 @@ export function configureTerminalLinkProvider(
           openUri(absUri, line);
         }
       } else {
-        const umbrellaFile = path.join("apps", app, file);
-        const depsFile = path.join("deps", app, file);
+        // Glob patterns must use forward slashes, so do not use path.join here
+        const umbrellaFile = `apps/${app}/${file}`;
+        const depsFile = `deps/${app}/${file}`;
         const uris = await vscode.workspace.findFiles(
           `{${umbrellaFile},${file},${depsFile}}`,
         );
