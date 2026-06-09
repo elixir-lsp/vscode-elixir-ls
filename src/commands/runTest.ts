@@ -64,7 +64,7 @@ function getExistingLaunchConfig(
   testConfig.requireFiles = [
     "test/**/test_helper.exs",
     "apps/*/test/**/test_helper.exs",
-    args.filePath,
+    ...(args.filePath ? [args.filePath] : []),
   ];
   testConfig.noDebug = !debug;
   return testConfig;
@@ -96,7 +96,7 @@ function getLaunchConfig(
     requireFiles: [
       "test/**/test_helper.exs",
       "apps/*/test/**/test_helper.exs",
-      args.filePath,
+      ...(args.filePath ? [args.filePath] : []),
     ],
     noDebug: !debug,
   };
