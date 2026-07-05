@@ -49,6 +49,82 @@
     }
   },
   "contributes": {
+    "semanticTokenTypes": [
+      {
+        "id": "atom",
+        "superType": "enumMember",
+        "description": "Elixir atom literal"
+      },
+      {
+        "id": "attribute",
+        "superType": "property",
+        "description": "Elixir module attribute name"
+      },
+      {
+        "id": "typespec",
+        "superType": "function",
+        "description": "Function name inside an Elixir @spec/@callback"
+      },
+      {
+        "id": "sigil",
+        "superType": "macro",
+        "description": "Elixir sigil head (~r, ~w, ~FOO)"
+      },
+      {
+        "id": "capture",
+        "superType": "variable",
+        "description": "Elixir capture argument or function capture"
+      }
+    ],
+    "semanticTokenScopes": [
+      {
+        "language": "elixir",
+        "scopes": {
+          "atom": [
+            "constant.language.symbol.elixir",
+            "constant.language.symbol.single-quoted.elixir",
+            "constant.language.symbol.double-quoted.elixir"
+          ],
+          "attribute": [
+            "variable.other.constant.elixir"
+          ],
+          "sigil": [
+            "punctuation.definition.string.begin.elixir",
+            "punctuation.section.regexp.begin.elixir"
+          ],
+          "capture": [
+            "variable.other.anonymous.elixir",
+            "entity.name.function.call.capture.elixir"
+          ],
+          "typespec": [
+            "entity.name.function.typespec.elixir"
+          ],
+          "type": [
+            "entity.name.function.typespec.elixir"
+          ],
+          "function": [
+            "entity.name.function.elixir",
+            "entity.name.function.call.local.elixir",
+            "entity.name.function.call.local.pipe.elixir"
+          ],
+          "method": [
+            "entity.name.function.call.dot.elixir"
+          ],
+          "class": [
+            "entity.name.type.module.elixir"
+          ],
+          "namespace": [
+            "entity.name.type.module.elixir"
+          ],
+          "property": [
+            "constant.language.symbol.elixir"
+          ],
+          "number": [
+            "constant.numeric.elixir"
+          ]
+        }
+      }
+    ],
     "mcpServerDefinitionProviders": [
       {
         "id": "elixirLS.mcp",
