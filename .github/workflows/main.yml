@@ -23,7 +23,7 @@ jobs:
         with:
           submodules: 'true'
       - name: Install Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "22.x"
       - name: Resolve vscode-elixir-ls dependencies
